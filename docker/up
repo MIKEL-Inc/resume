@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Purpose:
+#   Spin up a Docker Compose group of Containers.
+
+# Start from this directory, or bust
+cd "${BASH_SOURCE%/*}" || exit
+
+web_container_name='resume-web'
+db_container_name='resume-db'
+
+# Remove existing docker containers, if they exist,
+#  to prevent file access issues.
+# Also prints message to ignore certain warnings.
+./down
+
+# Start Docker Compose
+docker-compose up -d --remove-orphans --force-recreate
+
+# Docker utility Bash Functions
+get_exposed_ports () {
+    # sing command line text-manipulations
+    docker inspect "$1" | grep ExposedPorts --after-context=1 | tail -n1 | cut -f2 -d\" | cut -f1 -d/
+}
+
+get_docker_ips () {
+    # Using Docker inspect and Go template
+    docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' "$1"
+}
+
+# Helpful Printout
+web_ips=$(get_docker_ips "$web_container_name")
+web_ports=$(get_exposed_ports "$web_container_name")
+localhost_ports=$(docker inspect --format='{{range $p, $conf := .NetworkSettings.Ports}}{{(index $conf 0).HostPort}} {{end}}' "$web_container_name")
+echo
+echo 'Connect to the web server with a browser pointed to'
+echo
+for ip in ${web_ips}; do
+  echo "  http://$ip:$web_ports"
+done
+echo "and"
+echo "  http://localhost:$localhost_ports"
+
+db_ips=$(get_docker_ips "$db_container_name")
+db_ports=$(docker inspect --format='{{range $p, $conf := .Config.ExposedPorts}} {{$p}} {{end}}' "$db_container_name")
+echo
+echo 'Connect to the database server on'
+echo "  $db_ips"
+echo 'via ports'
+echo "  $db_ports"
+echo
