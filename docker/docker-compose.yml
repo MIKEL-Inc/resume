@@ -15,7 +15,9 @@ services:
   web:
     container_name: resume-web
     # image: 127.0.0.1:5000/resume-web
-    build: ../
+    build: ../server-api
+    volumes:
+      - ../dist/resume:/home/node/static-web
     environment:
       PGHOST: db
       PGDATABASE: postgres
@@ -35,7 +37,7 @@ services:
     links:
       - db
     ports:
-      - "4280:4200"
+      - "4280:4280"
 
 volumes:
   resume_database_data:

@@ -14,6 +14,11 @@ db_container_name='resume-db'
 # Also prints message to ignore certain warnings.
 ./down
 
+# Build Angular for Production
+cd .. || exit
+npm run-script build
+cd - || exit
+
 # Start Docker Compose
 docker-compose up -d --remove-orphans --force-recreate
 
