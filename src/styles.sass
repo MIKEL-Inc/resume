@@ -1,1 +1,26 @@
-/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming'
+@include mat-core()
+
+$resume-primary: mat-palette($mat-deep-purple)
+$resume-accent:  mat-palette($mat-amber)
+$resume-warn:    mat-palette($mat-red)
+
+$custom-theme: mat-light-theme($resume-primary, $resume-accent, $resume-warn)
+@include angular-material-theme($custom-theme)
+
+
+// CSS Resets
+html,
+body
+  height: 100%
+  margin: 0
+  padding: 0
+
+// Export theme colors
+$primary: mat-color($resume-primary)
+$primary-dark: mat-color($resume-primary, 800)
+$accent: mat-color($resume-accent)
+$warn: mat-color($resume-warn)
+
+$white: #ffffff
+$charcoal: #424242
