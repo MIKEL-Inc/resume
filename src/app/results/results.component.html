@@ -1,3 +1,43 @@
-<p>
-  results works!
-</p>
+<mat-grid-list cols="2" rowHeight="2:1">
+  <mat-grid-tile>
+    <mat-card>
+       <mat-card-header>
+        <mat-card-title>John Doe</mat-card-title>
+        <mat-card-subtitle>04JULY2018</mat-card-subtitle>
+        <mat-chip-list>
+            <mat-chip>Employee</mat-chip>
+          </mat-chip-list>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          John Doe is currently working under Tabitha Robbins in Code 15.
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button>Download Resume</button>
+        <button mat-button>View File</button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-card>
+        <mat-card-header>
+          <mat-card-title>Jane Doe</mat-card-title>
+          <mat-card-subtitle>04JULY2014</mat-card-subtitle>
+          <mat-chip-list>
+              <mat-chip>Former</mat-chip>
+              <mat-chip>DNH</mat-chip>
+            </mat-chip-list>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            Jane Doe was working for Code 12 under a logistics position and was caught stealing materials.
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button>Download</button>
+          <button mat-button>View File</button>
+        </mat-card-actions>
+      </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
