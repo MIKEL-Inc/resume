@@ -49,7 +49,9 @@ Start by calling the `up` script. From the project root, run:
 docker/up
 ```
 
-Can use relative path.  For example, run from the `src/app/` folder with `../../docker/up`.  From inside the `docker/` folder use `./up`.
+Can use relative path.  For example, run from the `src/app/` folder with `../../docker/up`.
+From inside the `docker/` folder use `./up`.
+Can also use the `-s` flag to skip building the Angular project `docker/up -s`.
 
 Script prints webserver and database access information.
 
