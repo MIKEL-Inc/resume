@@ -3,6 +3,30 @@
 # Purpose:
 #   Spin up a Docker Compose group of Containers.
 
+function usage {
+  cat << EOF
+Usage: up [OPTIONS]
+
+Brings up custom Docker environment and print Docker connection information.
+
+Options:
+  -s, --skip                Skip running Angular build
+
+Project home page: https://github.com/MIKEL-Inc/resume
+EOF
+  exit 1
+}
+
+if [ $# -gt 1 ]; then
+  usage;
+elif [ $# == 1 ]; then
+  if [ "$1" == "-s" ] || [ "$1" == "--skip" ]; then
+    NGBUILD='skip'
+  else
+    usage;
+  fi
+fi
+
 # Start from this directory, or bust
 cd "${BASH_SOURCE%/*}" || exit
 
@@ -14,10 +38,12 @@ db_container_name='resume-db'
 # Also prints message to ignore certain warnings.
 ./down
 
-# Build Angular for Production
-cd .. || exit
-npm run-script build
-cd - || exit
+if [ "$NGBUILD" != 'skip' ]; then
+  # Build Angular for Production
+  cd .. || exit
+  npm run-script build
+  cd - || exit
+fi
 
 # Start Docker Compose
 docker-compose up -d --remove-orphans --force-recreate
