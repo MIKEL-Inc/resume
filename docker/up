@@ -10,7 +10,7 @@ Usage: up [OPTIONS]
 Brings up custom Docker environment and print Docker connection information.
 
 Options:
-  -s, --skip                Skip running Angular build
+  -s, --skip-ng-build       Skip running Angular build
 
 Project home page: https://github.com/MIKEL-Inc/resume
 EOF
@@ -20,7 +20,7 @@ EOF
 if [ $# -gt 1 ]; then
   usage;
 elif [ $# == 1 ]; then
-  if [ "$1" == "-s" ] || [ "$1" == "--skip" ]; then
+  if [ "$1" == "-s" ] || [ "$1" == "--skip-ng-build" ]; then
     NGBUILD='skip'
   else
     usage;
