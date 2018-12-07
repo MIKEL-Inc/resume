@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="container__item container--fixed">
+      <h1 class="mat-display-3">Resume App</h1>
+      <form *ngIf="loggedIn">
+        <mat-form-field appearance="outline">
+          <input matInput placeholder="What are you looking for?" value="">
+        </mat-form-field>
+      </form>
+      <button mat-raised-button color="primary" routerLink="/results" *ngIf="loggedIn">Resume Search</button>
+      <button mat-raised-button color="primary" (click)="loggedIn = true" *ngIf="!loggedIn">Log In</button>
+  </div>
+  <footer>
+      <a mat-fab href="https://mikelinc.com" target="_blank">MIKEL</a>
+  </footer>
+</div>
