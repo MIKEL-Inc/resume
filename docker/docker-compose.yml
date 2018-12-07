@@ -6,11 +6,12 @@ services:
     image: postgres:11.1
     restart: always
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
+      POSTGRES_DB: "${DB_DATABASE}"
+      POSTGRES_USER: "${DB_USERNAME}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
     volumes:
       - resume_database_data:/var/lib/postgresql/data
+      - ../db:/docker-entrypoint-initdb.d
 
   web:
     container_name: resume-web
@@ -19,10 +20,10 @@ services:
     volumes:
       - ../dist/resume:/home/node/static-web
     environment:
-      PGHOST: db
-      PGDATABASE: postgres
-      PGUSER: postgres
-      PGPASSWORD: postgres
+      WEB_PGHOST: db
+      WEB_PGDATABASE: "${DB_DATABASE}"
+      WEB_PGUSER: "${DB_USERNAME}"
+      WEB_PGPASSWORD: "${DB_PASSWORD}"
     deploy:
       replicas: 2
       resources:

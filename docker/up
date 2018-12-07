@@ -59,6 +59,11 @@ get_docker_ips () {
     docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' "$1"
 }
 
+get_docker_env () {
+    # Using Docker inspect and Go template
+    docker exec --format '{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' "$1"
+}
+
 # Helpful Printout
 web_ips=$(get_docker_ips "$web_container_name")
 web_ports=$(get_exposed_ports "$web_container_name")
@@ -74,9 +79,16 @@ echo "  http://localhost:$localhost_ports"
 
 db_ips=$(get_docker_ips "$db_container_name")
 db_ports=$(docker inspect --format='{{range $p, $conf := .Config.ExposedPorts}} {{$p}} {{end}}' "$db_container_name")
+db_database=$(docker exec "$db_container_name" printenv POSTGRES_DB)
+db_username=$(docker exec "$db_container_name" printenv POSTGRES_USER)
+db_password=$(docker exec "$db_container_name" printenv POSTGRES_PASSWORD)
 echo
 echo 'Connect to the database server on'
 echo "  $db_ips"
 echo 'via ports'
 echo "  $db_ports"
+echo 'using credentials'
+echo '  database : user / password'
+echo "  $db_database : $db_username / $db_password"
+
 echo
