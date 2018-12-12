@@ -19,5 +19,5 @@ USER node
 
 EXPOSE 4280
 
-# serve dist folder on port 8080
+# serve folder on port
 CMD ["serve", "-s", "static-web", "-p", "4280"]
