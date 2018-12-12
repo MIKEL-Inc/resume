@@ -9,6 +9,8 @@ services:
       POSTGRES_DB: "${DB_DATABASE}"
       POSTGRES_USER: "${DB_USERNAME}"
       POSTGRES_PASSWORD: "${DB_PASSWORD}"
+    ports:
+      - "5432:5432"
     volumes:
       - resume_database_data:/var/lib/postgresql/data
       - ../db:/docker-entrypoint-initdb.d

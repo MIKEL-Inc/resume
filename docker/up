@@ -65,6 +65,28 @@ get_docker_env () {
 }
 
 # Helpful Printout
+db_ips=$(get_docker_ips "$db_container_name")
+db_ports=$(get_exposed_ports "$db_container_name")
+db_database=$(docker exec "$db_container_name" printenv POSTGRES_DB)
+db_username=$(docker exec "$db_container_name" printenv POSTGRES_USER)
+db_password=$(docker exec "$db_container_name" printenv POSTGRES_PASSWORD)
+echo
+echo 'Connect to the database server on'
+echo "  $db_ips or localhost"
+# VS Code Plugin - PostgreSQL - by Chris Kolkman - ckolkman.vscode-postgres
+# https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres
+echo 'JSON config suitable for VS Code plugin PostgreSQL - by Chris Kolkman'
+echo
+echo  '{'
+echo  '  "label": "resume",'
+echo  '  "host": "localhost",'
+echo  '  "user": "'"$db_username"'",'
+echo  '  "port": '"$db_ports"','
+echo  '  "certPath": "",'
+echo  '  "database": "'"$db_database"'",'
+echo  '  "password": "'"$db_password"'"'
+echo  '}'
+
 web_ips=$(get_docker_ips "$web_container_name")
 web_ports=$(get_exposed_ports "$web_container_name")
 localhost_ports=$(docker inspect --format='{{range $p, $conf := .NetworkSettings.Ports}}{{(index $conf 0).HostPort}} {{end}}' "$web_container_name")
@@ -74,21 +96,7 @@ echo
 for ip in ${web_ips}; do
   echo "  http://$ip:$web_ports"
 done
-echo "and"
+echo "or"
 echo "  http://localhost:$localhost_ports"
-
-db_ips=$(get_docker_ips "$db_container_name")
-db_ports=$(docker inspect --format='{{range $p, $conf := .Config.ExposedPorts}} {{$p}} {{end}}' "$db_container_name")
-db_database=$(docker exec "$db_container_name" printenv POSTGRES_DB)
-db_username=$(docker exec "$db_container_name" printenv POSTGRES_USER)
-db_password=$(docker exec "$db_container_name" printenv POSTGRES_PASSWORD)
-echo
-echo 'Connect to the database server on'
-echo "  $db_ips"
-echo 'via ports'
-echo "  $db_ports"
-echo 'using credentials'
-echo '  database : user / password'
-echo "  $db_database : $db_username / $db_password"
 
 echo
