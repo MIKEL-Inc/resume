@@ -1,14 +1,14 @@
-DROP TABLE app_user CASCADE;
-DROP TABLE resume CASCADE;
-DROP TABLE person CASCADE;
-DROP TABLE comment CASCADE;
-DROP TABLE internal_employee_type CASCADE;
-DROP TABLE internal_employee_status CASCADE;
-DROP TABLE degree CASCADE;
-DROP TABLE schooling_level CASCADE;
-DROP TABLE security_clearance CASCADE;
-DROP TABLE resume_source CASCADE;
-DROP TABLE status_of_person CASCADE;
+DROP TABLE IF EXISTS app_user CASCADE;
+DROP TABLE IF EXISTS resume CASCADE;
+DROP TABLE IF EXISTS person CASCADE;
+DROP TABLE IF EXISTS comment CASCADE;
+DROP TABLE IF EXISTS internal_employee_type CASCADE;
+DROP TABLE IF EXISTS internal_employee_status CASCADE;
+DROP TABLE IF EXISTS degree CASCADE;
+DROP TABLE IF EXISTS schooling_level CASCADE;
+DROP TABLE IF EXISTS security_clearance CASCADE;
+DROP TABLE IF EXISTS resume_source CASCADE;
+DROP TABLE IF EXISTS status_of_person CASCADE;
 
-DROP TABLE changelog;
-DROP DATABASE postgres;
+DROP TABLE IF EXISTS changelog;
+-- DROP DATABASE postgres;

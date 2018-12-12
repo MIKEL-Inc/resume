@@ -8,6 +8,17 @@ Full reset database.
 docker/down && docker volume rm docker_resume_database_data && docker/up -s
 ```
 
+Postgres command line
+
+```bash
+docker exec -it resume-db bash
+psql -U postgres
+\l
+\c postgres
+\dt
+\q
+```
+
 ## Introduction
 
 We chose Postgres for its open source, popularity, maturity, and professional defaults.  Considered contenders were MongoDB (a NOSQL database) and MySQL.
@@ -87,6 +98,8 @@ docker volume rm docker_resume_database_data
 On startup, the Postgres Docker container runs/loads scripts, database tables, data, and stored procedures from the project's `/db/` folder.  `.sh` scripts first, then `.sql` files, then `.sql.gz` files.  If more than one script, they get run in alphabetical order, (unverified).
 
 The mechanism is the `/docker-entrypoint.sh` (a symbolic link to `usr/local/bin/docker-entrypoint.sh`) script on the docker container.  Docker-Compose file mounts project `/db/` folder onto Postgres Docker's `/docker-entrypoint-initdb.d/` folder.
+
+NOTE: The regular entry point script **WILL QUIT** on any error!  So, `DROP`ing tables that do not exist will error out the `psql` `02_Drop.sql` script run and quit the entire `docker-entrypoint.sh` script.`
 
 ## DB table design
 
