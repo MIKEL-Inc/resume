@@ -1,4 +1,5 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, Inject } from '@angular/core';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 import { SearchComponent } from '../search/search.component';
 
@@ -27,6 +28,12 @@ const RESULTS = [
 ];
 
 
+export interface DialogData {
+  animal: string;
+  name: string;
+}
+
+
 @Component({
   selector: 'app-results',
   templateUrl: './results.component.html',
@@ -37,12 +44,44 @@ export class ResultsComponent implements OnInit {
   @ViewChild(SearchComponent) search;
 
   results = RESULTS;
+  animal: string;
+  name: string;
 
-  constructor() {
+  constructor(public dialog: MatDialog) {
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(ResultsDetailComponent, {
+      height: '400px',
+      width: '600px',
+      data: {name: this.name, animal: this.animal}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      this.animal = result;
+    });
   }
 
   ngOnInit() {
     this.search = this.search.keywords;
+  }
+
+}
+
+@Component({
+  selector: 'app-results-modal',
+  templateUrl: 'results-detail.component.html',
+})
+export class ResultsDetailComponent {
+
+  constructor(
+    public dialogRef: MatDialogRef<ResultsDetailComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
+  ) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 
 }

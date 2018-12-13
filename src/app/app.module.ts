@@ -6,6 +6,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,7 +16,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ResultsComponent } from './results/results.component';
+import { ResultsComponent, ResultsDetailComponent } from './results/results.component';
 import { HomeComponent } from './home/home.component';
 import { SearchComponent } from './search/search.component';
 
@@ -23,6 +24,7 @@ import { SearchComponent } from './search/search.component';
   declarations: [
     AppComponent,
     ResultsComponent,
+    ResultsDetailComponent,
     HomeComponent,
     SearchComponent,
   ],
@@ -33,6 +35,7 @@ import { SearchComponent } from './search/search.component';
     MatBadgeModule,
     MatCardModule,
     MatChipsModule,
+    MatDialogModule,
     MatDividerModule,
     MatButtonModule,
     MatGridListModule,
@@ -41,6 +44,7 @@ import { SearchComponent } from './search/search.component';
     MatToolbarModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ResultsDetailComponent]
 })
 export class AppModule { }

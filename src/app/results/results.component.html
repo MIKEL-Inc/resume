@@ -11,7 +11,7 @@
   <mat-grid-list cols="3">
 
     <mat-grid-tile *ngFor="let result of results">
-      <mat-card routerLink="/detail" class="card" 
+      <mat-card (click)="openDialog()" class="card" 
                 [class.card__status--candidate]="result.status === 'candidate'"
                 [class.card__status--former]="result.status === 'former'"
                 [class.card__status--hired]="result.status === 'employee'">
