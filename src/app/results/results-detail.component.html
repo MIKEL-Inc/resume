@@ -11,13 +11,13 @@
 <div mat-dialog-content class="container">
   <div class="panel">
     <mat-form-field>
-      <input matInput placeholder="John Doe" [disabled]="!editMode">
+      <input matInput placeholder="John Smith" [disabled]="!editMode">
     </mat-form-field>
 
     <mat-form-field>
       <mat-select placeholder="Status" [disabled]="!editMode">
         <mat-option value="Candidate">Candidate</mat-option>
-        <mat-option value="Employee" selected>Employee</mat-option>
+        <mat-option value="Employee">Employee</mat-option>
         <mat-option value="Former">Former</mat-option>
       </mat-select>
     </mat-form-field>
@@ -25,21 +25,37 @@
     <mat-form-field>
       <mat-select placeholder="Clearance" [disabled]="!editMode">
         <mat-option value="none">None</mat-option>
-        <mat-option value="secret" selected>Secret</mat-option>
+        <mat-option value="secret">Secret</mat-option>
         <mat-option value="topsecret">Top Secret</mat-option>
       </mat-select>
     </mat-form-field>
+
+    <mat-divider></mat-divider>
+
+    <mat-form-field class="example-full-width">
+      <textarea matInput placeholder="Leave a comment"></textarea>
+    </mat-form-field>
+
+    <div class="comments">
+      <div class="comment">
+        <p class="mat-body-strong">Bob Oncenco <span>2/13/2018</span></p>
+        <p class="mat-body">I met with John and I think he will be a good technician and possibly an engineer with some training.</p>    
+      </div>
+      <div class="comment">
+        <p class="mat-body-strong">April Yizik <span>2/12/2018</span></p>
+        <p class="mat-body">John is being considered for the engineering department workforce.</p>    
+      </div>
+    </div>
   </div>
   <div class="panel">
-    <div class="pdf">
-      <pdf-viewer [src]="data.pdfSrc" 
-                  [render-text]="true"
-                  [original-size]="false"
-                  [autoresize]="true">
-      </pdf-viewer>
-    </div>
+    <pdf-viewer [src]="data.pdfSrc" 
+                [render-text]="true"
+                [original-size]="false"
+                [autoresize]="true">
+    </pdf-viewer>
+  </div>
 </div>
-<div mat-dialog-actions>
-  <button mat-button *ngIf="editMode">Save</button>
-  <button mat-button cdkFocusInitial>Ok</button>
+<div mat-dialog-actions *ngIf="editMode">
+  <button mat-button>Save</button>
+  <button mat-button cdkFocusInitial>Cancel</button>
 </div>

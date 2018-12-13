@@ -1,6 +1,12 @@
+@import '../../styles'
+
 .mat-dialog-title
   display: flex
   justify-content: flex-end
+
+.mat-dialog-content
+  overflow: visible
+  height: 100%
   
 .container
   align-content: space-between
@@ -8,18 +14,26 @@
   display: flex
   flex-direction: row
   flex-wrap: nowrap
+  height: 100%
   justify-content: space-between
 
   .panel
+    align-content: space-between
+    align-items: stretch
     align-self: auto
     display: flex
     flex: 1 1 auto
     flex-direction: column
+    // height: 100%
+    max-width: 70%
+    min-height: 100%
+    position: relative
+    justify-content: space-between
 
-    .pdf
-      margin-left: auto
-      margin-right: auto
-      width: 100%
+.comments
+  .comment
+    border: 1px solid black
 
-      pdf-viewer
-        display: block
+pdf-viewer
+  display: block
+  overflow-y: auto
