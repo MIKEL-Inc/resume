@@ -18,7 +18,6 @@ import { AppComponent } from './app.component';
 import { ResultsComponent } from './results/results.component';
 import { HomeComponent } from './home/home.component';
 import { SearchComponent } from './search/search.component';
-import { PersonDetailComponent } from './person-detail/person-detail.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +25,6 @@ import { PersonDetailComponent } from './person-detail/person-detail.component';
     ResultsComponent,
     HomeComponent,
     SearchComponent,
-    PersonDetailComponent,
   ],
   imports: [
     AppRoutingModule,
