@@ -27,7 +27,7 @@ var root = {
   rollThreeDice: () => {
     return [1, 2, 3].map(_ => 1 + Math.floor(Math.random() * 6));
   },
-  rollDice: ({numberOfDice, numberOfSidesOnDie}) => {
+  rollDice: ({numberOfDice, numberOfSidesOnDie}: {numberOfDice: number, numberOfSidesOnDie: number}) => {
     let output = [];
     for (let i = 0; i < numberOfDice; i++) {
       output.push(1 + Math.floor(Math.random() * (numberOfSidesOnDie || 6)));

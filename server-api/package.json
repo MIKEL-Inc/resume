@@ -4,7 +4,9 @@
   "description": "GraphQL API endpoint and static Angular app server",
   "main": "server.js",
   "scripts": {
-    "run": "node server.js",
+    "build": "rm -rf dist && tsc",
+    "watch": "rm -rf dist && tsc && tsc -w",
+    "serve": "NODE_ENV=dev nodemon dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -21,5 +23,9 @@
     "express": "^4.16.4",
     "express-graphql": "^0.7.1",
     "graphql": "^14.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.8",
+    "typescript": "^3.2.2"
   }
 }
