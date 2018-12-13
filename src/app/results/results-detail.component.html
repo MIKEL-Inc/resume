@@ -1,8 +1,45 @@
-<h1 mat-dialog-title>Hi </h1>
-<div mat-dialog-content>
-  <p>What's your favorite animal?</p>
+<div mat-dialog-title>
+  <mat-menu #detailMenu="matMenu" xPosition="before">
+    <button mat-menu-item (click)="editMode=true">Edit</button>
+    <button mat-menu-item>Archive</button>
+  </mat-menu>
+  
+  <button mat-icon-button [matMenuTriggerFor]="detailMenu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+</div>
+<div mat-dialog-content class="container">
+  <div class="panel">
+    <mat-form-field>
+      <input matInput placeholder="John Doe" [disabled]="!editMode">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select placeholder="Status" [disabled]="!editMode">
+        <mat-option value="Candidate">Candidate</mat-option>
+        <mat-option value="Employee" selected>Employee</mat-option>
+        <mat-option value="Former">Former</mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-select placeholder="Clearance" [disabled]="!editMode">
+        <mat-option value="none">None</mat-option>
+        <mat-option value="secret" selected>Secret</mat-option>
+        <mat-option value="topsecret">Top Secret</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="panel">
+    <div class="pdf">
+      <pdf-viewer [src]="data.pdfSrc" 
+                  [render-text]="true"
+                  [original-size]="false"
+                  [autoresize]="true">
+      </pdf-viewer>
+    </div>
 </div>
 <div mat-dialog-actions>
-  <button mat-button>No Thanks</button>
-  <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button>
+  <button mat-button *ngIf="editMode">Save</button>
+  <button mat-button cdkFocusInitial>Ok</button>
 </div>

@@ -29,8 +29,8 @@ const RESULTS = [
 
 
 export interface DialogData {
-  animal: string;
-  name: string;
+  editMode: boolean;
+  pdfSrc: string;
 }
 
 
@@ -43,24 +43,22 @@ export class ResultsComponent implements OnInit {
 
   @ViewChild(SearchComponent) search;
 
-  results = RESULTS;
-  animal: string;
-  name: string;
+  pdfSrc = './../../assets/functionalSample.pdf';
 
-  constructor(public dialog: MatDialog) {
-  }
+  results = RESULTS;
+
+  editMode = true;
+
+  constructor(public dialog: MatDialog) { }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ResultsDetailComponent, {
-      height: '400px',
-      width: '600px',
-      data: {name: this.name, animal: this.animal}
+      height: '95%',
+      width: '90%',
+      data: {editMode: this.editMode, pdfSrc: this.pdfSrc}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      this.animal = result;
-    });
+    dialogRef.afterClosed().subscribe(result => { });
   }
 
   ngOnInit() {
@@ -72,6 +70,7 @@ export class ResultsComponent implements OnInit {
 @Component({
   selector: 'app-results-modal',
   templateUrl: 'results-detail.component.html',
+  styleUrls: ['./results-detail.component.sass']
 })
 export class ResultsDetailComponent {
 
