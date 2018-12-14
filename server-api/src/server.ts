@@ -1,9 +1,11 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import thingy from './schema';
+import mountRoutes from './routes';
 
 const server = express();
 console.log({'thingy': thingy});
+mountRoutes(server);
 server.use('/graphql', graphqlHTTP({
   schema: thingy.schema,
   rootValue: thingy.root,
