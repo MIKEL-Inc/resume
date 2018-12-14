@@ -12,6 +12,6 @@ export default router;
 
 router.get('/:id', async (req: any, res: any) => {
   const { id } = req.params;
-  const { rows } = await db.query('SELECT * FROM person WHERE id = $1', [id]);
+  const { rows } = await db.query('SELECT * FROM person WHERE person_id = $1', [id]);
   res.send(rows[0]);
 });

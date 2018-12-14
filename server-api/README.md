@@ -10,4 +10,11 @@ From inside this `server-api/` folder, run:
 
 `npm run watch` to continuously compile the TypeScript.
 
-`npm run server` to locally serve the Graph*i*QL page.
+```bash
+$ PGUSER=postgres \
+  PGHOST=localhost \
+  PGPASSWORD=postgres \
+  PGDATABASE=postgres \
+  PGPORT=5432 \
+  npm run server
+```
