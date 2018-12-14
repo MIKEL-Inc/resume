@@ -32,7 +32,7 @@ INSERT INTO person
       ( 'John Doe' --fullname
       , 1 --internal_employee_type_id
       , 1 --internal_employee_status_id
-      , 6 --schooling_level_id
+      , 7 --schooling_level_id
       , 1 --degree_id
       , 'Computer Programmer' --position_applied_for
       , 2 --security_clearance_id
@@ -45,7 +45,7 @@ INSERT INTO person
     , ( 'Jane Dow' --fullname
       , 1 --internal_employee_type_id
       , 1 --internal_employee_status_id
-      , 6 --schooling_level_id
+      , 7 --schooling_level_id
       , 2 --degree_id
       , 'Computer Programmer' --position_applied_for
       , 3 --security_clearance_id
