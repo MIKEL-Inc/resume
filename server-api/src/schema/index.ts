@@ -2,7 +2,6 @@
 import { buildSchema } from 'graphql';
 
 import db from '../db';
-import { async } from 'q';
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
@@ -211,7 +210,10 @@ const root = {
   rollThreeDice: () => {
     return [1, 2, 3].map(_ => 1 + Math.floor(Math.random() * 6));
   },
-  rollDice: ({ numberOfDice, numberOfSidesOnDie }: {
+  rollDice: ({
+    numberOfDice,
+    numberOfSidesOnDie
+  }: {
     numberOfDice: number;
     numberOfSidesOnDie: number;
   }) => {
@@ -221,32 +223,33 @@ const root = {
     }
     return output;
   },
-  getAllInternalEmployeeTypes: async() => {
-    const { rows } = await db.query(`
-SELECT I.internal_employee_type_id AS id
-     , I.sort_order AS "sortOrder"
-     , I.description_short AS short
-     , I.description_long AS long
-FROM internal_employee_type AS I
-`, undefined);
+  getAllInternalEmployeeTypes: async () => {
+    const queryText = `SELECT
+  I.internal_employee_type_id AS id
+, I.sort_order                AS "sortOrder"
+, I.description_short         AS short
+, I.description_long          AS long
+FROM internal_employee_type AS I`;
+    const { rows } = await db.query(queryText, undefined);
     // console.log({'rows': rows});
     return rows;
   },
   getInternalEmployeeType: async ({ id }: { id: number }) => {
-    const { rows } = await db.query(`
-SELECT I.internal_employee_type_id AS id
-     , I.sort_order AS "sortOrder"
-     , I.description_short AS short
-     , I.description_long AS long
+    const queryText = `SELECT
+  I.internal_employee_type_id AS id
+, I.sort_order                AS "sortOrder"
+, I.description_short         AS short
+, I.description_long          AS long
 FROM internal_employee_type AS I
-WHERE I.internal_employee_type_id = $1
-`, [id]);
+WHERE I.internal_employee_type_id = $1`;
+    const { rows } = await db.query(queryText, [id]);
     // console.log({'rows': rows});
     return rows[0];
   },
   getPerson: async ({ id }: { id: number }) => {
+    const queryText = 'SELECT * FROM vw_person WHERE person_id = $1';
     // console.log({'id': id});
-    const { rows } = await db.query('SELECT * FROM vw_person WHERE person_id = $1', [id]);
+    const { rows } = await db.query(queryText, [id]);
     // console.log({'rows': rows});
     // console.log({'rows[0]': rows[0]});
     const src = rows[0];
