@@ -1,15 +1,15 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
-import thingy from './schema';
+import ourSchema from './schema';
 import mountRoutes from './routes';
 
 const server = express();
-console.log({'thingy': thingy});
+// console.log({'ourSchema': ourSchema});
 mountRoutes(server);
 server.use('/graphql', graphqlHTTP({
-  schema: thingy.schema,
-  rootValue: thingy.root,
+  schema: ourSchema.schema,
+  rootValue: ourSchema.root,
   graphiql: true,
 }));
 server.listen(4000);
-console.log('Running a GraphQL API server at http://localhost:4000/graphql');
+/* legitimate use of console.log */ console.log('Running a GraphQL API server at http://localhost:4000/graphql');
