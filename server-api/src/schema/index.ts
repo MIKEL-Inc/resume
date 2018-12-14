@@ -2,6 +2,7 @@
 import { buildSchema } from 'graphql';
 
 import db from '../db';
+import { async } from 'q';
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
@@ -23,6 +24,23 @@ type Query {
     "Id of Person to retrieve"
     id: Int!
   ): Person
+
+  """
+  Return all of our employee types.
+
+  _Still a work in progress._
+  """
+  getAllInternalEmployeeTypes: [InternalEmployeeType]
+
+  """
+  Return employee type.
+
+  _Still a work in progress._
+  """
+  getInternalEmployeeType (
+    "Id of our employee type."
+    id: Int
+  ): InternalEmployeeType
 
   """
   A random quote.
@@ -202,6 +220,29 @@ const root = {
       output.push(1 + Math.floor(Math.random() * (numberOfSidesOnDie || 6)));
     }
     return output;
+  },
+  getAllInternalEmployeeTypes: async() => {
+    const { rows } = await db.query(`
+SELECT I.internal_employee_type_id AS id
+     , I.sort_order AS "sortOrder"
+     , I.description_short AS short
+     , I.description_long AS long
+FROM internal_employee_type AS I
+`, undefined);
+    // console.log({'rows': rows});
+    return rows;
+  },
+  getInternalEmployeeType: async ({ id }: { id: number }) => {
+    const { rows } = await db.query(`
+SELECT I.internal_employee_type_id AS id
+     , I.sort_order AS "sortOrder"
+     , I.description_short AS short
+     , I.description_long AS long
+FROM internal_employee_type AS I
+WHERE I.internal_employee_type_id = $1
+`, [id]);
+    // console.log({'rows': rows});
+    return rows[0];
   },
   getPerson: async ({ id }: { id: number }) => {
     // console.log({'id': id});
