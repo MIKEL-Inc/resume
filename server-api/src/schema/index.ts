@@ -16,30 +16,89 @@ type Query {
 
   """
   Return a Person.
-
-  _Still a work in progress._
   """
-  getPerson (
+  person (
     "Id of Person to retrieve"
     id: Int!
   ): Person
 
   """
   Return all of our employee types.
-
-  _Still a work in progress._
   """
-  getAllInternalEmployeeTypes: [InternalEmployeeType]
+  internalEmployeeTypes: [InternalEmployeeType]
 
   """
   Return employee type.
-
-  _Still a work in progress._
   """
-  getInternalEmployeeType (
+  internalEmployeeType (
     "Id of our employee type."
-    id: Int
+    id: Int!
   ): InternalEmployeeType
+
+  """
+  Return all of our employee status.
+  """
+  internalEmployeeStatuses: [InternalEmployeeStatus]
+
+  """
+  Return employee status.
+  """
+  internalEmployeeStatus (
+    "Id of our employee status."
+    id: Int!
+  ): InternalEmployeeStatus
+
+  """
+  Return all degrees.
+  """
+  degrees: [Degree]
+
+  """
+  Return a degree.
+  """
+  degree (
+    "Id of degree."
+    id: Int!
+  ): Degree
+
+  """
+  Return all schooling levels.
+  """
+  schoolingLevels: [SchoolingLevel]
+
+  """
+  Return a degree.
+  """
+  schoolingLevel (
+    "Id of schooling level."
+    id: Int!
+  ): SchoolingLevel
+
+  """
+  Return all clearance levels.
+  """
+  securityClearances: [SecurityClearance]
+
+  """
+  Return a clearance level.
+  """
+  securityClearance (
+    "Id of clearance level."
+    id: Int!
+  ): SecurityClearance
+
+  """
+  Return all possible candidate status.
+  """
+  statusOfPersons: [StatusOfPerson]
+
+  """
+  Return a candidate status.
+  """
+  statusOfPerson (
+    "Id of candidate status."
+    id: Int!
+  ): StatusOfPerson
 
   """
   A random quote.
@@ -223,30 +282,151 @@ const root = {
     }
     return output;
   },
-  getAllInternalEmployeeTypes: async () => {
+  internalEmployeeTypes: async () => {
     const queryText = `SELECT
-  I.internal_employee_type_id AS id
-, I.sort_order                AS "sortOrder"
-, I.description_short         AS short
-, I.description_long          AS long
-FROM internal_employee_type AS I`;
+  ET.internal_employee_type_id AS id
+, ET.sort_order                AS "sortOrder"
+, ET.description_short         AS short
+, ET.description_long          AS long
+FROM internal_employee_type AS ET`;
     const { rows } = await db.query(queryText, undefined);
     // console.log({'rows': rows});
     return rows;
   },
-  getInternalEmployeeType: async ({ id }: { id: number }) => {
+  internalEmployeeType: async ({ id }: { id: number }) => {
     const queryText = `SELECT
-  I.internal_employee_type_id AS id
-, I.sort_order                AS "sortOrder"
-, I.description_short         AS short
-, I.description_long          AS long
-FROM internal_employee_type AS I
-WHERE I.internal_employee_type_id = $1`;
+  ET.internal_employee_type_id AS id
+, ET.sort_order                AS "sortOrder"
+, ET.description_short         AS short
+, ET.description_long          AS long
+FROM internal_employee_type AS ET
+WHERE ET.internal_employee_type_id = $1`;
     const { rows } = await db.query(queryText, [id]);
     // console.log({'rows': rows});
     return rows[0];
   },
-  getPerson: async ({ id }: { id: number }) => {
+
+  internalEmployeeStatuses: async () => {
+    const queryText = `SELECT
+  ES.internal_employee_status_id AS id
+, ES.sort_order                  AS "sortOrder"
+, ES.description_short           AS short
+, ES.description_long            AS long
+FROM internal_employee_status AS I`;
+    const { rows } = await db.query(queryText, undefined);
+    // console.log({'rows': rows});
+    return rows;
+  },
+  internalEmployeeStatus: async ({ id }: { id: number }) => {
+    const queryText = `SELECT
+  ES.internal_employee_status_id AS id
+, ES.sort_order                  AS "sortOrder"
+, ES.description_short           AS short
+, ES.description_long            AS long
+FROM internal_employee_status AS I
+WHERE ES.internal_employee_status_id = $1`;
+    const { rows } = await db.query(queryText, [id]);
+    // console.log({'rows': rows});
+    return rows[0];
+  },
+
+  schoolingLevels: async () => {
+    const queryText = `SELECT
+  SL.schooling_level_id        AS id
+, SL.sort_order                AS "sortOrder"
+, SL.description_short         AS short
+, SL.description_long          AS long
+FROM schooling_level AS I`;
+    const { rows } = await db.query(queryText, undefined);
+    // console.log({'rows': rows});
+    return rows;
+  },
+  schoolingLevel: async ({ id }: { id: number }) => {
+    const queryText = `SELECT
+  SL.schooling_level_id        AS id
+, SL.sort_order                AS "sortOrder"
+, SL.description_short         AS short
+, SL.description_long          AS long
+FROM schooling_level AS I
+WHERE SL.schooling_level_id = $1`;
+    const { rows } = await db.query(queryText, [id]);
+    // console.log({'rows': rows});
+    return rows[0];
+  },
+
+  degrees: async () => {
+    const queryText = `SELECT
+  D.degree_id                 AS id
+, D.sort_order                AS "sortOrder"
+, D.description_short         AS short
+, D.description_long          AS long
+FROM degree AS D`;
+    const { rows } = await db.query(queryText, undefined);
+    // console.log({'rows': rows});
+    return rows;
+  },
+  degree: async ({ id }: { id: number }) => {
+    const queryText = `SELECT
+  D.degree_id                 AS id
+, D.sort_order                AS "sortOrder"
+, D.description_short         AS short
+, D.description_long          AS long
+FROM degree AS D
+WHERE D.degree_id = $1`;
+    const { rows } = await db.query(queryText, [id]);
+    // console.log({'rows': rows});
+    return rows[0];
+  },
+
+  securityClearances: async () => {
+    const queryText = `SELECT
+  SC.security_clearance_id     AS id
+, SC.sort_order                AS "sortOrder"
+, SC.description_short         AS short
+, SC.description_long          AS long
+FROM security_clearance AS SC`;
+    const { rows } = await db.query(queryText, undefined);
+    // console.log({'rows': rows});
+    return rows;
+  },
+  securityClearance: async ({ id }: { id: number }) => {
+    const queryText = `SELECT
+  SC.security_clearance_id     AS id
+, SC.sort_order                AS "sortOrder"
+, SC.description_short         AS short
+, SC.description_long          AS long
+FROM security_clearance AS SC
+WHERE SC.security_clearance_id = $1`;
+    const { rows } = await db.query(queryText, [id]);
+    // console.log({'rows': rows});
+    return rows[0];
+  },
+
+  statusOfPersons: async () => {
+    const queryText = `SELECT
+  SP.status_of_person_id       AS id
+, SP.sort_order                AS "sortOrder"
+, SP.description_short         AS short
+, SP.description_long          AS long
+FROM status_of_person AS SP`;
+    const { rows } = await db.query(queryText, undefined);
+    // console.log({'rows': rows});
+    return rows;
+  },
+  statusOfPerson: async ({ id }: { id: number }) => {
+    const queryText = `SELECT
+  SP.status_of_person_id       AS id
+, SP.sort_order                AS "sortOrder"
+, SP.description_short         AS short
+, SP.description_long          AS long
+FROM status_of_person AS SP
+WHERE SP.status_of_person_id = $1`;
+    const { rows } = await db.query(queryText, [id]);
+    // console.log({'rows': rows});
+    return rows[0];
+  },
+
+  person: async ({ id }: { id: number }) => {
     const queryText = 'SELECT * FROM vw_person WHERE person_id = $1';
     // console.log({'id': id});
     const { rows } = await db.query(queryText, [id]);
@@ -263,23 +443,35 @@ WHERE I.internal_employee_type_id = $1`;
     sample.physicalAddress = src.physical_address;
 
     sample.internalEmployeeType = {};
-    sample.internalEmployeeType.short = src.internal_employee_type;
-    sample.internalEmployeeType.long = src.internal_employee_type_description;
+    sample.internalEmployeeType.id = src.internal_employee_type_id;
+    sample.internalEmployeeType.sortOrder = src.internal_employee_type_sort_order;
+    sample.internalEmployeeType.short = src.internal_employee_type_description_short;
+    sample.internalEmployeeType.long = src.internal_employee_type_description_long;
 
-    // sample.internal_employee_type = src.internal_employee_type;
-    // sample.internal_employee_type_description = src.internal_employee_type_description;
-    // sample.internal_employee_status = src.internal_employee_status;
-    // sample.internal_employee_status_description = src.internal_employee_status_description;
-    // sample.schooling_level = src.schooling_level;
-    // sample.schooling_level_abbr = src.schooling_level_abbr;
-    // sample.degree = src.degree;
-    // sample.degree_abbr = src.degree_abbr;
-    // sample.security_clearance = src.security_clearance;
-    // sample.security_clearance_abbr = src.security_clearance_abbr;
-    // sample.last_status_of_person = src.last_status_of_person;
-    // sample.last_status_of_person_abbr = src.last_status_of_person_abbr;
+    sample.internalEmployeeStatus = {};
+    sample.internalEmployeeStatus.id = src.internal_employee_status_id;
+    sample.internalEmployeeStatus.sortOrder = src.internal_employee_status_sort_order;
+    sample.internalEmployeeStatus.short = src.internal_employee_status_description_short;
+    sample.internalEmployeeStatus.long = src.internal_employee_status_description_long;
 
-    // console.log({'sample': sample});
+    sample.schoolingLevel = {};
+    sample.schoolingLevel.id = src.schooling_level_id;
+    sample.schoolingLevel.sortOrder = src.schooling_level_sort_order;
+    sample.schoolingLevel.short = src.schooling_level_description_short;
+    sample.schoolingLevel.long = src.schooling_level_description_long;
+
+    sample.degree = {};
+    sample.degree.id = src.degree_id;
+    sample.degree.sortOrder = src.degree_sort_order;
+    sample.degree.short = src.degree_description_short;
+    sample.degree.long = src.degree_description_long;
+
+    sample.lastStatusOfPerson = {};
+    sample.lastStatusOfPerson.id = src.degree_id;
+    sample.lastStatusOfPerson.sortOrder = src.degree_sort_order;
+    sample.lastStatusOfPerson.short = src.degree_description_short;
+    sample.lastStatusOfPerson.long = src.degree_description_long;
+
     return sample;
   }
 };

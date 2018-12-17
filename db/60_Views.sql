@@ -1,23 +1,45 @@
+-- DROP VIEW IF EXISTS vw_person;
 CREATE VIEW vw_person AS
 
 SELECT P.person_id AS person_id
      , P.fullname AS fullname
-     , ET.description_short AS internal_employee_type
-     , ET.description_long AS internal_employee_type_description
-     , ES.description_short AS internal_employee_status
-     , ES.description_long AS internal_employee_status_description
-     , SL.description_long AS schooling_level
-     , SL.description_short AS schooling_level_abbr
-     , D.description_long AS degree
-     , D.description_short AS degree_abbr
+
+     , ET.internal_employee_type_id AS internal_employee_type_id
+     , ET.sort_order AS internal_employee_type_sort_order
+     , ET.description_short AS internal_employee_type_description_short
+     , ET.description_long AS internal_employee_type_description_long
+
+     , ES.internal_employee_status_id AS internal_employee_status_id
+     , ES.sort_order AS internal_employee_status_sort_order
+     , ES.description_short AS internal_employee_status_description_short
+     , ES.description_long AS internal_employee_status_description_long
+
+     , SL.schooling_level_id AS schooling_level_id
+     , SL.sort_order AS schooling_level_sort_order
+     , SL.description_short AS schooling_level_description_short
+     , SL.description_long AS schooling_level_description_long
+
+     , D.degree_id AS degree_id
+     , D.sort_order AS degree_sort_order
+     , D.description_short AS degree_description_short
+     , D.description_long AS degree_description_long
+
      , P.position_applied_for AS position_applied_for
-     , SC.description_long AS security_clearance
-     , SC.description_short AS security_clearance_abbr
+
+     , SC.security_clearance_id AS security_clearance_id
+     , SC.sort_order AS security_clearance_sort_order
+     , SC.description_short AS security_clearance_description_short
+     , SC.description_long AS security_clearance_description_long
+
      , P.email AS email
      , P.mailing_address AS mailing_address
      , P.physical_address AS physical_address
-     , SP.description_long AS last_status_of_person
-     , SP.description_short AS last_status_of_person_abbr
+
+     , SP.status_of_person_id AS status_of_person_id
+     , SP.sort_order AS status_of_person_sort_order
+     , SP.description_short AS status_of_person_description_short
+     , SP.description_long AS status_of_person_description_long
+
      , P.last_status_of_person_date AS last_status_of_person_date
 FROM person AS P
 
