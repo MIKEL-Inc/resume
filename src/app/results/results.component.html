@@ -8,7 +8,7 @@
     </form>
   </mat-toolbar>
   <mat-divider></mat-divider>
-  <mat-grid-list cols="3">
+  <mat-grid-list cols="3" gutterSize="10px" rowHeight="150px">
 
     <mat-grid-tile *ngFor="let result of results">
       <mat-card (click)="openDialog()" class="card" 

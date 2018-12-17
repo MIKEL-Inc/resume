@@ -25,6 +25,13 @@ const RESULTS = [
     clearance: 'Top Secret',
     date: '4/3/2018'
   },
+  {
+    id: 4,
+    name: 'Jennifer Jublibeast',
+    status: 'employee',
+    clearance: 'none',
+    date: '9/17/2018'
+  },
 ];
 
 
