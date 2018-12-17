@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# Purpose:
+#   Spin up a Docker Compose group of Containers.
+
+function usage {
+  cat << EOF
+Usage: up [OPTIONS]
+
+Brings up custom Docker environment and print Docker connection information.
+
+Options:
+  -s, --skip-ng-build       Skip running Angular build
+
+Project home page: https://github.com/MIKEL-Inc/resume
+EOF
+  exit 1
+}
+
+if [ $# -gt 1 ]; then
+  usage;
+elif [ $# == 1 ]; then
+  if [ "$1" == "-s" ] || [ "$1" == "--skip-ng-build" ]; then
+    NGBUILD='skip'
+  else
+    usage;
+  fi
+fi
+
+# Start from this directory, or bust
+cd "${BASH_SOURCE%/*}" || exit
+
+web_container_name='resume-web'
+db_container_name='resume-db'
+
+# Remove existing docker containers, if they exist,
+#  to prevent file access issues.
+# Also prints message to ignore certain warnings.
+./down
+
+if [ "$NGBUILD" != 'skip' ]; then
+  # Build Angular for Production
+  cd .. || exit
+  npm run-script build
+  cd - || exit
+fi
+
+# Start Docker Compose
+docker-compose up -d --remove-orphans --force-recreate
+
+# Docker utility Bash Functions
+get_exposed_ports () {
+    # sing command line text-manipulations
+    docker inspect "$1" | grep ExposedPorts --after-context=1 | tail -n1 | cut -f2 -d\" | cut -f1 -d/
+}
+
+get_docker_ips () {
+    # Using Docker inspect and Go template
+    docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' "$1"
+}
+
+get_docker_env () {
+    # Using Docker inspect and Go template
+    docker exec --format '{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' "$1"
+}
+
+# Helpful Printout
+db_ips=$(get_docker_ips "$db_container_name")
+db_ports=$(get_exposed_ports "$db_container_name")
+db_database=$(docker exec "$db_container_name" printenv POSTGRES_DB)
+db_username=$(docker exec "$db_container_name" printenv POSTGRES_USER)
+db_password=$(docker exec "$db_container_name" printenv POSTGRES_PASSWORD)
+echo
+echo 'Connect to the database server on'
+echo "  $db_ips or localhost"
+# VS Code Plugin - PostgreSQL - by Chris Kolkman - ckolkman.vscode-postgres
+# https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres
+echo 'JSON config suitable for VS Code plugin PostgreSQL - by Chris Kolkman'
+echo
+echo  '{'
+echo  '  "label": "resume",'
+echo  '  "host": "localhost",'
+echo  '  "user": "'"$db_username"'",'
+echo  '  "port": '"$db_ports"','
+echo  '  "certPath": "",'
+echo  '  "database": "'"$db_database"'",'
+echo  '  "password": "'"$db_password"'"'
+echo  '}'
+
+web_ips=$(get_docker_ips "$web_container_name")
+web_ports=$(get_exposed_ports "$web_container_name")
+localhost_ports=$(docker inspect --format='{{range $p, $conf := .NetworkSettings.Ports}}{{(index $conf 0).HostPort}} {{end}}' "$web_container_name")
+echo
+echo 'Connect to the web server with a browser pointed to'
+echo
+for ip in ${web_ips}; do
+  echo "  http://$ip:$web_ports"
+done
+echo "or"
+echo "  http://localhost:$localhost_ports"
+
+echo
