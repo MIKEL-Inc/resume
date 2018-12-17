@@ -1,20 +1,18 @@
 @import '../../styles'
 
-.mat-dialog-title
-  display: flex
-  justify-content: flex-end
+.mat-dialog-container
+  padding: 0
 
-.mat-dialog-content
-  overflow: visible
-  height: 100%
-  
+  &::-webkit-scrollbar
+    display: none
+    
 .container
   align-content: space-between
   align-items: stretch
   display: flex
   flex-direction: row
   flex-wrap: nowrap
-  height: 100%
+  height: 94%
   justify-content: space-between
 
   .panel
@@ -24,16 +22,36 @@
     display: flex
     flex: 1 1 auto
     flex-direction: column
-    // height: 100%
-    max-width: 70%
-    min-height: 100%
+    max-width: 60%
     position: relative
     justify-content: space-between
 
+    &:first-child
+      padding: 20px
+
+    button
+      align-self: flex-end
+
 .comments
+  overflow-y: scroll
+
   .comment
-    border: 1px solid black
+    @include light-background($primary, .05)
+    border-radius: 10px
+    margin: 10px
+    padding: 10px
+
+    span
+      float: right
+      opacity: .5
+
+
+  &::-webkit-scrollbar
+    display: none
 
 pdf-viewer
   display: block
-  overflow-y: auto
+  overflow: auto
+
+  &::-webkit-scrollbar
+    display: none

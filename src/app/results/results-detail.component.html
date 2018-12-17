@@ -1,15 +1,22 @@
-<div mat-dialog-title>
-  <mat-menu #detailMenu="matMenu" xPosition="before">
-    <button mat-menu-item (click)="editMode=true">Edit</button>
-    <button mat-menu-item>Archive</button>
-  </mat-menu>
-  
-  <button mat-icon-button [matMenuTriggerFor]="detailMenu">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-</div>
-<div mat-dialog-content class="container">
+<div class="container">
+
   <div class="panel">
+
+    <mat-menu #detailMenu="matMenu" xPosition="before">
+      <button mat-menu-item (click)="editMode=true">
+        <mat-icon>edit</mat-icon>
+        <span>Edit</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>archive</mat-icon>
+        <span>Archive</span>
+      </button>
+    </mat-menu>
+    
+    <button mat-icon-button [matMenuTriggerFor]="detailMenu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
     <mat-form-field>
       <input matInput placeholder="John Smith" [disabled]="!editMode">
     </mat-form-field>
@@ -32,7 +39,7 @@
 
     <mat-divider></mat-divider>
 
-    <mat-form-field class="example-full-width">
+    <mat-form-field class="input">
       <textarea matInput placeholder="Leave a comment"></textarea>
     </mat-form-field>
 
@@ -45,9 +52,39 @@
         <p class="mat-body-strong">April Yizik <span>2/12/2018</span></p>
         <p class="mat-body">John is being considered for the engineering department workforce.</p>    
       </div>
+      <div class="comment">
+        <p class="mat-body-strong">Bob Oncenco <span>2/13/2018</span></p>
+        <p class="mat-body">I met with John and I think he will be a good technician and possibly an engineer with some training.</p>    
+      </div>
+      <div class="comment">
+        <p class="mat-body-strong">April Yizik <span>2/12/2018</span></p>
+        <p class="mat-body">John is being considered for the engineering department workforce.</p>    
+      </div>
+      <div class="comment">
+        <p class="mat-body-strong">Bob Oncenco <span>2/13/2018</span></p>
+        <p class="mat-body">I met with John and I think he will be a good technician and possibly an engineer with some training.</p>    
+      </div>
+      <div class="comment">
+        <p class="mat-body-strong">April Yizik <span>2/12/2018</span></p>
+        <p class="mat-body">John is being considered for the engineering department workforce.</p>    
+      </div>
     </div>
   </div>
   <div class="panel">
+    <mat-menu #resumeMenu="matMenu" xPosition="before">
+      <button mat-menu-item >
+        <mat-icon>cloud_download</mat-icon>
+        <span>Download</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>cloud_upload</mat-icon>
+        <span>Upload</span>
+      </button>
+    </mat-menu>
+    
+    <button mat-icon-button [matMenuTriggerFor]="resumeMenu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
     <pdf-viewer [src]="data.pdfSrc" 
                 [render-text]="true"
                 [original-size]="false"
