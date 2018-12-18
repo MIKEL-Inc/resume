@@ -56,11 +56,11 @@
       </mat-grid-list>
     </section>
 
-    <mat-form-field class="input">
+    <mat-form-field class="input" *ngIf="!editMode">
       <textarea matInput placeholder="Leave a comment"></textarea>
     </mat-form-field>
 
-    <div class="comments" >
+    <div class="comments" *ngIf="!editMode">
       <div class="comment" *ngFor="let comment of detailData?.comments">
         <p class="mat-body-strong">{{comment.name}} <span>{{comment.date}}</span></p>
         <p class="mat-body">{{comment.comment}}</p>    
