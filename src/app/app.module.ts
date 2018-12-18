@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -23,6 +24,7 @@ import { AppComponent } from './app.component';
 import { ResultsComponent, ResultsDetailComponent } from './results/results.component';
 import { HomeComponent } from './home/home.component';
 import { SearchComponent } from './search/search.component';
+import { ApiService } from './services/api.service';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import { SearchComponent } from './search/search.component';
     AppRoutingModule,
     BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     MatBadgeModule,
     MatButtonModule,
     MatCardModule,
@@ -51,7 +54,7 @@ import { SearchComponent } from './search/search.component';
     MatToolbarModule,
     PdfViewerModule
   ],
-  providers: [],
+  providers: [ApiService],
   bootstrap: [AppComponent],
   entryComponents: [ResultsDetailComponent]
 })

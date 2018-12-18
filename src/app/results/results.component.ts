@@ -1,45 +1,9 @@
 import { Component, ViewChild, OnInit, Inject } from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { SearchComponent } from '../search/search.component';
-
-const RESULTS = [
-  {
-    id: 0,
-    name: 'John Doe',
-    status: 'candidate',
-    clearance: 'Secret',
-    date: '2/12/2017'
-  },
-  {
-    id: 2,
-    name: 'Roger Yuri',
-    status: 'employee',
-    clearance: 'Secret',
-    date: '1/4/2018'
-  },
-  {
-    id: 3,
-    name: 'Stephanie Apple',
-    status: 'former',
-    clearance: 'Top Secret',
-    date: '4/3/2018'
-  },
-  {
-    id: 4,
-    name: 'Jennifer Jublibeast',
-    status: 'employee',
-    clearance: 'none',
-    date: '9/17/2018'
-  },
-];
-
-
-export interface DialogData {
-  editMode: boolean;
-  pdfSrc: string;
-}
-
+import { Person } from '../classes/person';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-results',
@@ -48,27 +12,31 @@ export interface DialogData {
 })
 export class ResultsComponent implements OnInit {
 
+  results: Person[];
+
   @ViewChild(SearchComponent) search;
 
-  pdfSrc = './../../assets/functionalSample.pdf';
+  constructor(public dialog: MatDialog, private apiService: ApiService) { }
 
-  results = RESULTS;
-
-  editMode = true;
-
-  constructor(public dialog: MatDialog) { }
-
-  openDialog(): void {
+  openDialog(id?: number): void {
     const dialogRef = this.dialog.open(ResultsDetailComponent, {
       height: '95%',
       width: '90%',
-      data: {editMode: this.editMode, pdfSrc: this.pdfSrc}
+      data: {
+        id: id
+      }
     });
 
-    dialogRef.afterClosed().subscribe(result => { });
+    // dialogRef.afterClosed().subscribe(result => { });
+  }
+
+  getResults(): void {
+    this.apiService.getResults()
+        .subscribe(results => this.results = results);
   }
 
   ngOnInit() {
+    this.getResults();
     this.search = this.search.keywords;
   }
 
@@ -81,10 +49,17 @@ export class ResultsComponent implements OnInit {
 })
 export class ResultsDetailComponent {
 
+  editMode = false;
+
+  detailData;
+
   constructor(
     public dialogRef: MatDialogRef<ResultsDetailComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+    @Inject(MAT_DIALOG_DATA) public data: { id: number },
+    private apiService: ApiService) {
+    this.apiService.getResultsNo404(data.id)
+      .subscribe(results => this.detailData = results);
+  }
 
   onNoClick(): void {
     this.dialogRef.close();

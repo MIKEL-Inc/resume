@@ -3,7 +3,7 @@
   <div class="panel">
 
     <mat-menu #detailMenu="matMenu" xPosition="before">
-      <button mat-menu-item (click)="editMode=true">
+      <button mat-menu-item (click)="editMode=!editMode">
         <mat-icon>edit</mat-icon>
         <span>Edit</span>
       </button>
@@ -18,11 +18,11 @@
     </button>
 
     <mat-form-field>
-      <input matInput placeholder="John Smith" [disabled]="!editMode">
+      <input matInput placeholder="{{detailData?.name}}" [disabled]="!editMode">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-select placeholder="Status" [disabled]="!editMode">
+      <mat-select placeholder="{{detailData?.status}}" [disabled]="!editMode">
         <mat-option value="Candidate">Candidate</mat-option>
         <mat-option value="Employee">Employee</mat-option>
         <mat-option value="Former">Former</mat-option>
@@ -30,7 +30,7 @@
     </mat-form-field>
   
     <mat-form-field>
-      <mat-select placeholder="Clearance" [disabled]="!editMode">
+      <mat-select placeholder="{{detailData?.clearance}}" [disabled]="!editMode">
         <mat-option value="none">None</mat-option>
         <mat-option value="secret">Secret</mat-option>
         <mat-option value="topsecret">Top Secret</mat-option>
@@ -41,31 +41,11 @@
       <textarea matInput placeholder="Leave a comment"></textarea>
     </mat-form-field>
 
-    <div class="comments">
-      <div class="comment">
-        <p class="mat-body-strong">Bob Oncenco <span>2/13/2018</span></p>
-        <p class="mat-body">I met with John and I think he will be a good technician and possibly an engineer with some training.</p>    
+    <div class="comments" >
+      <div class="comment" *ngFor="let comment of detailData?.comments">
+        <p class="mat-body-strong">{{comment.name}} <span>{{comment.date}}</span></p>
+        <p class="mat-body">{{comment.comment}}</p>    
       </div>
-      <!-- <div class="comment">
-        <p class="mat-body-strong">April Yizik <span>2/12/2018</span></p>
-        <p class="mat-body">John is being considered for the engineering department workforce.</p>    
-      </div>
-      <div class="comment">
-        <p class="mat-body-strong">Bob Oncenco <span>2/13/2018</span></p>
-        <p class="mat-body">I met with John and I think he will be a good technician and possibly an engineer with some training.</p>    
-      </div>
-      <div class="comment">
-        <p class="mat-body-strong">April Yizik <span>2/12/2018</span></p>
-        <p class="mat-body">John is being considered for the engineering department workforce.</p>    
-      </div>
-      <div class="comment">
-        <p class="mat-body-strong">Bob Oncenco <span>2/13/2018</span></p>
-        <p class="mat-body">I met with John and I think he will be a good technician and possibly an engineer with some training.</p>    
-      </div>
-      <div class="comment">
-        <p class="mat-body-strong">April Yizik <span>2/12/2018</span></p>
-        <p class="mat-body">John is being considered for the engineering department workforce.</p>    
-      </div> -->
     </div>
   </div>
   <div class="panel">
@@ -83,7 +63,7 @@
     <button mat-icon-button [matMenuTriggerFor]="resumeMenu">
       <mat-icon>more_vert</mat-icon>
     </button>
-    <pdf-viewer [src]="data.pdfSrc" 
+    <pdf-viewer [src]="detailData?.pdfSrc" 
                 [render-text]="true"
                 [original-size]="false"
                 [autoresize]="true">

@@ -11,10 +11,10 @@
   <mat-grid-list cols="3" gutterSize="10px" rowHeight="150px">
 
     <mat-grid-tile *ngFor="let result of results">
-      <mat-card (click)="openDialog()" class="card" 
-                [class.card__status--candidate]="result.status === 'candidate'"
-                [class.card__status--former]="result.status === 'former'"
-                [class.card__status--hired]="result.status === 'employee'">
+      <mat-card (click)="openDialog(result.id)" class="card" 
+                [class.card__status--candidate]="result.status === 'Candidate'"
+                [class.card__status--former]="result.status === 'Former'"
+                [class.card__status--hired]="result.status === 'Employee'">
         <mat-card-header>
           <mat-card-title>{{result.name}}</mat-card-title>
           <mat-card-subtitle>{{result.date}}</mat-card-subtitle>
