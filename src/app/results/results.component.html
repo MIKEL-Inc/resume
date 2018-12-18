@@ -8,10 +8,10 @@
     </form>
   </mat-toolbar>
   <mat-divider></mat-divider>
-  <mat-grid-list cols="3" gutterSize="10px" rowHeight="150px">
+  <mat-grid-list cols="3"  rowHeight="170px">
 
     <mat-grid-tile *ngFor="let result of results">
-      <mat-card (click)="openDialog(result.id)" class="card" 
+      <mat-card (click)="openDialog(result.id)" class="card mat-typography" 
                 [class.card__status--candidate]="result.status === 'Candidate'"
                 [class.card__status--former]="result.status === 'Former'"
                 [class.card__status--hired]="result.status === 'Employee'">
@@ -23,6 +23,7 @@
             <mat-chip-list>
                 <mat-chip>{{result.clearance}}</mat-chip>
               </mat-chip-list>
+              <caption>{{result.status}}</caption>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>

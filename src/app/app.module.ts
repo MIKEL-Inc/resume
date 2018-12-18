@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 
@@ -52,6 +53,7 @@ import { ApiService } from './services/api.service';
     MatMenuModule,
     MatSelectModule,
     MatToolbarModule,
+    MatTooltipModule,
     PdfViewerModule
   ],
   providers: [ApiService],

@@ -1,8 +1,6 @@
 @import '../../styles'
 
 .mat-dialog-container
-  padding: 0
-
   &::-webkit-scrollbar
     display: none
     
@@ -25,15 +23,28 @@
     max-width: 60%
     position: relative
 
+    .details
+      margin-top: 25px
+      padding: 30px
+
+      .mat-card
+        @include light-background($charcoal, .05)
+        color: $charcoal
+
     button
       align-self: flex-end
+
+    .input
+      background: $white
+      padding: 30px
 
 .comments
   overflow-y: scroll
 
   .comment
-    @include light-background($primary, .05)
+    @include light-background($charcoal, .05)
     border-radius: 10px
+    color: $charcoal
     margin: 10px
     padding: 10px
 

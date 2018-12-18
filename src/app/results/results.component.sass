@@ -21,17 +21,23 @@
         margin-right: 10px
 
 .card
+  margin: 10px
   width: 100%
+
+  caption
+    float: right
+    font-size: .7rem
+    opacity: .5
   
   &:hover
     cursor: pointer
   
   &__status
     &--former
-      @include light-background($warn, .05)
+      @include light-background($warn, .1)
 
     &--candidate
-      @include light-background($accent, .05)
+      @include light-background($accent, .1)
 
     &--hired
-      @include light-background($primary, .05)
+      @include light-background($primary, .1)
