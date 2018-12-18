@@ -19,7 +19,7 @@
 
     <section class="details mat-typography" *ngIf="!editMode">
       <mat-card>
-        <mat-grid-list cols="2" rowHeight="4:1">
+        <mat-grid-list cols="2" rowHeight="2:1">
           <mat-grid-tile><h2 (click)="editMode=!editMode">{{detailData?.name}}</h2></mat-grid-tile>
           <mat-grid-tile><h4 (click)="editMode=!editMode">{{detailData?.date}}</h4></mat-grid-tile>
           <mat-grid-tile><mat-chip (click)="editMode=!editMode">{{detailData?.status}}</mat-chip></mat-grid-tile>
