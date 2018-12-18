@@ -61,8 +61,8 @@ export class ApiService {
   //////// Save methods //////////
 
   /** POST: add a new person to the server */
-  addPerson (person: Person): Observable<Person> {
-    return this.http.post<Person>(this.url, person, httpOptions).pipe(
+  addPerson (givenPerson: Person): Observable<Person> {
+    return this.http.post<Person>(this.url, givenPerson, httpOptions).pipe(
       tap((person: Person) => this.log(`added person w/ id=${person.id}`)),
       catchError(this.handleError<Person>('addPerson'))
     );
