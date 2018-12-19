@@ -57,8 +57,10 @@ export class ResultsDetailComponent {
     public dialogRef: MatDialogRef<ResultsDetailComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { id: number },
     private apiService: ApiService) {
-    this.apiService.getResultsNo404(data.id)
+    this.apiService.getPersonApi(data.id)
       .subscribe(results => this.detailData = results);
+    // this.apiService.getResultsNo404(data.id)
+    //   .subscribe(results => this.detailData = results);
   }
 
   onNoClick(): void {

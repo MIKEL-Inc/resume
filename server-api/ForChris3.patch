@@ -1,0 +1,196 @@
+ server-api/package-lock.json         | 23 +++++++++++++++++++++++
+ server-api/package.json              |  2 ++
+ server-api/src/schema/index.ts       |  7 +++++++
+ server-api/src/server.ts             | 13 ++++++++-----
+ src/app/results/results.component.ts |  4 +++-
+ src/app/services/api.service.ts      | 30 ++++++++++++++++++++++++++++++
+ 6 files changed, 73 insertions(+), 6 deletions(-)
+
+diff --git a/server-api/package-lock.json b/server-api/package-lock.json
+index fb5ef69..bb61a4a 100644
+--- a/server-api/package-lock.json
++++ b/server-api/package-lock.json
+@@ -23,6 +23,15 @@
+         "@types/node": "*"
+       }
+     },
++    "@types/cors": {
++      "version": "2.8.4",
++      "resolved": "https://registry.npmjs.org/@types/cors/-/cors-2.8.4.tgz",
++      "integrity": "sha512-ipZjBVsm2tF/n8qFGOuGBkUij9X9ZswVi9G3bx/6dz7POpVa6gVHcj1wsX/LVEn9MMF41fxK/PnZPPoTD1UFPw==",
++      "dev": true,
++      "requires": {
++        "@types/express": "*"
++      }
++    },
+     "@types/events": {
+       "version": "1.2.0",
+       "resolved": "http://registry.npmjs.org/@types/events/-/events-1.2.0.tgz",
+@@ -546,6 +555,15 @@
+       "integrity": "sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=",
+       "dev": true
+     },
++    "cors": {
++      "version": "2.8.5",
++      "resolved": "https://registry.npmjs.org/cors/-/cors-2.8.5.tgz",
++      "integrity": "sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==",
++      "requires": {
++        "object-assign": "^4",
++        "vary": "^1"
++      }
++    },
+     "create-error-class": {
+       "version": "3.0.2",
+       "resolved": "https://registry.npmjs.org/create-error-class/-/create-error-class-3.0.2.tgz",
+@@ -2136,6 +2154,11 @@
+         "path-key": "^2.0.0"
+       }
+     },
++    "object-assign": {
++      "version": "4.1.1",
++      "resolved": "https://registry.npmjs.org/object-assign/-/object-assign-4.1.1.tgz",
++      "integrity": "sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM="
++    },
+     "object-copy": {
+       "version": "0.1.0",
+       "resolved": "https://registry.npmjs.org/object-copy/-/object-copy-0.1.0.tgz",
+diff --git a/server-api/package.json b/server-api/package.json
+index 048005e..d7510a6 100644
+--- a/server-api/package.json
++++ b/server-api/package.json
+@@ -20,6 +20,7 @@
+   "author": "MIKEL, Inc.",
+   "license": "MIT",
+   "dependencies": {
++    "cors": "^2.8.5",
+     "express": "^4.16.4",
+     "express-graphql": "^0.7.1",
+     "express-promise-router": "^3.0.3",
+@@ -27,6 +28,7 @@
+     "pg": "^7.7.1"
+   },
+   "devDependencies": {
++    "@types/cors": "^2.8.4",
+     "@types/express": "^4.16.0",
+     "@types/express-graphql": "^0.6.2",
+     "@types/express-promise-router": "^2.0.0",
+diff --git a/server-api/src/schema/index.ts b/server-api/src/schema/index.ts
+index 76620a1..b0da63a 100644
+--- a/server-api/src/schema/index.ts
++++ b/server-api/src/schema/index.ts
+@@ -141,6 +141,7 @@ type Person {
+ 
+   schoolingLevel: SchoolingLevel
+   degree: Degree
++  securityClearance: SecurityClearance
+ 
+   "Freeform text for the position the person originally applied for."
+   positionAppliedFor: String
+@@ -466,6 +467,12 @@ WHERE SP.status_of_person_id = $1`;
+     sample.degree.short = src.degree_description_short;
+     sample.degree.long = src.degree_description_long;
+ 
++    sample.securityClearance = {};
++    sample.securityClearance.id = src.security_clearance_id;
++    sample.securityClearance.sortOrder = src.security_clearance_sort_order;
++    sample.securityClearance.short = src.security_clearance_description_short;
++    sample.securityClearance.long = src.security_clearance_description_long;
++
+     sample.lastStatusOfPerson = {};
+     sample.lastStatusOfPerson.id = src.degree_id;
+     sample.lastStatusOfPerson.sortOrder = src.degree_sort_order;
+diff --git a/server-api/src/server.ts b/server-api/src/server.ts
+index 6be1555..a3db83e 100644
+--- a/server-api/src/server.ts
++++ b/server-api/src/server.ts
+@@ -1,4 +1,5 @@
+ import express from 'express';
++import cors from 'cors';
+ import graphqlHTTP from 'express-graphql';
+ import ourSchema from './schema';
+ import mountRoutes from './routes';
+@@ -6,11 +7,13 @@ import mountRoutes from './routes';
+ const server = express();
+ // console.log({'ourSchema': ourSchema});
+ mountRoutes(server);
+-server.use('/graphql', graphqlHTTP({
+-  schema: ourSchema.schema,
+-  rootValue: ourSchema.root,
+-  graphiql: true,
+-}));
++server
++  .use(cors())  // FIXME: Not needed in Production when all is on same server.
++  .use('/graphql', graphqlHTTP({
++    schema: ourSchema.schema,
++    rootValue: ourSchema.root,
++    graphiql: true,
++  }));
+ server.listen(4000);
+ /* legitimate use of console.log */ console.log('Running a GraphQL API server at http://localhost:4000/graphql');
+ // console.log({'process.env': process.env});
+diff --git a/src/app/results/results.component.ts b/src/app/results/results.component.ts
+index bf68886..8a26ceb 100644
+--- a/src/app/results/results.component.ts
++++ b/src/app/results/results.component.ts
+@@ -57,8 +57,10 @@ export class ResultsDetailComponent {
+     public dialogRef: MatDialogRef<ResultsDetailComponent>,
+     @Inject(MAT_DIALOG_DATA) public data: { id: number },
+     private apiService: ApiService) {
+-    this.apiService.getResultsNo404(data.id)
++    this.apiService.getPersonApi(data.id)
+       .subscribe(results => this.detailData = results);
++    // this.apiService.getResultsNo404(data.id)
++    //   .subscribe(results => this.detailData = results);
+   }
+ 
+   onNoClick(): void {
+diff --git a/src/app/services/api.service.ts b/src/app/services/api.service.ts
+index 5bd4d73..25f7e83 100644
+--- a/src/app/services/api.service.ts
++++ b/src/app/services/api.service.ts
+@@ -12,15 +12,45 @@ const httpOptions = {
+   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+ };
+ 
++const graphqlHttpOptions = {
++  headers: new HttpHeaders({ 'Content-Type': 'application/graphql' })
++};
++
+ @Injectable({
+   providedIn: 'root'
+ })
+ export class ApiService {
+ 
+   private url = 'assets/data.json';
++  private apiUrl = 'http://localhost:4000/graphql';
+ 
+   constructor(private http: HttpClient, private messageService: MessageService) { }
+ 
++  getPersonApi(givenPersonId: number): Observable<Person> {
++    const query = `{
++      person(id: 1) {
++        id
++        fullName
++        internalEmployeeType {
++          short
++        }
++        internalEmployeeStatus {
++          short
++        }
++        degree {
++          long
++        }
++        positionAppliedFor
++        email
++      }
++    }`;
++    return this.http.post<Person>(this.apiUrl, query, graphqlHttpOptions).pipe(
++      tap((person: any) => this.log(`person w/ id=${person}`)),
++      tap((test: any) => console.log({'return': test})),
++      catchError(this.handleError<Person>('addPerson'))
++    );
++  }
++
+   /** GET all results from the server */
+   getResults (): Observable<Person[]> {
+     return this.http.get<Person[]>(this.url)

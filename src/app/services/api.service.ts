@@ -12,14 +12,44 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
+const graphqlHttpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/graphql' })
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
   private url = 'assets/data.json';
+  private apiUrl = 'http://localhost:4000/graphql';
 
   constructor(private http: HttpClient, private messageService: MessageService) { }
+
+  getPersonApi(givenPersonId: number): Observable<Person> {
+    const query = `{
+      person(id: 1) {
+        id
+        fullName
+        internalEmployeeType {
+          short
+        }
+        internalEmployeeStatus {
+          short
+        }
+        degree {
+          long
+        }
+        positionAppliedFor
+        email
+      }
+    }`;
+    return this.http.post<Person>(this.apiUrl, query, graphqlHttpOptions).pipe(
+      tap((person: any) => this.log(`person w/ id=${person}`)),
+      tap((test: any) => console.log({'return': test})),
+      catchError(this.handleError<Person>('addPerson'))
+    );
+  }
 
   /** GET all results from the server */
   getResults (): Observable<Person[]> {
