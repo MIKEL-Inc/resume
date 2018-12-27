@@ -18,6 +18,7 @@ import { MatSelectModule } from '@angular/material';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { InputFileConfig, InputFileModule } from 'ngx-input-file';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -26,12 +27,17 @@ import { ResultsComponent, ResultsDetailComponent } from './results/results.comp
 import { HomeComponent } from './home/home.component';
 import { SearchComponent } from './search/search.component';
 import { ApiService } from './services/api.service';
+import { UploadComponent, UploadModalComponent } from './upload/upload.component';
+
+const config: InputFileConfig = {};
 
 @NgModule({
   declarations: [
     AppComponent,
     ResultsComponent,
     ResultsDetailComponent,
+    UploadComponent,
+    UploadModalComponent,
     HomeComponent,
     SearchComponent,
   ],
@@ -40,6 +46,7 @@ import { ApiService } from './services/api.service';
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    InputFileModule.forRoot(config),
     MatBadgeModule,
     MatButtonModule,
     MatCardModule,
@@ -58,6 +65,6 @@ import { ApiService } from './services/api.service';
   ],
   providers: [ApiService],
   bootstrap: [AppComponent],
-  entryComponents: [ResultsDetailComponent]
+  entryComponents: [ResultsDetailComponent, UploadModalComponent]
 })
 export class AppModule { }

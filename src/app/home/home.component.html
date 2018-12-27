@@ -7,7 +7,7 @@
         </div>
       </form>
       <button mat-raised-button color="primary" routerLink="/results" *ngIf="loggedIn">Resume Search</button>
-      <button mat-raised-button color="primary" routerLink="" *ngIf="loggedIn">Resume Upload</button>
+      <button mat-raised-button color="primary" (click)="openDialog()" *ngIf="loggedIn">Resume Upload</button>
       <button mat-raised-button color="primary" (click)="loggedIn = true" *ngIf="!loggedIn">Log In</button>
   </div>
   <footer>

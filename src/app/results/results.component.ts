@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { SearchComponent } from '../search/search.component';
 import { Person } from '../classes/person';
 import { ApiService } from '../services/api.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-results',
@@ -31,6 +32,7 @@ export class ResultsComponent implements OnInit {
   }
 
   getResults(): void {
+    // FIXME: Please!
     this.apiService.getResults()
         .subscribe(results => this.results = results);
   }
@@ -49,6 +51,8 @@ export class ResultsComponent implements OnInit {
 })
 export class ResultsDetailComponent {
 
+  person: Person;
+
   editMode = false;
 
   detailData;
@@ -57,10 +61,22 @@ export class ResultsDetailComponent {
     public dialogRef: MatDialogRef<ResultsDetailComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { id: number },
     private apiService: ApiService) {
+
+    const dataExists = data !== undefined;
+
+    if (dataExists) {
+      this.getPerson(data);
+    }
+
+  }
+
+  private createPerson() {
+    this.apiService.createPerson(this.person);
+  }
+
+  private getPerson(data: { id: number; }) {
     this.apiService.getPersonApi(data.id)
       .subscribe(results => this.detailData = results);
-    // this.apiService.getResultsNo404(data.id)
-    //   .subscribe(results => this.detailData = results);
   }
 
   onNoClick(): void {

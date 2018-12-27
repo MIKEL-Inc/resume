@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { UploadModalComponent } from '../upload/upload.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-home',
@@ -9,8 +11,12 @@ export class HomeComponent implements OnInit {
 
   loggedIn = false;
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() { }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(UploadModalComponent);
+  }
 
 }

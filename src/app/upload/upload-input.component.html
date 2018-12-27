@@ -1,0 +1,9 @@
+<div mat-dialog-content>
+  <p>Select Resume to Upload</p>
+  <input type="file" accept=".pdf, .doc, .docx, .txt" (change)="onFileChange($event)" multiple="false">
+</div>
+<div mat-dialog-actions>
+  <button mat-button>Cancel</button>
+  <!-- <button mat-button (click)="openDialog(result.id)">Upload</button> -->
+  <button mat-button (click)="uploadResume()">Upload</button>
+</div>
