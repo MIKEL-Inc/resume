@@ -59,34 +59,32 @@ INSERT INTO person
 
 INSERT INTO resume
     ( resume_id
-    , user_id
     , person_id
     , file_name
     , upload
     , upload_user_id
     , upload_source_id
-    , text_blob
     , payload
+    , text_blob
+    , keywords
     )
     VALUES
       ( 1 -- resume_id
-      , 1 -- user_id
       , 1 -- person_id
       , 'test_resume.pdf' -- file_name
       , transaction_timestamp() -- upload
       , 1 -- upload_user_id
       , 1 -- upload_source_id
-      , 'Hello World!' -- text_blob
-      , 'SGVsbG8gV29ybGQh' -- payload
+      , 'SGVsbG8gV29ybGQhIHRleHQ=' -- payload (phrase "Hello World! text")
+      , 'Hello World! text' -- text_blob
+      , to_tsvector('Hello World! text') -- keywords
       )
     , ( 2 -- resume_id
-      , 1 -- user_id
       , 2 -- person_id
       , 'minimal.pdf' -- file_name
       , transaction_timestamp() -- upload
       , 1 -- upload_user_id
       , 1 -- upload_source_id
-      , 'Hello World' -- text_blob
       , 'JVBERi0xLjEKJcKlwrHDqwoKMSAwIG9iagogIDw8IC9UeXBlIC9DYXRhbG9nCiAgICAgL1BhZ2Vz
 IDIgMCBSCiAgPj4KZW5kb2JqCgoyIDAgb2JqCiAgPDwgL1R5cGUgL1BhZ2VzCiAgICAgL0tpZHMg
 WzMgMCBSXQogICAgIC9Db3VudCAxCiAgICAgL01lZGlhQm94IFswIDAgMzAwIDE0NF0KICA+Pgpl
@@ -100,6 +98,8 @@ IDAgMCBUZAogICAgKEhlbGxvIFdvcmxkKSBUagogIEVUCmVuZHN0cmVhbQplbmRvYmoKCnhyZWYK
 MCA1CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxOCAwMDAwMCBuIAowMDAwMDAwMDc3IDAw
 MDAwIG4gCjAwMDAwMDAxNzggMDAwMDAgbiAKMDAwMDAwMDQ1NyAwMDAwMCBuIAp0cmFpbGVyCiAg
 PDwgIC9Sb290IDEgMCBSCiAgICAgIC9TaXplIDUKICA+PgpzdGFydHhyZWYKNTY1CiUlRU9GCg==
-' -- payload
+' -- payload (small PDF)
+      , 'Hello World PDF' -- text_blob
+      , to_tsvector('Hello World PDF') -- keywords
       )
 ;

@@ -9,14 +9,14 @@ CREATE TABLE app_user
 
 CREATE TABLE resume
     ( resume_id SERIAL PRIMARY KEY
-    , user_id INTEGER
     , person_id INTEGER NOT NULL
     , file_name VARCHAR(1024)
     , upload TIMESTAMP
     , upload_user_id INTEGER
     , upload_source_id INTEGER
-    , text_blob TEXT
     , payload TEXT
+    , text_blob TEXT
+    , keywords TSVECTOR
     );
 
 CREATE TABLE person

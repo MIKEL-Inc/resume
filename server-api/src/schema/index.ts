@@ -158,24 +158,23 @@ Resume
 """
 type Resume {
   id: Int
-  "User who uploaded resume. (Just the id.)"
-  userId: Int,
-  "User who uploaded resume."
-  user: User,
   person: Person,
   fileName: String,
-
-  "String representing seconds since Epoch Time"
+  "Upload time string representing seconds since Epoch Time"
   upload: String,
+  "User who uploaded resume. (Just the id.)"
   uploadUserId: Int
+  "User who uploaded resume."
   uploadUser: User
   UploadSourceId: ResumeSource
-  "List of keywords in resume."
-  textBlob: String
   "CAUTION: LARGE SIZE - Resume base64 encoded text"
   payloadText: String
-  "CAUTION: LARGE SIZE - Resume raw"
+  "CAUTION: LARGE SIZE - Resume decoded"
   payload: String
+  "Text in resume."
+  textBlob: String
+  "List of normalized keywords in resume."
+  keywords: String
 }
 
 """
@@ -550,20 +549,19 @@ WHERE U.user_id = $1`;
   resume: async ({ id }: { id: number }) => {
     const queryText = `SELECT
   R.resume_id                 AS id
-, R.user_id                   AS "userId"
 , R.person_id                 AS "personId"
 , R.file_name                 AS "fileName"
 , R.upload                    AS upload
 , R.upload_user_id            AS "uploadUserId"
 , R.upload_source_id          AS "UploadSourceId"
-, R.text_blob                 AS "textBlob"
 , R.payload                   AS "payloadText"
+, R.text_blob                 AS "textBlob"
+, R.keywords                  AS keywords
 FROM resume AS R
 WHERE R.resume_id = $1`;
     const { rows } = await db.query(queryText, [id]);
     // console.log({'rows': rows});
     const thingy = rows[0];
-    thingy.user = await root.user({ id: thingy.userId });
     thingy.person = await root.user({ id: thingy.personId });
     thingy.uploadUser = await root.user({ id: thingy.uploadUserId });
     thingy.uploadSource = await root.resumeSource({ id: thingy.UploadSourceId });
