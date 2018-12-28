@@ -15,6 +15,7 @@ CREATE TABLE resume
     , upload TIMESTAMP
     , upload_user_id INTEGER
     , upload_source_id INTEGER
+    , text_blob TEXT
     , payload TEXT
     );
 

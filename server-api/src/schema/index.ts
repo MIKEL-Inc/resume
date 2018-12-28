@@ -3,6 +3,8 @@ import { buildSchema } from 'graphql';
 
 import db from '../db';
 
+const decodeBase64 = (b64Encoded: string) => Buffer.from(b64Encoded, 'base64').toString();
+
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
 """
@@ -21,6 +23,22 @@ type Query {
     "Id of Person to retrieve"
     id: Int!
   ): Person
+
+  """
+  Return a Resume.
+  """
+  resume (
+    "Id of Resume to retrieve"
+    id: Int!
+  ): Resume
+
+  """
+  Return a User.
+  """
+  user (
+    "Id of user to retrieve"
+    id: Int!
+  ): User
 
   """
   Return all of our employee types.
@@ -47,6 +65,14 @@ type Query {
     "Id of our employee status."
     id: Int!
   ): InternalEmployeeStatus
+
+  """
+  Return resume source.
+  """
+  resumeSource (
+    "Id of resumeSource."
+    id: Int!
+  ): ResumeSource
 
   """
   Return all degrees.
@@ -128,6 +154,31 @@ type Query {
 }
 
 """
+Resume
+"""
+type Resume {
+  id: Int
+  "User who uploaded resume. (Just the id.)"
+  userId: Int,
+  "User who uploaded resume."
+  user: User,
+  person: Person,
+  fileName: String,
+
+  "String representing seconds since Epoch Time"
+  upload: String,
+  uploadUserId: Int
+  uploadUser: User
+  UploadSourceId: ResumeSource
+  "List of keywords in resume."
+  textBlob: String
+  "CAUTION: LARGE SIZE - Resume base64 encoded text"
+  payloadText: String
+  "CAUTION: LARGE SIZE - Resume raw"
+  payload: String
+}
+
+"""
 Candidate with a resume
 """
 type Person {
@@ -152,6 +203,28 @@ type Person {
 
   "String representing seconds since Epoch Time"
   lastStatusOfPersonDate: String
+}
+
+"""
+Application User
+"""
+type User {
+  "Id of User"
+  id: Int
+
+  "User's name"
+  fullName: String
+
+  "User's password (not really, it's a token)"
+  password: String
+
+  email: String
+
+  "String representing seconds since Epoch Time"
+  createdOn: String
+
+  "String representing seconds since Epoch Time"
+  lastLogin: String
 }
 
 """
@@ -244,6 +317,23 @@ Type to hold StatusOfPerson from database
 """
 type StatusOfPerson {
   "Id of StatusOfPerson"
+  id: Int
+
+  "Sorting rank for display"
+  sortOrder: Int
+
+  "Short description or Abbreviation"
+  short: String
+
+  "Full description or Proper Title"
+  long: String
+}
+
+"""
+Type to hold ResumeSource from database
+"""
+type ResumeSource {
+  "Id of ResumeSource"
   id: Int
 
   "Sorting rank for display"
@@ -425,6 +515,60 @@ WHERE SP.status_of_person_id = $1`;
     const { rows } = await db.query(queryText, [id]);
     // console.log({'rows': rows});
     return rows[0];
+  },
+
+  resumeSource: async ({ id }: { id: number }) => {
+    const queryText = `SELECT
+  RS.resume_source_id       AS id
+, RS.sort_order                AS "sortOrder"
+, RS.description_short         AS short
+, RS.description_long          AS long
+FROM resume_source AS RS
+WHERE RS.resume_source_id = $1`;
+    const { rows } = await db.query(queryText, [id]);
+    // console.log({'rows': rows});
+    return rows[0];
+  },
+
+  user: async ({ id }: { id: number }) => {
+    const queryText = `SELECT
+  U.user_id                   AS id
+, U.fullname                  AS "fullName"
+, U.password                  AS password
+, U.email                     AS email
+, U.created_on                AS "createdOn"
+, U.last_login                AS "lastLogin"
+FROM app_user AS U
+WHERE U.user_id = $1`;
+    const { rows } = await db.query(queryText, [id]);
+    // console.log({'rows': rows});
+    const thingy = rows[0];
+    // thingy.user = await root.user(thingy.userId);
+    return thingy;
+  },
+
+  resume: async ({ id }: { id: number }) => {
+    const queryText = `SELECT
+  R.resume_id                 AS id
+, R.user_id                   AS "userId"
+, R.person_id                 AS "personId"
+, R.file_name                 AS "fileName"
+, R.upload                    AS upload
+, R.upload_user_id            AS "uploadUserId"
+, R.upload_source_id          AS "UploadSourceId"
+, R.text_blob                 AS "textBlob"
+, R.payload                   AS "payloadText"
+FROM resume AS R
+WHERE R.resume_id = $1`;
+    const { rows } = await db.query(queryText, [id]);
+    // console.log({'rows': rows});
+    const thingy = rows[0];
+    thingy.user = await root.user({ id: thingy.userId });
+    thingy.person = await root.user({ id: thingy.personId });
+    thingy.uploadUser = await root.user({ id: thingy.uploadUserId });
+    thingy.uploadSource = await root.resumeSource({ id: thingy.UploadSourceId });
+    thingy.payload = await decodeBase64(thingy.payloadText);
+    return thingy;
   },
 
   person: async ({ id }: { id: number }) => {
