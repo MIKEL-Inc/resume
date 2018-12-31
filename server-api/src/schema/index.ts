@@ -403,7 +403,7 @@ WHERE ET.internal_employee_type_id = $1`;
 , ES.sort_order                  AS "sortOrder"
 , ES.description_short           AS short
 , ES.description_long            AS long
-FROM internal_employee_status AS I`;
+FROM internal_employee_status AS ES`;
     const { rows } = await db.query(queryText, undefined);
     // console.log({'rows': rows});
     return rows;
@@ -414,7 +414,7 @@ FROM internal_employee_status AS I`;
 , ES.sort_order                  AS "sortOrder"
 , ES.description_short           AS short
 , ES.description_long            AS long
-FROM internal_employee_status AS I
+FROM internal_employee_status AS ES
 WHERE ES.internal_employee_status_id = $1`;
     const { rows } = await db.query(queryText, [id]);
     // console.log({'rows': rows});
@@ -427,7 +427,7 @@ WHERE ES.internal_employee_status_id = $1`;
 , SL.sort_order                AS "sortOrder"
 , SL.description_short         AS short
 , SL.description_long          AS long
-FROM schooling_level AS I`;
+FROM schooling_level AS SL`;
     const { rows } = await db.query(queryText, undefined);
     // console.log({'rows': rows});
     return rows;
@@ -438,7 +438,7 @@ FROM schooling_level AS I`;
 , SL.sort_order                AS "sortOrder"
 , SL.description_short         AS short
 , SL.description_long          AS long
-FROM schooling_level AS I
+FROM schooling_level AS SL
 WHERE SL.schooling_level_id = $1`;
     const { rows } = await db.query(queryText, [id]);
     // console.log({'rows': rows});
