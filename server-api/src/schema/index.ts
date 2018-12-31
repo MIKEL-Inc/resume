@@ -571,59 +571,33 @@ WHERE R.resume_id = $1`;
   },
 
   person: async ({ id }: { id: number }) => {
-    const queryText = 'SELECT * FROM vw_person WHERE person_id = $1';
-    // console.log({'id': id});
+    const queryText = `SELECT
+  P.person_id                   AS id
+, P.fullname                    AS "fullName"
+, P.internal_employee_type_id   AS "internalEmployeeTypeId"
+, P.internal_employee_status_id AS "internalEmployeeStatusId"
+, P.schooling_level_id          AS "schoolingLevelId"
+, P.degree_id                   AS "degreeId"
+, P.position_applied_for        AS "positionAppliedFor"
+, P.security_clearance_id       AS "securityClearanceId"
+, P.email                       AS email
+, P.phone                       AS phone
+, P.mailing_address             AS "mailingAddress"
+, P.physical_address            AS "physicalAddress"
+, P.last_status_of_person_id    AS "lastStatusOfPersonId"
+, P.last_status_of_person_date  AS "lastStatusOfPersonDate"
+FROM person AS P
+WHERE P.person_id = $1`;
     const { rows } = await db.query(queryText, [id]);
     // console.log({'rows': rows});
-    // console.log({'rows[0]': rows[0]});
-    const src = rows[0];
-    const sample: any = {};
-    sample.id = src.person_id;
-    sample.fullName = src.fullname;
-    sample.email = src.email;
-    sample.phone = src.phone;
-    sample.lastStatusOfPersonDate = src.last_status_of_person_date;
-    sample.positionAppliedFor = src.position_applied_for;
-    sample.mailingAddress = src.mailing_address;
-    sample.physicalAddress = src.physical_address;
-
-    sample.internalEmployeeType = {};
-    sample.internalEmployeeType.id = src.internal_employee_type_id;
-    sample.internalEmployeeType.sortOrder = src.internal_employee_type_sort_order;
-    sample.internalEmployeeType.short = src.internal_employee_type_description_short;
-    sample.internalEmployeeType.long = src.internal_employee_type_description_long;
-
-    sample.internalEmployeeStatus = {};
-    sample.internalEmployeeStatus.id = src.internal_employee_status_id;
-    sample.internalEmployeeStatus.sortOrder = src.internal_employee_status_sort_order;
-    sample.internalEmployeeStatus.short = src.internal_employee_status_description_short;
-    sample.internalEmployeeStatus.long = src.internal_employee_status_description_long;
-
-    sample.schoolingLevel = {};
-    sample.schoolingLevel.id = src.schooling_level_id;
-    sample.schoolingLevel.sortOrder = src.schooling_level_sort_order;
-    sample.schoolingLevel.short = src.schooling_level_description_short;
-    sample.schoolingLevel.long = src.schooling_level_description_long;
-
-    sample.degree = {};
-    sample.degree.id = src.degree_id;
-    sample.degree.sortOrder = src.degree_sort_order;
-    sample.degree.short = src.degree_description_short;
-    sample.degree.long = src.degree_description_long;
-
-    sample.securityClearance = {};
-    sample.securityClearance.id = src.security_clearance_id;
-    sample.securityClearance.sortOrder = src.security_clearance_sort_order;
-    sample.securityClearance.short = src.security_clearance_description_short;
-    sample.securityClearance.long = src.security_clearance_description_long;
-
-    sample.lastStatusOfPerson = {};
-    sample.lastStatusOfPerson.id = src.degree_id;
-    sample.lastStatusOfPerson.sortOrder = src.degree_sort_order;
-    sample.lastStatusOfPerson.short = src.degree_description_short;
-    sample.lastStatusOfPerson.long = src.degree_description_long;
-
-    return sample;
+    const thingy = rows[0];
+    thingy.internalEmployeeType = await root.internalEmployeeType({ id: thingy.internalEmployeeTypeId });
+    thingy.internalEmployeeStatus = await root.internalEmployeeStatus({ id: thingy.internalEmployeeStatusId });
+    thingy.schoolingLevel = await root.schoolingLevel({ id: thingy.schoolingLevelId });
+    thingy.degree = await root.degree({ id: thingy.degreeId });
+    thingy.securityClearance = await root.securityClearance({ id: thingy.securityClearanceId });
+    thingy.lastStatusOfPerson = await root.statusOfPerson({ id: thingy.lastStatusOfPersonId });
+    return thingy;
   }
 };
 
