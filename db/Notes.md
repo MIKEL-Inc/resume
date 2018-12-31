@@ -136,3 +136,11 @@ Later, when there is at least test data to migrate, we will script migration scr
 We will pair migration scripts with undo scripts that reverse the changes.  We cannot reverse all changes, but probably most of them.
 
 ## DB scripting in NPM plan
+
+## QUICK COMMANDS Repeated for `cat`
+
+```bash
+# Full reset database.
+docker/down && docker volume rm docker_resume_database_data && docker/up -s
+
+```
