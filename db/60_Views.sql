@@ -32,6 +32,7 @@ SELECT P.person_id AS person_id
      , SC.description_long AS security_clearance_description_long
 
      , P.email AS email
+     , P.phone AS phone
      , P.mailing_address AS mailing_address
      , P.physical_address AS physical_address
 

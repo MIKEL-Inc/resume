@@ -196,6 +196,7 @@ type Person {
   "Freeform text for the position the person originally applied for."
   positionAppliedFor: String
   email: String
+  phone: String
   mailingAddress: String
   physicalAddress: String
   lastStatusOfPerson: StatusOfPerson
@@ -580,6 +581,7 @@ WHERE R.resume_id = $1`;
     sample.id = src.person_id;
     sample.fullName = src.fullname;
     sample.email = src.email;
+    sample.phone = src.phone;
     sample.lastStatusOfPersonDate = src.last_status_of_person_date;
     sample.positionAppliedFor = src.position_applied_for;
     sample.mailingAddress = src.mailing_address;

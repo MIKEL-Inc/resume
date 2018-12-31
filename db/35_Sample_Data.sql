@@ -23,6 +23,7 @@ INSERT INTO person
     , position_applied_for
     , security_clearance_id
     , email
+    , phone
     , mailing_address
     , physical_address
     , last_status_of_person_id
@@ -37,6 +38,7 @@ INSERT INTO person
       , 'Computer Programmer' --position_applied_for
       , 2 --security_clearance_id
       , 'JohnDoe35@freemail.com' --email
+      , '1-234-456-7890' --phone
       , '123 Main St., Middletown, RI 02841' --mailing_address
       , '123 Main St., Middletown, RI 02841' --physical_address
       , 1 --last_status_of_person_id
@@ -50,6 +52,7 @@ INSERT INTO person
       , 'Computer Programmer' --position_applied_for
       , 3 --security_clearance_id
       , 'JaneDow@inlook.com' --email
+      , '+44 21 20 1234 578' --phone
       , 'P.O. Box 101, Middletown, RI 02841-0101' --mailing_address
       , '45 Oak St., Middletown, RI 02841' --physical_address
       , 3 --last_status_of_person_id
