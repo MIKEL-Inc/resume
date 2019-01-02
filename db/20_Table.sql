@@ -9,13 +9,14 @@ CREATE TABLE app_user
 
 CREATE TABLE resume
     ( resume_id SERIAL PRIMARY KEY
-    , user_id INTEGER
     , person_id INTEGER NOT NULL
     , file_name VARCHAR(1024)
     , upload TIMESTAMP
     , upload_user_id INTEGER
     , upload_source_id INTEGER
     , payload TEXT
+    , text_blob TEXT
+    , keywords TSVECTOR
     );
 
 CREATE TABLE person
@@ -28,6 +29,7 @@ CREATE TABLE person
     , position_applied_for VARCHAR(255)
     , security_clearance_id INTEGER DEFAULT 1
     , email VARCHAR(355)
+    , phone VARCHAR(30)  --15 digits max? https://en.wikipedia.org/wiki/Telephone_numbering_plan#International_numbering_plan
     , mailing_address TEXT
     , physical_address TEXT
     , last_status_of_person_id INTEGER

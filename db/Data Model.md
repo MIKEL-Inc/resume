@@ -49,6 +49,7 @@ Delete to log.
 - Resume (Lookup by id in resume)
 - Date Resume received (via resume.upload_date)
 - Email
+- Phone number (possible international?)
 - Mailing Address
 - Physical Address
 - Last Status of resume/applicant (FK)

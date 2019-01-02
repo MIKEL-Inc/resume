@@ -3,7 +3,7 @@ ALTER TABLE resume ADD CONSTRAINT
         REFERENCES person ( person_id ) MATCH SIMPLE
         ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE resume ADD CONSTRAINT
-    resume_user_id_fkey FOREIGN KEY ( user_id )
+    resume_upload_user_id_fkey FOREIGN KEY ( upload_user_id )
         REFERENCES app_user ( user_id ) MATCH SIMPLE
         ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE resume ADD CONSTRAINT

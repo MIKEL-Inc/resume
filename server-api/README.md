@@ -24,5 +24,5 @@ PGHOST=localhost \
 PGPASSWORD=postgres \
 PGDATABASE=postgres \
 PGPORT=5432 \
-npm run server
+npm run serve
 ```
