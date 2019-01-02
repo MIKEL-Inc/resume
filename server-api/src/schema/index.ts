@@ -563,7 +563,7 @@ WHERE R.resume_id = $1`;
     const { rows } = await db.query(queryText, [id]);
     // console.log({'rows': rows});
     const thingy = rows[0];
-    thingy.person = await root.user({ id: thingy.personId });
+    thingy.person = await root.person({ id: thingy.personId });
     thingy.uploadUser = await root.user({ id: thingy.uploadUserId });
     thingy.uploadSource = await root.resumeSource({ id: thingy.UploadSourceId });
     thingy.payload = await decodeBase64(thingy.payloadText);
