@@ -1,9 +1,9 @@
-// const { buildSchema } = require('graphql');
 import { buildSchema } from 'graphql';
 
 import db from '../db';
 
-const decodeBase64 = (b64Encoded: string) => Buffer.from(b64Encoded, 'base64').toString();
+const decodeBase64 = (b64Encoded: string) =>
+  Buffer.from(b64Encoded, 'base64').toString();
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
@@ -82,6 +82,11 @@ type Query {
   ): InternalEmployeeStatus
 
   """
+  Return all resume sources.
+  """
+  resumeSources: ResumeSource
+
+  """
   Return resume source.
   """
   resumeSource (
@@ -108,7 +113,7 @@ type Query {
   schoolingLevels: [SchoolingLevel]
 
   """
-  Return a degree.
+  Return a schooling level.
   """
   schoolingLevel (
     "Id of schooling level."
@@ -361,6 +366,7 @@ type ResumeSource {
   long: String
 }
 `);
+
 // The root provides a resolver function for each API endpoint
 const root = {
   hello: () => {
@@ -388,6 +394,7 @@ const root = {
     }
     return output;
   },
+
   internalEmployeeTypes: async () => {
     const queryText = `SELECT
   ET.internal_employee_type_id AS id
@@ -520,9 +527,19 @@ WHERE SP.status_of_person_id = $1`;
     return rows[0];
   },
 
+  resumeSources: async () => {
+    const queryText = `SELECT
+  RS.resume_source_id          AS id
+, RS.sort_order                AS "sortOrder"
+, RS.description_short         AS short
+, RS.description_long          AS long
+FROM resume_source AS RS`;
+    const { rows } = await db.query(queryText, undefined);
+    return rows;
+  },
   resumeSource: async ({ id }: { id: number }) => {
     const queryText = `SELECT
-  RS.resume_source_id       AS id
+  RS.resume_source_id          AS id
 , RS.sort_order                AS "sortOrder"
 , RS.description_short         AS short
 , RS.description_long          AS long
@@ -532,6 +549,18 @@ WHERE RS.resume_source_id = $1`;
     return rows[0];
   },
 
+  users: async () => {
+    const queryText = `SELECT
+  U.user_id                   AS id
+, U.fullname                  AS "fullName"
+, U.password                  AS password
+, U.email                     AS email
+, U.created_on                AS "createdOn"
+, U.last_login                AS "lastLogin"
+FROM app_user AS U`;
+    const { rows } = await db.query(queryText, undefined);
+    return rows;
+  },
   user: async ({ id }: { id: number }) => {
     const queryText = `SELECT
   U.user_id                   AS id
@@ -545,40 +574,7 @@ WHERE U.user_id = $1`;
     const { rows } = await db.query(queryText, [id]);
     return rows[0];
   },
-  users: async () => {
-    const queryText = `SELECT
-  U.user_id                   AS id
-, U.fullname                  AS "fullName"
-, U.password                  AS password
-, U.email                     AS email
-, U.created_on                AS "createdOn"
-, U.last_login                AS "lastLogin"
-FROM app_user AS U`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
 
-  resume: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  R.resume_id                 AS id
-, R.person_id                 AS "personId"
-, R.file_name                 AS "fileName"
-, R.upload                    AS upload
-, R.upload_user_id            AS "uploadUserId"
-, R.upload_source_id          AS "UploadSourceId"
-, R.payload                   AS "payloadText"
-, R.text_blob                 AS "textBlob"
-, R.keywords                  AS keywords
-FROM resume AS R
-WHERE R.resume_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    const resume = rows[0];
-    resume.person = root.person({ id: resume.personId });
-    resume.uploadUser = root.user({ id: resume.uploadUserId });
-    resume.uploadSource = root.resumeSource({ id: resume.UploadSourceId });
-    resume.payload = decodeBase64(resume.payloadText);
-    return resume;
-  },
   resumes: async () => {
     const queryText = `SELECT
   R.resume_id                 AS id
@@ -600,7 +596,66 @@ FROM resume AS R`;
     });
     return rows;
   },
+  resume: async ({ id }: { id: number }) => {
+    const queryText = `SELECT
+  R.resume_id                 AS id
+, R.person_id                 AS "personId"
+, R.file_name                 AS "fileName"
+, R.upload                    AS upload
+, R.upload_user_id            AS "uploadUserId"
+, R.upload_source_id          AS "UploadSourceId"
+, R.payload                   AS "payloadText"
+, R.text_blob                 AS "textBlob"
+, R.keywords                  AS keywords
+FROM resume AS R
+WHERE R.resume_id = $1`;
+    const { rows } = await db.query(queryText, [id]);
+    const resume = rows[0];
+    resume.person = root.person({ id: resume.personId });
+    resume.uploadUser = root.user({ id: resume.uploadUserId });
+    resume.uploadSource = root.resumeSource({ id: resume.UploadSourceId });
+    resume.payload = decodeBase64(resume.payloadText);
+    return resume;
+  },
 
+  persons: async () => {
+    const queryText = `SELECT
+  P.person_id                   AS id
+, P.fullname                    AS "fullName"
+, P.internal_employee_type_id   AS "internalEmployeeTypeId"
+, P.internal_employee_status_id AS "internalEmployeeStatusId"
+, P.schooling_level_id          AS "schoolingLevelId"
+, P.degree_id                   AS "degreeId"
+, P.position_applied_for        AS "positionAppliedFor"
+, P.security_clearance_id       AS "securityClearanceId"
+, P.email                       AS email
+, P.phone                       AS phone
+, P.mailing_address             AS "mailingAddress"
+, P.physical_address            AS "physicalAddress"
+, P.last_status_of_person_id    AS "lastStatusOfPersonId"
+, P.last_status_of_person_date  AS "lastStatusOfPersonDate"
+FROM person AS P`;
+    const { rows } = await db.query(queryText, undefined);
+    rows.forEach(person => {
+      person.internalEmployeeType = root.internalEmployeeType({
+        id: person.internalEmployeeTypeId
+      });
+      person.internalEmployeeStatus = root.internalEmployeeStatus({
+        id: person.internalEmployeeStatusId
+      });
+      person.schoolingLevel = root.schoolingLevel({
+        id: person.schoolingLevelId
+      });
+      person.degree = root.degree({ id: person.degreeId });
+      person.securityClearance = root.securityClearance({
+        id: person.securityClearanceId
+      });
+      person.lastStatusOfPerson = root.statusOfPerson({
+        id: person.lastStatusOfPersonId
+      });
+    });
+    return rows;
+  },
   person: async ({ id }: { id: number }) => {
     const queryText = `SELECT
   P.person_id                   AS id
@@ -621,41 +676,23 @@ FROM person AS P
 WHERE P.person_id = $1`;
     const { rows } = await db.query(queryText, [id]);
     const person = rows[0];
-    person.internalEmployeeType = root.internalEmployeeType({ id: person.internalEmployeeTypeId });
-    person.internalEmployeeStatus = root.internalEmployeeStatus({ id: person.internalEmployeeStatusId });
-    person.schoolingLevel = root.schoolingLevel({ id: person.schoolingLevelId });
-    person.degree = root.degree({ id: person.degreeId });
-    person.securityClearance = root.securityClearance({ id: person.securityClearanceId });
-    person.lastStatusOfPerson = root.statusOfPerson({ id: person.lastStatusOfPersonId });
-    return person;
-  },
-  persons: async () => {
-    const queryText = `SELECT
-  P.person_id                   AS id
-, P.fullname                    AS "fullName"
-, P.internal_employee_type_id   AS "internalEmployeeTypeId"
-, P.internal_employee_status_id AS "internalEmployeeStatusId"
-, P.schooling_level_id          AS "schoolingLevelId"
-, P.degree_id                   AS "degreeId"
-, P.position_applied_for        AS "positionAppliedFor"
-, P.security_clearance_id       AS "securityClearanceId"
-, P.email                       AS email
-, P.phone                       AS phone
-, P.mailing_address             AS "mailingAddress"
-, P.physical_address            AS "physicalAddress"
-, P.last_status_of_person_id    AS "lastStatusOfPersonId"
-, P.last_status_of_person_date  AS "lastStatusOfPersonDate"
-FROM person AS P`;
-    const { rows } = await db.query(queryText, undefined);
-    rows.forEach(person => {
-      person.internalEmployeeType = root.internalEmployeeType({ id: person.internalEmployeeTypeId });
-      person.internalEmployeeStatus = root.internalEmployeeStatus({ id: person.internalEmployeeStatusId });
-      person.schoolingLevel = root.schoolingLevel({ id: person.schoolingLevelId });
-      person.degree = root.degree({ id: person.degreeId });
-      person.securityClearance = root.securityClearance({ id: person.securityClearanceId });
-      person.lastStatusOfPerson = root.statusOfPerson({ id: person.lastStatusOfPersonId });
+    person.internalEmployeeType = root.internalEmployeeType({
+      id: person.internalEmployeeTypeId
     });
-    return rows;
+    person.internalEmployeeStatus = root.internalEmployeeStatus({
+      id: person.internalEmployeeStatusId
+    });
+    person.schoolingLevel = root.schoolingLevel({
+      id: person.schoolingLevelId
+    });
+    person.degree = root.degree({ id: person.degreeId });
+    person.securityClearance = root.securityClearance({
+      id: person.securityClearanceId
+    });
+    person.lastStatusOfPerson = root.statusOfPerson({
+      id: person.lastStatusOfPersonId
+    });
+    return person;
   }
 };
 
