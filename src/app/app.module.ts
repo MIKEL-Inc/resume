@@ -23,11 +23,12 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ResultsComponent, ResultsDetailComponent } from './results/results.component';
+import { ResultsComponent } from './results/results.component';
 import { HomeComponent } from './home/home.component';
 import { SearchComponent } from './search/search.component';
 import { ApiService } from './services/api.service';
 import { UploadComponent, UploadModalComponent } from './upload/upload.component';
+import { ResultsDetailComponent } from './results/results-detail/results-detail.component';
 
 const config: InputFileConfig = {};
 

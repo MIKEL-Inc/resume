@@ -1,8 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { ResultsDetailComponent } from '../results/results.component';
 import { ApiService } from '../services/api.service';
-import { Person } from '../classes/person';
 
 
 @Component({

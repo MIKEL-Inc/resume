@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { UploadModalComponent } from '../upload/upload.component';
 import { MatDialog } from '@angular/material';
+import { ResultsDetailComponent } from '../results/results-detail/results-detail.component';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +16,10 @@ export class HomeComponent implements OnInit {
   ngOnInit() { }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(UploadModalComponent);
+    const dialogRef = this.dialog.open(ResultsDetailComponent, {
+      height: '95%',
+      width: '90%',
+    });
   }
 
 }

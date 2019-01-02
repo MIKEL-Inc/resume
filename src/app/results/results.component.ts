@@ -1,10 +1,10 @@
 import { Component, ViewChild, OnInit, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog } from '@angular/material';
 
 import { SearchComponent } from '../search/search.component';
 import { Person } from '../classes/person';
 import { ApiService } from '../services/api.service';
-import { Observable } from 'rxjs';
+import { ResultsDetailComponent } from './results-detail/results-detail.component';
 
 @Component({
   selector: 'app-results',
@@ -40,47 +40,6 @@ export class ResultsComponent implements OnInit {
   ngOnInit() {
     this.getResults();
     this.search = this.search.keywords;
-  }
-
-}
-
-@Component({
-  selector: 'app-results-modal',
-  templateUrl: 'results-detail.component.html',
-  styleUrls: ['./results-detail.component.sass']
-})
-export class ResultsDetailComponent {
-
-  person: Person;
-
-  editMode = false;
-
-  detailData;
-
-  constructor(
-    public dialogRef: MatDialogRef<ResultsDetailComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { id: number },
-    private apiService: ApiService) {
-
-    const dataExists = data !== undefined;
-
-    if (dataExists) {
-      this.getPerson(data);
-    }
-
-  }
-
-  private createPerson() {
-    this.apiService.createPerson(this.person);
-  }
-
-  private getPerson(data: { id: number; }) {
-    this.apiService.getPersonApi(data.id)
-      .subscribe(results => this.detailData = results);
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
   }
 
 }

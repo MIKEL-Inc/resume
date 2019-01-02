@@ -13,7 +13,7 @@
       </button>
     </mat-menu>
     
-    <button mat-icon-button [matMenuTriggerFor]="detailMenu">
+    <button class="panel-menu" mat-icon-button [matMenuTriggerFor]="detailMenu">
       <mat-icon>more_vert</mat-icon>
     </button>
 
@@ -79,10 +79,17 @@
       </button>
     </mat-menu>
     
-    <button mat-icon-button [matMenuTriggerFor]="resumeMenu">
+    <button class="panel-menu" mat-icon-button [matMenuTriggerFor]="resumeMenu">
       <mat-icon>more_vert</mat-icon>
     </button>
-    <pdf-viewer [src]="detailData?.pdfSrc" 
+    <div class="resume-upload" *ngIf="!dataExists">
+      <div>
+        <input type="file" accept=".pdf, .doc, .docx, .txt" (change)="onFileChange($event)">
+      </div>
+    </div>
+    
+    <pdf-viewer [src]="detailData.pdfSrc"
+                [page]="page"
                 [render-text]="true"
                 [original-size]="false"
                 [autoresize]="true">
