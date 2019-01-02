@@ -1,0 +1,32 @@
+
+<div class="container">
+  <mat-toolbar>
+    <form>
+      <div class="search-container">
+          <app-search></app-search>
+      </div>
+    </form>
+  </mat-toolbar>
+  <mat-divider></mat-divider>
+  <mat-grid-list cols="3"  rowHeight="170px">
+
+    <mat-grid-tile *ngFor="let result of results">
+      <mat-card (click)="openDialog(result.id)" class="card mat-typography" 
+                [class.card__status--candidate]="result.status === 'Candidate'"
+                [class.card__status--former]="result.status === 'Former'"
+                [class.card__status--hired]="result.status === 'Employee'">
+        <mat-card-header>
+          <mat-card-title>{{result.name}}</mat-card-title>
+          <mat-card-subtitle>{{result.date}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-chip-list>
+                <mat-chip>{{result.clearance}}</mat-chip>
+              </mat-chip-list>
+              <caption>{{result.status}}</caption>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+  </mat-grid-list>
+</div>

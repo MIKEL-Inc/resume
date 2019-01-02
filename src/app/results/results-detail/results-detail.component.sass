@@ -1,0 +1,73 @@
+@import '../../../styles'
+
+.mat-dialog-container
+  &::-webkit-scrollbar
+    display: none
+    
+.container
+  align-content: space-between
+  align-items: stretch
+  display: flex
+  flex-direction: row
+  flex-wrap: nowrap
+  height: 94%
+  justify-content: space-between
+
+  .panel
+    align-content: space-between
+    align-items: stretch
+    align-self: auto
+    display: flex
+    flex: 1 1 auto
+    flex-direction: column
+    max-width: 60%
+    position: relative
+
+    .details
+      margin-top: 25px
+      padding: 30px
+
+      .mat-card
+        @include light-background($charcoal, .05)
+        color: $charcoal
+
+    .resume-upload
+      align-items: center
+      display: flex
+      height: 100%
+      justify-content: center
+
+      button
+        margin-top: 20px
+
+    &-menu
+      align-self: flex-end
+
+    .input
+      background: $white
+      padding: 30px
+
+.comments
+  overflow-y: scroll
+
+  .comment
+    @include light-background($charcoal, .05)
+    border-radius: 10px
+    color: $charcoal
+    margin: 10px
+    padding: 10px
+
+    span
+      float: right
+      opacity: .5
+
+
+  &::-webkit-scrollbar
+    display: none
+
+pdf-viewer
+  display: block
+  overflow: auto
+
+  &::-webkit-scrollbar
+    display: none

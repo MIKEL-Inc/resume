@@ -141,6 +141,7 @@ type Person {
 
   schoolingLevel: SchoolingLevel
   degree: Degree
+  securityClearance: SecurityClearance
 
   "Freeform text for the position the person originally applied for."
   positionAppliedFor: String
@@ -465,6 +466,12 @@ WHERE SP.status_of_person_id = $1`;
     sample.degree.sortOrder = src.degree_sort_order;
     sample.degree.short = src.degree_description_short;
     sample.degree.long = src.degree_description_long;
+
+    sample.securityClearance = {};
+    sample.securityClearance.id = src.security_clearance_id;
+    sample.securityClearance.sortOrder = src.security_clearance_sort_order;
+    sample.securityClearance.short = src.security_clearance_description_short;
+    sample.securityClearance.long = src.security_clearance_description_long;
 
     sample.lastStatusOfPerson = {};
     sample.lastStatusOfPerson.id = src.degree_id;

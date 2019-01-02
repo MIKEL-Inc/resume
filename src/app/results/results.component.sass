@@ -1,0 +1,43 @@
+@import '../../styles'
+
+.container
+  margin: auto
+  padding-top: 30px
+  width: 75%
+
+  form
+    width: 100%
+
+  mat-toolbar
+    background: none
+    width: 100%
+
+    mat-form-field
+      margin-left: 25px
+      width: 100%
+
+      mat-icon
+        font-size: 16px
+        margin-right: 10px
+
+.card
+  margin: 10px
+  width: 100%
+
+  caption
+    float: right
+    font-size: .7rem
+    opacity: .5
+  
+  &:hover
+    cursor: pointer
+  
+  &__status
+    &--former
+      @include light-background($warn, .1)
+
+    &--candidate
+      @include light-background($accent, .1)
+
+    &--hired
+      @include light-background($primary, .1)

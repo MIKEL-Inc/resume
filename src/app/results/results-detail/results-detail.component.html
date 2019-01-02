@@ -1,0 +1,102 @@
+<div class="container">
+
+  <div class="panel">
+
+    <mat-menu #detailMenu="matMenu" xPosition="before">
+      <button mat-menu-item (click)="editMode=!editMode">
+        <mat-icon>edit</mat-icon>
+        <span>Edit</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>archive</mat-icon>
+        <span>Archive</span>
+      </button>
+    </mat-menu>
+    
+    <button class="panel-menu" mat-icon-button [matMenuTriggerFor]="detailMenu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <section class="details mat-typography" *ngIf="!editMode">
+      <mat-card>
+        <mat-grid-list cols="2" rowHeight="2:1">
+          <mat-grid-tile><h2 (click)="editMode=!editMode">{{detailData?.name}}</h2></mat-grid-tile>
+          <mat-grid-tile><h4 (click)="editMode=!editMode">{{detailData?.date}}</h4></mat-grid-tile>
+          <mat-grid-tile><mat-chip (click)="editMode=!editMode">{{detailData?.status}}</mat-chip></mat-grid-tile>
+          <mat-grid-tile><mat-chip (click)="editMode=!editMode">{{detailData?.clearance}}</mat-chip></mat-grid-tile>
+        </mat-grid-list>
+      </mat-card>
+    </section>
+
+    <section *ngIf="editMode">
+      <mat-grid-list cols="1" rowHeight="4:1">
+        <mat-grid-tile>
+          <mat-form-field>
+            <input matInput placeholder="{{detailData?.name}}">
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field>
+            <mat-select placeholder="{{detailData?.status}}">
+              <mat-option value="Candidate">Candidate</mat-option>
+              <mat-option value="Employee">Employee</mat-option>
+              <mat-option value="Former">Former</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field>
+            <mat-select placeholder="{{detailData?.clearance}}">
+              <mat-option value="none">None</mat-option>
+              <mat-option value="secret">Secret</mat-option>
+              <mat-option value="topsecret">Top Secret</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </section>
+
+    <mat-form-field class="input" *ngIf="!editMode">
+      <textarea matInput placeholder="Leave a comment"></textarea>
+    </mat-form-field>
+
+    <div class="comments" *ngIf="!editMode">
+      <div class="comment" *ngFor="let comment of detailData?.comments">
+        <p class="mat-body-strong">{{comment.name}} <span>{{comment.date}}</span></p>
+        <p class="mat-body">{{comment.comment}}</p>    
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <mat-menu #resumeMenu="matMenu" xPosition="before">
+      <button mat-menu-item >
+        <mat-icon>cloud_download</mat-icon>
+        <span>Download</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>cloud_upload</mat-icon>
+        <span>Upload</span>
+      </button>
+    </mat-menu>
+    
+    <button class="panel-menu" mat-icon-button [matMenuTriggerFor]="resumeMenu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <div class="resume-upload" *ngIf="!dataExists">
+      <div>
+        <input type="file" accept=".pdf, .doc, .docx, .txt" (change)="onFileChange($event)">
+      </div>
+    </div>
+    
+    <pdf-viewer [src]="detailData.pdfSrc"
+                [page]="page"
+                [render-text]="true"
+                [original-size]="false"
+                [autoresize]="true">
+    </pdf-viewer>
+  </div>
+</div>
+<div mat-dialog-actions *ngIf="editMode">
+  <button mat-button>Save</button>
+  <button mat-button cdkFocusInitial (click)="editMode=!editMode">Cancel</button>
+</div>
