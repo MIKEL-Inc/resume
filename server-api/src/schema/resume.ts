@@ -37,3 +37,62 @@ export const resume = async ({ id }: { id: number }) => {
   attachExternalResolvers(firstRow);
   return firstRow;
 };
+
+export const createResume = async ({
+  newResume
+}: {
+  newResume: {
+    personId: number
+    fileName: string
+    uploadUserId?: number
+    UploadSourceId?: number
+    payload: string
+    textBlob: string
+    };
+}) => {
+  const queryText = `INSERT INTO resume
+  ( person_id
+  , file_name
+  , upload
+  , upload_user_id
+  , upload_source_id
+  , payload
+  , text_blob
+  , keywords
+  )
+VALUES
+  ( $1 -- person_id
+  , $2 -- file_name
+  , transaction_timestamp() -- upload
+  , $3 -- upload_user_id
+  , $4 -- upload_source_id
+  , ENCODE(CONVERT_TO($5, 'UTF-8'), 'base64') -- payload
+  , $6 -- text_blob
+  , to_tsvector($6) -- keywords
+  )
+RETURNING
+  resume_id
+`;
+  const {
+    personId = 1,
+    fileName = '',
+    uploadUserId = 1,
+    UploadSourceId = 1,
+    payload = '',
+    textBlob = ''
+  } = newResume;
+
+  const { rows } = await db.query(queryText, [
+    personId,
+    fileName,
+    uploadUserId,
+    UploadSourceId,
+    payload,
+    textBlob
+  ]);
+
+  const createdResumeId = rows[0].resume_id;
+  const createdResume = resume({ id: createdResumeId });
+
+  return createdResume;
+};

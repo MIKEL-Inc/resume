@@ -1,7 +1,7 @@
 import { buildSchema } from 'graphql';
 
 import { person, persons, createPerson } from './person';
-import { resume, resumes } from './resume';
+import { resume, resumes, createResume } from './resume';
 import { user, users } from './user';
 import {
   internalEmployeeTypes,
@@ -193,10 +193,10 @@ Resume
 """
 type Resume {
   id: Int
-  person: Person,
-  fileName: String,
+  person: Person
+  fileName: String
   "Upload time string representing seconds since Epoch Time"
-  upload: String,
+  upload: String
   "User who uploaded resume. (Just the id.)"
   uploadUserId: Int
   "User who uploaded resume."
@@ -405,8 +405,22 @@ input PersonInput {
   lastStatusOfPersonId: Int
 }
 
+"""
+Resume
+"""
+input ResumeInput {
+  personId: Int!
+  fileName: String
+  "User who uploaded resume. (Just the id.)"
+  uploadUserId: Int
+  UploadSourceId: Int
+  payload: String!
+  textBlob: String!
+}
+
 type Mutation {
   createPerson(newPerson: PersonInput): Person
+  createResume(newResume: ResumeInput): Resume
 }
 `);
 
@@ -458,6 +472,7 @@ const root = {
 
   resume,
   resumes,
+  createResume,
 
   person,
   persons,
