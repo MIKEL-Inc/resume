@@ -365,6 +365,34 @@ type ResumeSource {
   "Full description or Proper Title"
   long: String
 }
+
+"""
+Candidate with a resume
+"""
+input PersonInput {
+  fullName: String
+  "Latest hourly/intern type recorded at our company"
+  internalEmployeeTypeId: Int
+
+  "\`None\`, \`Current\`, \`Former\` employment at our company"
+  internalEmployeeStatusId: Int
+
+  schoolingLevelId: Int
+  degreeId: Int
+  securityClearanceId: Int
+
+  "Freeform text for the position the person originally applied for."
+  positionAppliedFor: String
+  email: String
+  phone: String
+  mailingAddress: String
+  physicalAddress: String
+  lastStatusOfPersonId: Int
+}
+
+type Mutation {
+  createPerson(newPerson: PersonInput): Person
+}
 `);
 
 // The root provides a resolver function for each API endpoint
@@ -692,6 +720,77 @@ WHERE P.person_id = $1`;
     person.lastStatusOfPerson = root.statusOfPerson({
       id: person.lastStatusOfPersonId
     });
+    return person;
+  },
+  createPerson: async ({
+    newPerson
+  }: {
+    newPerson: {
+      fullName: string;
+      internalEmployeeTypeId: number;
+      internalEmployeeStatusId: number;
+      schoolingLevelId: number;
+      degreeId: number;
+      securityClearanceId: number;
+      positionAppliedFor: string;
+      email: string;
+      phone: string;
+      mailingAddress: string;
+      physicalAddress: string;
+      lastStatusOfPersonId: number;
+    };
+  }) => {
+    const queryText = `INSERT INTO person
+  ( fullname
+  , internal_employee_type_id
+  , internal_employee_status_id
+  , schooling_level_id
+  , degree_id
+  , position_applied_for
+  , security_clearance_id
+  , email
+  , phone
+  , mailing_address
+  , physical_address
+  , last_status_of_person_id
+  , last_status_of_person_date
+  )
+VALUES
+  ( $1 --fullname
+  , $2 --internal_employee_type_id
+  , $3 --internal_employee_status_id
+  , $4 --schooling_level_id
+  , $5 --degree_id
+  , $6 --position_applied_for
+  , $7 --security_clearance_id
+  , $8 --email
+  , $9 --phone
+  , $10 --mailing_address
+  , $11 --physical_address
+  , $12 --last_status_of_person_id
+  , transaction_timestamp() --last_status_of_person_date
+  )
+RETURNING
+  person_id
+`;
+    const { rows } = await db.query(queryText, [
+      newPerson.fullName,
+      newPerson.internalEmployeeTypeId,
+      newPerson.internalEmployeeStatusId,
+      newPerson.schoolingLevelId,
+      newPerson.degreeId,
+      newPerson.positionAppliedFor,
+      newPerson.securityClearanceId,
+      newPerson.email,
+      newPerson.phone,
+      newPerson.mailingAddress,
+      newPerson.physicalAddress,
+      newPerson.lastStatusOfPersonId
+    ]);
+
+    const personId = rows[0].person_id;
+    const person = root.person({ id: personId });
+
     return person;
   }
 };
