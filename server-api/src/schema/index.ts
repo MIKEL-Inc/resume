@@ -418,9 +418,40 @@ input ResumeInput {
   textBlob: String!
 }
 
+"""
+Candidate with a resume AND the Resume
+"""
+input PersonResumeInput {
+  fullName: String!
+  "Latest hourly/intern type recorded at our company"
+  internalEmployeeTypeId: Int
+
+  "\`None\`, \`Current\`, \`Former\` employment at our company"
+  internalEmployeeStatusId: Int
+
+  schoolingLevelId: Int
+  degreeId: Int
+  securityClearanceId: Int
+
+  "Freeform text for the position the person originally applied for."
+  positionAppliedFor: String
+  email: String
+  phone: String
+  mailingAddress: String
+  physicalAddress: String
+  lastStatusOfPersonId: Int
+  fileName: String
+  "User who uploaded resume. (Just the id.)"
+  uploadUserId: Int
+  UploadSourceId: Int
+  payload: String!
+  textBlob: String!
+}
+
 type Mutation {
   createPerson(newPerson: PersonInput): Person
   createResume(newResume: ResumeInput): Resume
+  createPersonAndResume(newPersonResume: PersonResumeInput): Resume
 }
 `);
 
@@ -476,7 +507,60 @@ const root = {
 
   person,
   persons,
-  createPerson
+  createPerson,
+
+  createPersonAndResume: async ({
+    newPersonResume
+  }: {
+    newPersonResume: {
+      fullName: string;
+      internalEmployeeTypeId?: number;
+      internalEmployeeStatusId?: number;
+      schoolingLevelId?: number;
+      degreeId?: number;
+      securityClearanceId?: number;
+      positionAppliedFor?: string;
+      email?: string;
+      phone?: string;
+      mailingAddress?: string;
+      physicalAddress?: string;
+      lastStatusOfPersonId?: number;
+      fileName: string;
+      uploadUserId?: number;
+      UploadSourceId?: number;
+      payload: string;
+      textBlob: string;
+    };
+  }) => {
+    const newPerson = {
+      fullName: newPersonResume.fullName,
+      internalEmployeeTypeId: newPersonResume.internalEmployeeTypeId,
+      internalEmployeeStatusId: newPersonResume.internalEmployeeStatusId,
+      schoolingLevelId: newPersonResume.schoolingLevelId,
+      degreeId: newPersonResume.degreeId,
+      securityClearanceId: newPersonResume.securityClearanceId,
+      positionAppliedFor: newPersonResume.positionAppliedFor,
+      email: newPersonResume.email,
+      phone: newPersonResume.phone,
+      mailingAddress: newPersonResume.mailingAddress,
+      physicalAddress: newPersonResume.physicalAddress,
+      lastStatusOfPersonId: newPersonResume.lastStatusOfPersonId
+    };
+
+    const createdPerson = await createPerson({ newPerson });
+
+    const newResume = {
+      personId: createdPerson.id,
+      fileName: newPersonResume.fileName,
+      uploadUserId: newPersonResume.uploadUserId,
+      UploadSourceId: newPersonResume.UploadSourceId,
+      payload: newPersonResume.payload,
+      textBlob: newPersonResume.textBlob
+    };
+    const createdResume = await createResume({ newResume });
+    // newResume.personId = createPerson.id;
+    return createdResume;
+  }
 };
 
 export default {
