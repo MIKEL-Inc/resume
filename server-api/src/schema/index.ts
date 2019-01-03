@@ -385,7 +385,7 @@ type ResumeSource {
 Candidate with a resume
 """
 input PersonInput {
-  fullName: String
+  fullName: String!
   "Latest hourly/intern type recorded at our company"
   internalEmployeeTypeId: Int
 

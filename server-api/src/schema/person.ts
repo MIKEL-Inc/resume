@@ -57,17 +57,17 @@ export const createPerson = async ({
 }: {
   newPerson: {
     fullName: string;
-    internalEmployeeTypeId: number;
-    internalEmployeeStatusId: number;
-    schoolingLevelId: number;
-    degreeId: number;
-    securityClearanceId: number;
-    positionAppliedFor: string;
-    email: string;
-    phone: string;
-    mailingAddress: string;
-    physicalAddress: string;
-    lastStatusOfPersonId: number;
+    internalEmployeeTypeId?: number;
+    internalEmployeeStatusId?: number;
+    schoolingLevelId?: number;
+    degreeId?: number;
+    securityClearanceId?: number;
+    positionAppliedFor?: string;
+    email?: string;
+    phone?: string;
+    mailingAddress?: string;
+    physicalAddress?: string;
+    lastStatusOfPersonId?: number;
   };
 }) => {
   const queryText = `INSERT INTO person
@@ -103,19 +103,34 @@ VALUES
 RETURNING
   person_id
 `;
+  const {
+    fullName,
+    internalEmployeeTypeId = 1,
+    internalEmployeeStatusId = 1,
+    schoolingLevelId = 1,
+    degreeId = 1,
+    securityClearanceId = 1,
+    positionAppliedFor = '',
+    email = '',
+    phone = '',
+    mailingAddress = '',
+    physicalAddress = '',
+    lastStatusOfPersonId = 1
+  } = newPerson;
+
   const { rows } = await db.query(queryText, [
-    newPerson.fullName,
-    newPerson.internalEmployeeTypeId,
-    newPerson.internalEmployeeStatusId,
-    newPerson.schoolingLevelId,
-    newPerson.degreeId,
-    newPerson.positionAppliedFor,
-    newPerson.securityClearanceId,
-    newPerson.email,
-    newPerson.phone,
-    newPerson.mailingAddress,
-    newPerson.physicalAddress,
-    newPerson.lastStatusOfPersonId
+    fullName,
+    internalEmployeeTypeId,
+    internalEmployeeStatusId,
+    schoolingLevelId,
+    degreeId,
+    positionAppliedFor,
+    securityClearanceId,
+    email,
+    phone,
+    mailingAddress,
+    physicalAddress,
+    lastStatusOfPersonId
   ]);
 
   const createdPersonId = rows[0].person_id;
