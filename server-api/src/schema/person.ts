@@ -1,8 +1,7 @@
 import db from '../db';
-import schema from './';
+import schema from '.';
 
-export const persons = async () => {
-  const queryText = `SELECT
+const personSql = `SELECT
   P.person_id                   AS id
 , P.fullname                    AS "fullName"
 , P.internal_employee_type_id   AS "internalEmployeeTypeId"
@@ -18,64 +17,38 @@ export const persons = async () => {
 , P.last_status_of_person_id    AS "lastStatusOfPersonId"
 , P.last_status_of_person_date  AS "lastStatusOfPersonDate"
 FROM person AS P`;
-  const { rows } = await db.query(queryText, undefined);
-  rows.forEach(row => {
-    row.internalEmployeeType = schema.root.internalEmployeeType({
-      id: row.internalEmployeeTypeId
-    });
-    row.internalEmployeeStatus = schema.root.internalEmployeeStatus({
-      id: row.internalEmployeeStatusId
-    });
-    row.schoolingLevel = schema.root.schoolingLevel({
-      id: row.schoolingLevelId
-    });
-    row.degree = schema.root.degree({ id: row.degreeId });
-    row.securityClearance = schema.root.securityClearance({
-      id: row.securityClearanceId
-    });
-    row.lastStatusOfPerson = schema.root.statusOfPerson({
-      id: row.lastStatusOfPersonId
-    });
+
+const attachExternalResolvers = (givenPerson: any) => {
+  givenPerson.internalEmployeeType = schema.root.internalEmployeeType({
+    id: givenPerson.internalEmployeeTypeId
   });
+  givenPerson.internalEmployeeStatus = schema.root.internalEmployeeStatus({
+    id: givenPerson.internalEmployeeStatusId
+  });
+  givenPerson.schoolingLevel = schema.root.schoolingLevel({
+    id: givenPerson.schoolingLevelId
+  });
+  givenPerson.degree = schema.root.degree({ id: givenPerson.degreeId });
+  givenPerson.securityClearance = schema.root.securityClearance({
+    id: givenPerson.securityClearanceId
+  });
+  givenPerson.lastStatusOfPerson = schema.root.statusOfPerson({
+    id: givenPerson.lastStatusOfPersonId
+  });
+};
+
+export const persons = async () => {
+  const queryText = personSql;
+  const { rows } = await db.query(queryText, undefined);
+  rows.forEach(row => attachExternalResolvers(row));
   return rows;
 };
 
 export const person = async ({ id }: { id: number }) => {
-  const queryText = `SELECT
-  P.person_id                   AS id
-, P.fullname                    AS "fullName"
-, P.internal_employee_type_id   AS "internalEmployeeTypeId"
-, P.internal_employee_status_id AS "internalEmployeeStatusId"
-, P.schooling_level_id          AS "schoolingLevelId"
-, P.degree_id                   AS "degreeId"
-, P.position_applied_for        AS "positionAppliedFor"
-, P.security_clearance_id       AS "securityClearanceId"
-, P.email                       AS email
-, P.phone                       AS phone
-, P.mailing_address             AS "mailingAddress"
-, P.physical_address            AS "physicalAddress"
-, P.last_status_of_person_id    AS "lastStatusOfPersonId"
-, P.last_status_of_person_date  AS "lastStatusOfPersonDate"
-FROM person AS P
-WHERE P.person_id = $1`;
+  const queryText = personSql.concat(' WHERE P.person_id = $1');
   const { rows } = await db.query(queryText, [id]);
   const firstRow = rows[0];
-  firstRow.internalEmployeeType = schema.root.internalEmployeeType({
-    id: firstRow.internalEmployeeTypeId
-  });
-  firstRow.internalEmployeeStatus = schema.root.internalEmployeeStatus({
-    id: firstRow.internalEmployeeStatusId
-  });
-  firstRow.schoolingLevel = schema.root.schoolingLevel({
-    id: firstRow.schoolingLevelId
-  });
-  firstRow.degree = schema.root.degree({ id: firstRow.degreeId });
-  firstRow.securityClearance = schema.root.securityClearance({
-    id: firstRow.securityClearanceId
-  });
-  firstRow.lastStatusOfPerson = schema.root.statusOfPerson({
-    id: firstRow.lastStatusOfPersonId
-  });
+  attachExternalResolvers(firstRow);
   return firstRow;
 };
 

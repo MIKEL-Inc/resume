@@ -1,10 +1,24 @@
 import { buildSchema } from 'graphql';
 
-import db from '../db';
 import { person, persons, createPerson } from './person';
-
-const decodeBase64 = (b64Encoded: string) =>
-  Buffer.from(b64Encoded, 'base64').toString();
+import { resume, resumes } from './resume';
+import { user, users } from './user';
+import {
+  internalEmployeeTypes,
+  internalEmployeeType,
+  internalEmployeeStatuses,
+  internalEmployeeStatus,
+  schoolingLevels,
+  schoolingLevel,
+  degrees,
+  degree,
+  securityClearances,
+  securityClearance,
+  statusOfPersons,
+  statusOfPerson,
+  resumeSources,
+  resumeSource
+} from './lookups';
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
@@ -424,228 +438,26 @@ const root = {
     return output;
   },
 
-  internalEmployeeTypes: async () => {
-    const queryText = `SELECT
-  ET.internal_employee_type_id AS id
-, ET.sort_order                AS "sortOrder"
-, ET.description_short         AS short
-, ET.description_long          AS long
-FROM internal_employee_type AS ET`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  internalEmployeeType: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  ET.internal_employee_type_id AS id
-, ET.sort_order                AS "sortOrder"
-, ET.description_short         AS short
-, ET.description_long          AS long
-FROM internal_employee_type AS ET
-WHERE ET.internal_employee_type_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
+  internalEmployeeTypes,
+  internalEmployeeType,
+  internalEmployeeStatuses,
+  internalEmployeeStatus,
+  schoolingLevels,
+  schoolingLevel,
+  degrees,
+  degree,
+  securityClearances,
+  securityClearance,
+  statusOfPersons,
+  statusOfPerson,
+  resumeSources,
+  resumeSource,
 
-  internalEmployeeStatuses: async () => {
-    const queryText = `SELECT
-  ES.internal_employee_status_id AS id
-, ES.sort_order                  AS "sortOrder"
-, ES.description_short           AS short
-, ES.description_long            AS long
-FROM internal_employee_status AS ES`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  internalEmployeeStatus: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  ES.internal_employee_status_id AS id
-, ES.sort_order                  AS "sortOrder"
-, ES.description_short           AS short
-, ES.description_long            AS long
-FROM internal_employee_status AS ES
-WHERE ES.internal_employee_status_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
+  user,
+  users,
 
-  schoolingLevels: async () => {
-    const queryText = `SELECT
-  SL.schooling_level_id        AS id
-, SL.sort_order                AS "sortOrder"
-, SL.description_short         AS short
-, SL.description_long          AS long
-FROM schooling_level AS SL`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  schoolingLevel: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  SL.schooling_level_id        AS id
-, SL.sort_order                AS "sortOrder"
-, SL.description_short         AS short
-, SL.description_long          AS long
-FROM schooling_level AS SL
-WHERE SL.schooling_level_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
-
-  degrees: async () => {
-    const queryText = `SELECT
-  D.degree_id                 AS id
-, D.sort_order                AS "sortOrder"
-, D.description_short         AS short
-, D.description_long          AS long
-FROM degree AS D`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  degree: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  D.degree_id                 AS id
-, D.sort_order                AS "sortOrder"
-, D.description_short         AS short
-, D.description_long          AS long
-FROM degree AS D
-WHERE D.degree_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
-
-  securityClearances: async () => {
-    const queryText = `SELECT
-  SC.security_clearance_id     AS id
-, SC.sort_order                AS "sortOrder"
-, SC.description_short         AS short
-, SC.description_long          AS long
-FROM security_clearance AS SC`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  securityClearance: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  SC.security_clearance_id     AS id
-, SC.sort_order                AS "sortOrder"
-, SC.description_short         AS short
-, SC.description_long          AS long
-FROM security_clearance AS SC
-WHERE SC.security_clearance_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
-
-  statusOfPersons: async () => {
-    const queryText = `SELECT
-  SP.status_of_person_id       AS id
-, SP.sort_order                AS "sortOrder"
-, SP.description_short         AS short
-, SP.description_long          AS long
-FROM status_of_person AS SP`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  statusOfPerson: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  SP.status_of_person_id       AS id
-, SP.sort_order                AS "sortOrder"
-, SP.description_short         AS short
-, SP.description_long          AS long
-FROM status_of_person AS SP
-WHERE SP.status_of_person_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
-
-  resumeSources: async () => {
-    const queryText = `SELECT
-  RS.resume_source_id          AS id
-, RS.sort_order                AS "sortOrder"
-, RS.description_short         AS short
-, RS.description_long          AS long
-FROM resume_source AS RS`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  resumeSource: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  RS.resume_source_id          AS id
-, RS.sort_order                AS "sortOrder"
-, RS.description_short         AS short
-, RS.description_long          AS long
-FROM resume_source AS RS
-WHERE RS.resume_source_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
-
-  users: async () => {
-    const queryText = `SELECT
-  U.user_id                   AS id
-, U.fullname                  AS "fullName"
-, U.password                  AS password
-, U.email                     AS email
-, U.created_on                AS "createdOn"
-, U.last_login                AS "lastLogin"
-FROM app_user AS U`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  user: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  U.user_id                   AS id
-, U.fullname                  AS "fullName"
-, U.password                  AS password
-, U.email                     AS email
-, U.created_on                AS "createdOn"
-, U.last_login                AS "lastLogin"
-FROM app_user AS U
-WHERE U.user_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
-
-  resumes: async () => {
-    const queryText = `SELECT
-  R.resume_id                 AS id
-, R.person_id                 AS "personId"
-, R.file_name                 AS "fileName"
-, R.upload                    AS upload
-, R.upload_user_id            AS "uploadUserId"
-, R.upload_source_id          AS "UploadSourceId"
-, R.payload                   AS "payloadText"
-, R.text_blob                 AS "textBlob"
-, R.keywords                  AS keywords
-FROM resume AS R`;
-    const { rows } = await db.query(queryText, undefined);
-    rows.forEach(resume => {
-      resume.person = root.person({ id: resume.personId });
-      resume.uploadUser = root.user({ id: resume.uploadUserId });
-      resume.uploadSource = root.resumeSource({ id: resume.UploadSourceId });
-      resume.payload = decodeBase64(resume.payloadText);
-    });
-    return rows;
-  },
-  resume: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  R.resume_id                 AS id
-, R.person_id                 AS "personId"
-, R.file_name                 AS "fileName"
-, R.upload                    AS upload
-, R.upload_user_id            AS "uploadUserId"
-, R.upload_source_id          AS "UploadSourceId"
-, R.payload                   AS "payloadText"
-, R.text_blob                 AS "textBlob"
-, R.keywords                  AS keywords
-FROM resume AS R
-WHERE R.resume_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    const resume = rows[0];
-    resume.person = root.person({ id: resume.personId });
-    resume.uploadUser = root.user({ id: resume.uploadUserId });
-    resume.uploadSource = root.resumeSource({ id: resume.UploadSourceId });
-    resume.payload = decodeBase64(resume.payloadText);
-    return resume;
-  },
+  resume,
+  resumes,
 
   person,
   persons,
