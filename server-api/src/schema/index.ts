@@ -61,7 +61,7 @@ type Query {
   Return all Resumes with the keywords.
   """
   keywordSearchResumes (
-    "Space separated list of keywords"
+    "Pipe character separated list of keywords"
     keywords: String!
   ): [Resume!]!
 

@@ -39,7 +39,7 @@ export const resume = async ({ id }: { id: number }) => {
 };
 
 export const keywordSearchResumes = async ({ keywords }: { keywords: string }) => {
-  const queryText = resumeSql.concat(' WHERE keywords @@ PLAINTO_TSQUERY($1)');
+  const queryText = resumeSql.concat(' WHERE keywords @@ TO_TSQUERY($1)');
   const { rows } = await db.query(queryText, [keywords]);
   rows.forEach(row => attachExternalResolvers(row));
   return rows;
