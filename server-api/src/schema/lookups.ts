@@ -43,7 +43,7 @@ export const schoolingLevel = async ({ id }: { id: number }) => {
 };
 
 export const degrees = async () => {
-  const queryText = returnAll('degre');
+  const queryText = returnAll('degree');
   const { rows } = await db.query(queryText, undefined);
   return rows;
 };
