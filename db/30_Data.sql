@@ -6,15 +6,16 @@ INSERT INTO resume_source
     , description_long
     )
   VALUES
-      (1, 'Emp Ref', 'Employee Referral')
-    , (2, 'Cust Ref', 'Customer Referred')
-    , (3, 'Other Ref', 'Outside Referral')
-    , (4, 'Web', 'Applied through website')
-    , (5, 'Job Fair', 'Job Fair')
-    , (6, 'Recruiter', 'Recruiter')
-    , (7, 'Email', 'Direct Email')
-    , (8, 'Direct', 'Hand Delivered')
-    , (9, 'Fax', 'Faxed')
+      (1, 'Unknown', 'Unknown Source'),
+    , (2, 'Emp Ref', 'Employee Referral')
+    , (3, 'Cust Ref', 'Customer Referred')
+    , (4, 'Other Ref', 'Outside Referral')
+    , (5, 'Web', 'Applied through website')
+    , (6, 'Job Fair', 'Job Fair')
+    , (7, 'Recruiter', 'Recruiter')
+    , (8, 'Email', 'Direct Email')
+    , (9, 'Direct', 'Hand Delivered')
+    , (10, 'Fax', 'Faxed')
 ;
 
 
@@ -99,7 +100,7 @@ INSERT INTO degree
       (0, 'CoE', 'Computer Engineering')
     , (1, 'CS', 'Computer Science')
     , (2, 'Phys', 'Physics')
-    , (3, 'Math', 'MAthematics')
+    , (3, 'Math', 'Mathematics')
     , (4, 'EE', 'Electrical Engineering')
     , (5, 'CE', 'Chemical Engineering')
     , (6, 'CivE', 'Civil Engineering')
