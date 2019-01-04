@@ -1,16 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { Person } from '../classes/person';
+
 import { MessageService } from './message.service';
-
-
-const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-};
 
 const graphqlHttpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/graphql' })
@@ -21,38 +16,10 @@ const graphqlHttpOptions = {
 })
 export class ApiService {
 
-  private url = 'assets/data.json';
   private apiUrl = 'http://localhost:4000/graphql';
 
   constructor(private http: HttpClient, private messageService: MessageService) { }
 
-  // TODO: Awaiting GraphQL Function
-  getAllPersons(): Observable<Person> {
-    const query = `{
-      person(id: 1) {
-        id
-        fullName
-        internalEmployeeType {
-          short
-        }
-        internalEmployeeStatus {
-          short
-        }
-        degree {
-          long
-        }
-        positionAppliedFor
-        email
-      }
-    }`;
-    return this.http.post<Person>(this.apiUrl, query, graphqlHttpOptions).pipe(
-      tap((person: any) => this.log(`person w/ id=${person}`)),
-      tap((test: any) => console.log({'return': test})),
-      catchError(this.handleError<Person>('addPerson'))
-    );
-  }
-
-  // TODO: Pass in ID
   getPersonApi(givenPersonId: number): Observable<Person> {
     const query = `{
       person(id: ${givenPersonId}) {
@@ -72,12 +39,34 @@ export class ApiService {
       }
     }`;
 
-    return this.http.post<Person>(this.apiUrl, query, graphqlHttpOptions).pipe(
-      tap((person: any) => this.log(`person w/ id=${person}`)),
-      tap((test: any) => console.log({'return': test})),
+    return this.http.post<{data: {person}}>(this.apiUrl, query, graphqlHttpOptions).pipe(
       map(res => this.graphQLPersonToPerson(res.data.person)),
-      tap((test: any) => console.log({'return2': test})),
-      catchError(this.handleError<Person>('addPerson'))
+      catchError(this.handleError<Person>('getPerson'))
+    );
+  }
+
+  doSearch(givenKeywords: string): Observable<Person[]> {
+    const query = `{
+      keywordSearchResumes(keywords: "${givenKeywords}") {
+        person {
+          id
+          fullName
+          internalEmployeeType {
+            short
+          }
+          degree {
+            long
+          }
+          securityClearance {
+            long
+          }
+        }
+      }
+    }`;
+
+    return this.http.post<{data: {keywordSearchResumes}}>(this.apiUrl, query, graphqlHttpOptions).pipe(
+      map(res => res.data.keywordSearchResumes.map(person => this.graphQLPersonToPerson(person.person))),
+      catchError(this.handleError('doSearch'))
     );
   }
 
@@ -85,26 +74,27 @@ export class ApiService {
     return {
       id: givenPerson.id,
       name: givenPerson.fullName,
-      status: givenPerson.internalEmployeeStatus.short,
+      status: givenPerson.internalEmployeeType.short,
       degree: givenPerson.degree.long,
       date: givenPerson.date,
-      clearance: givenPerson.clearance,
+      clearance: givenPerson.securityClearance.long,
       pdfSrc: givenPerson.pdfSrc,
       // comments: this.graphQLCommentsToComments(givenPerson.comments)
     };
   }
 
-  private graphQLCommentsToComments(givenComments: any[]): {
-    comment: string, id: number, date: string, name: string }[] {
-    return givenComments.map(givenComment => {
-      return {
-      id: givenComment.id,
-      comment: givenComment.comment,
-      date: givenComment.date,
-      name: givenComment.name
-      };
-    });
-  }
+  // TODO: To be implemented
+  // private graphQLCommentsToComments(givenComments: any[]): {
+  //   comment: string, id: number, date: string, name: string }[] {
+  //   return givenComments.map(givenComment => {
+  //     return {
+  //     id: givenComment.id,
+  //     comment: givenComment.comment,
+  //     date: givenComment.date,
+  //     name: givenComment.name
+  //     };
+  //   });
+  // }
 
 //   private graphQLPersonToPerson(givenPerson: any): Person {
 //     const newPerson = new Person();
@@ -115,93 +105,21 @@ export class ApiService {
 //     return newPerson;
 // }
 
-  // TODO: Awaiting GraphQL functionality
-  createPerson(givenPerson: Person): boolean {
-
-    console.log({'person': givenPerson});
-
-    const mutator = `
-      mutation CreatePerson($givenPerson: Person!, $givenResume: Resume) {
-        createPerson(person: $givenPerson, resume: $givenResume) {
-          person{
-            id
-            name
-          }
-        }
-      }
-    `;
-    return this.http.post<Person>(this.apiUrl, mutator, graphqlHttpOptions).pipe(
-      tap((person: any) => this.log(`person w/ id=${person}`)),
-      tap((test: any) => console.log({'return': test})),
-      catchError(this.handleError<Person>('addPerson'))
-    ), true;
-  }
-
-
-  /** GET all results from the server */
-  getResults (): Observable<Person[]> {
-    return this.http.get<Person[]>(this.url)
-      .pipe(
-        tap(_ => this.log('fetched results')),
-        catchError(this.handleError('getResults', [])),
-        map(response => response['data'])
-      );
-  }
-
-  // /** GET person by id. Return `undefined` when id not found */
-  // getResultsNo404<Data>(id: number): Observable<Person> {
-  //   const url = `${this.url}/?id=${id}`;
-  //   return this.http.get<Person>(url)
-  //     .pipe(
-  //       map(response => response['data']),
-  //       map(allPersons => allPersons.find(person => person.id === id)),
-  //       tap(person => {
-  //         const outcome = person ? `fetched` : `did not find`;
-  //         this.log(`${outcome} result id=${id}`);
-  //       }),
-  //       catchError(this.handleError<Person>(`getResults id=${id}`)),
-  //     );
-  // }
-
-  // /* GET peron(s) whose name contains search term */
-  // searchPersons(term: string): Observable<Person[]> {
-  //   if (!term.trim()) {
-  //     // if not search term, return empty person array.
-  //     return of([]);
-  //   }
-  //   return this.http.get<Person[]>(`${this.url}/?name=${term}`).pipe(
-  //     tap(_ => this.log(`found persons matching "${term}"`)),
-  //     catchError(this.handleError<Person[]>('searchPersons', []))
-  //   );
-  // }
-
-  // //////// Save methods //////////
-
-  // /** POST: add a new person to the server */
-  // addPerson (givenPerson: Person): Observable<Person> {
-  //   return this.http.post<Person>(this.url, givenPerson, httpOptions).pipe(
-  //     tap((person: Person) => this.log(`added person w/ id=${person.id}`)),
-  //     catchError(this.handleError<Person>('addPerson'))
-  //   );
-  // }
-
-  // /** DELETE: delete the person from the server */
-  // deletePerson (person: Person | number): Observable<Person> {
-  //   const id = typeof person === 'number' ? person : person.id;
-  //   const url = `${this.url}/${id}`;
-
-  //   return this.http.delete<Person>(url, httpOptions).pipe(
-  //     tap(_ => this.log(`deleted person id=${id}`)),
-  //     catchError(this.handleError<Person>('deletePerson'))
-  //   );
-  // }
-
-  // /** PUT: update the person on the server */
-  // updatePerson (person: Person): Observable<any> {
-  //   return this.http.put(this.url, person, httpOptions).pipe(
-  //     tap(_ => this.log(`updated person id=${person.id}`)),
-  //     catchError(this.handleError<any>('updatePerson'))
-  //   );
+  // TODO: To be implemented
+  // createPerson(givenPerson: Person): boolean {
+  //   const mutator = `
+  //     mutation CreatePerson($givenPerson: Person!, $givenResume: Resume) {
+  //       createPerson(person: $givenPerson, resume: $givenResume) {
+  //         person{
+  //           id
+  //           name
+  //         }
+  //       }
+  //     }
+  //   `;
+  //   return this.http.post<Person>(this.apiUrl, mutator, graphqlHttpOptions).pipe(
+  //     catchError(this.handleError<Person>('createPerson'))
+  //   ), true;
   // }
 
   /**

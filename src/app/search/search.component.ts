@@ -4,6 +4,8 @@ import { MatChipInputEvent } from '@angular/material';
 
 import { Keyword } from '../interfaces/keyword';
 
+import { PersonService } from '../services/person.service';
+
 
 @Component({
   selector: 'app-search',
@@ -18,23 +20,20 @@ export class SearchComponent {
   addOnBlur = true;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
+  constructor(private personService: PersonService) { }
+
   @Input() appearance = '';
-  @Input() keywords: Keyword[] = [
-    {name: 'Java'},
-    {name: 'Scientist'},
-    {name: 'Secret'},
-  ];
+
+  private keywords: Keyword[] = [];
 
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
 
-    // Add our keyword
     if ((value || '').trim()) {
       this.keywords.push({name: value.trim()});
     }
 
-    // Reset the input value
     if (input) {
       input.value = '';
     }
@@ -48,4 +47,7 @@ export class SearchComponent {
     }
   }
 
+  keywordSearch(): void {
+    this.personService.search(this.keywords.map(word => word.name));
+  }
 }

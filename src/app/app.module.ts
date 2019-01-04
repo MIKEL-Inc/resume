@@ -26,9 +26,11 @@ import { AppComponent } from './app.component';
 import { ResultsComponent } from './results/results.component';
 import { HomeComponent } from './home/home.component';
 import { SearchComponent } from './search/search.component';
-import { ApiService } from './services/api.service';
 import { UploadComponent, UploadModalComponent } from './upload/upload.component';
 import { ResultsDetailComponent } from './results/results-detail/results-detail.component';
+
+import { ApiService } from './services/api.service';
+import { PersonService } from './services/person.service';
 
 const config: InputFileConfig = {};
 
@@ -64,7 +66,7 @@ const config: InputFileConfig = {};
     MatTooltipModule,
     PdfViewerModule
   ],
-  providers: [ApiService],
+  providers: [ApiService, PersonService],
   bootstrap: [AppComponent],
   entryComponents: [ResultsDetailComponent, UploadModalComponent]
 })

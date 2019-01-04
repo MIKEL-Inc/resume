@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ResultsDetailComponent } from '../results/results-detail/results-detail.component';
+import { SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'app-home',
@@ -11,6 +12,8 @@ export class HomeComponent implements OnInit {
 
   loggedIn = false;
 
+  @ViewChild(SearchComponent) search: SearchComponent;
+
   constructor(public dialog: MatDialog) { }
 
   ngOnInit() { }
@@ -20,6 +23,10 @@ export class HomeComponent implements OnInit {
       height: '95%',
       width: '90%',
     });
+  }
+
+  doSearch() {
+    this.search.keywordSearch();
   }
 
 }
