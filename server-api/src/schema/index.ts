@@ -1,7 +1,7 @@
 import { buildSchema } from 'graphql';
 
 import { person, persons, createPerson } from './person';
-import { resume, resumes, createResume } from './resume';
+import { resume, resumes, createResume, keywordSearchResumes } from './resume';
 import { user, users } from './user';
 import {
   internalEmployeeTypes,
@@ -56,6 +56,14 @@ type Query {
   Return all Resumes.
   """
   resumes: [Resume]
+
+  """
+  Return all Resumes with the keywords.
+  """
+  keywordSearchResumes (
+    "Space separated list of keywords"
+    keywords: String!
+  ): [Resume!]!
 
   """
   Return a User.
@@ -504,6 +512,7 @@ const root = {
   resume,
   resumes,
   createResume,
+  keywordSearchResumes,
 
   person,
   persons,
