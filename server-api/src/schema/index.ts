@@ -1,9 +1,24 @@
 import { buildSchema } from 'graphql';
 
-import db from '../db';
-
-const decodeBase64 = (b64Encoded: string) =>
-  Buffer.from(b64Encoded, 'base64').toString();
+import { person, persons, createPerson } from './person';
+import { resume, resumes, createResume } from './resume';
+import { user, users } from './user';
+import {
+  internalEmployeeTypes,
+  internalEmployeeType,
+  internalEmployeeStatuses,
+  internalEmployeeStatus,
+  schoolingLevels,
+  schoolingLevel,
+  degrees,
+  degree,
+  securityClearances,
+  securityClearance,
+  statusOfPersons,
+  statusOfPerson,
+  resumeSources,
+  resumeSource
+} from './lookups';
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
@@ -178,10 +193,10 @@ Resume
 """
 type Resume {
   id: Int
-  person: Person,
-  fileName: String,
+  person: Person
+  fileName: String
   "Upload time string representing seconds since Epoch Time"
-  upload: String,
+  upload: String
   "User who uploaded resume. (Just the id.)"
   uploadUserId: Int
   "User who uploaded resume."
@@ -365,6 +380,79 @@ type ResumeSource {
   "Full description or Proper Title"
   long: String
 }
+
+"""
+Candidate with a resume
+"""
+input PersonInput {
+  fullName: String!
+  "Latest hourly/intern type recorded at our company"
+  internalEmployeeTypeId: Int
+
+  "\`None\`, \`Current\`, \`Former\` employment at our company"
+  internalEmployeeStatusId: Int
+
+  schoolingLevelId: Int
+  degreeId: Int
+  securityClearanceId: Int
+
+  "Freeform text for the position the person originally applied for."
+  positionAppliedFor: String
+  email: String
+  phone: String
+  mailingAddress: String
+  physicalAddress: String
+  lastStatusOfPersonId: Int
+}
+
+"""
+Resume
+"""
+input ResumeInput {
+  personId: Int!
+  fileName: String
+  "User who uploaded resume. (Just the id.)"
+  uploadUserId: Int
+  UploadSourceId: Int
+  payload: String!
+  textBlob: String!
+}
+
+"""
+Candidate with a resume AND the Resume
+"""
+input PersonResumeInput {
+  fullName: String!
+  "Latest hourly/intern type recorded at our company"
+  internalEmployeeTypeId: Int
+
+  "\`None\`, \`Current\`, \`Former\` employment at our company"
+  internalEmployeeStatusId: Int
+
+  schoolingLevelId: Int
+  degreeId: Int
+  securityClearanceId: Int
+
+  "Freeform text for the position the person originally applied for."
+  positionAppliedFor: String
+  email: String
+  phone: String
+  mailingAddress: String
+  physicalAddress: String
+  lastStatusOfPersonId: Int
+  fileName: String
+  "User who uploaded resume. (Just the id.)"
+  uploadUserId: Int
+  UploadSourceId: Int
+  payload: String!
+  textBlob: String!
+}
+
+type Mutation {
+  createPerson(newPerson: PersonInput): Person
+  createResume(newResume: ResumeInput): Resume
+  createPersonAndResume(newPersonResume: PersonResumeInput): Resume
+}
 `);
 
 // The root provides a resolver function for each API endpoint
@@ -395,304 +483,83 @@ const root = {
     return output;
   },
 
-  internalEmployeeTypes: async () => {
-    const queryText = `SELECT
-  ET.internal_employee_type_id AS id
-, ET.sort_order                AS "sortOrder"
-, ET.description_short         AS short
-, ET.description_long          AS long
-FROM internal_employee_type AS ET`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  internalEmployeeType: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  ET.internal_employee_type_id AS id
-, ET.sort_order                AS "sortOrder"
-, ET.description_short         AS short
-, ET.description_long          AS long
-FROM internal_employee_type AS ET
-WHERE ET.internal_employee_type_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
+  internalEmployeeTypes,
+  internalEmployeeType,
+  internalEmployeeStatuses,
+  internalEmployeeStatus,
+  schoolingLevels,
+  schoolingLevel,
+  degrees,
+  degree,
+  securityClearances,
+  securityClearance,
+  statusOfPersons,
+  statusOfPerson,
+  resumeSources,
+  resumeSource,
 
-  internalEmployeeStatuses: async () => {
-    const queryText = `SELECT
-  ES.internal_employee_status_id AS id
-, ES.sort_order                  AS "sortOrder"
-, ES.description_short           AS short
-, ES.description_long            AS long
-FROM internal_employee_status AS ES`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  internalEmployeeStatus: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  ES.internal_employee_status_id AS id
-, ES.sort_order                  AS "sortOrder"
-, ES.description_short           AS short
-, ES.description_long            AS long
-FROM internal_employee_status AS ES
-WHERE ES.internal_employee_status_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
+  user,
+  users,
 
-  schoolingLevels: async () => {
-    const queryText = `SELECT
-  SL.schooling_level_id        AS id
-, SL.sort_order                AS "sortOrder"
-, SL.description_short         AS short
-, SL.description_long          AS long
-FROM schooling_level AS SL`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  schoolingLevel: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  SL.schooling_level_id        AS id
-, SL.sort_order                AS "sortOrder"
-, SL.description_short         AS short
-, SL.description_long          AS long
-FROM schooling_level AS SL
-WHERE SL.schooling_level_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
+  resume,
+  resumes,
+  createResume,
 
-  degrees: async () => {
-    const queryText = `SELECT
-  D.degree_id                 AS id
-, D.sort_order                AS "sortOrder"
-, D.description_short         AS short
-, D.description_long          AS long
-FROM degree AS D`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  degree: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  D.degree_id                 AS id
-, D.sort_order                AS "sortOrder"
-, D.description_short         AS short
-, D.description_long          AS long
-FROM degree AS D
-WHERE D.degree_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
+  person,
+  persons,
+  createPerson,
 
-  securityClearances: async () => {
-    const queryText = `SELECT
-  SC.security_clearance_id     AS id
-, SC.sort_order                AS "sortOrder"
-, SC.description_short         AS short
-, SC.description_long          AS long
-FROM security_clearance AS SC`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  securityClearance: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  SC.security_clearance_id     AS id
-, SC.sort_order                AS "sortOrder"
-, SC.description_short         AS short
-, SC.description_long          AS long
-FROM security_clearance AS SC
-WHERE SC.security_clearance_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
+  createPersonAndResume: async ({
+    newPersonResume
+  }: {
+    newPersonResume: {
+      fullName: string;
+      internalEmployeeTypeId?: number;
+      internalEmployeeStatusId?: number;
+      schoolingLevelId?: number;
+      degreeId?: number;
+      securityClearanceId?: number;
+      positionAppliedFor?: string;
+      email?: string;
+      phone?: string;
+      mailingAddress?: string;
+      physicalAddress?: string;
+      lastStatusOfPersonId?: number;
+      fileName: string;
+      uploadUserId?: number;
+      UploadSourceId?: number;
+      payload: string;
+      textBlob: string;
+    };
+  }) => {
+    const newPerson = {
+      fullName: newPersonResume.fullName,
+      internalEmployeeTypeId: newPersonResume.internalEmployeeTypeId,
+      internalEmployeeStatusId: newPersonResume.internalEmployeeStatusId,
+      schoolingLevelId: newPersonResume.schoolingLevelId,
+      degreeId: newPersonResume.degreeId,
+      securityClearanceId: newPersonResume.securityClearanceId,
+      positionAppliedFor: newPersonResume.positionAppliedFor,
+      email: newPersonResume.email,
+      phone: newPersonResume.phone,
+      mailingAddress: newPersonResume.mailingAddress,
+      physicalAddress: newPersonResume.physicalAddress,
+      lastStatusOfPersonId: newPersonResume.lastStatusOfPersonId
+    };
 
-  statusOfPersons: async () => {
-    const queryText = `SELECT
-  SP.status_of_person_id       AS id
-, SP.sort_order                AS "sortOrder"
-, SP.description_short         AS short
-, SP.description_long          AS long
-FROM status_of_person AS SP`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  statusOfPerson: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  SP.status_of_person_id       AS id
-, SP.sort_order                AS "sortOrder"
-, SP.description_short         AS short
-, SP.description_long          AS long
-FROM status_of_person AS SP
-WHERE SP.status_of_person_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
+    const createdPerson = await createPerson({ newPerson });
 
-  resumeSources: async () => {
-    const queryText = `SELECT
-  RS.resume_source_id          AS id
-, RS.sort_order                AS "sortOrder"
-, RS.description_short         AS short
-, RS.description_long          AS long
-FROM resume_source AS RS`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  resumeSource: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  RS.resume_source_id          AS id
-, RS.sort_order                AS "sortOrder"
-, RS.description_short         AS short
-, RS.description_long          AS long
-FROM resume_source AS RS
-WHERE RS.resume_source_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
-
-  users: async () => {
-    const queryText = `SELECT
-  U.user_id                   AS id
-, U.fullname                  AS "fullName"
-, U.password                  AS password
-, U.email                     AS email
-, U.created_on                AS "createdOn"
-, U.last_login                AS "lastLogin"
-FROM app_user AS U`;
-    const { rows } = await db.query(queryText, undefined);
-    return rows;
-  },
-  user: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  U.user_id                   AS id
-, U.fullname                  AS "fullName"
-, U.password                  AS password
-, U.email                     AS email
-, U.created_on                AS "createdOn"
-, U.last_login                AS "lastLogin"
-FROM app_user AS U
-WHERE U.user_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    return rows[0];
-  },
-
-  resumes: async () => {
-    const queryText = `SELECT
-  R.resume_id                 AS id
-, R.person_id                 AS "personId"
-, R.file_name                 AS "fileName"
-, R.upload                    AS upload
-, R.upload_user_id            AS "uploadUserId"
-, R.upload_source_id          AS "UploadSourceId"
-, R.payload                   AS "payloadText"
-, R.text_blob                 AS "textBlob"
-, R.keywords                  AS keywords
-FROM resume AS R`;
-    const { rows } = await db.query(queryText, undefined);
-    rows.forEach(resume => {
-      resume.person = root.person({ id: resume.personId });
-      resume.uploadUser = root.user({ id: resume.uploadUserId });
-      resume.uploadSource = root.resumeSource({ id: resume.UploadSourceId });
-      resume.payload = decodeBase64(resume.payloadText);
-    });
-    return rows;
-  },
-  resume: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  R.resume_id                 AS id
-, R.person_id                 AS "personId"
-, R.file_name                 AS "fileName"
-, R.upload                    AS upload
-, R.upload_user_id            AS "uploadUserId"
-, R.upload_source_id          AS "UploadSourceId"
-, R.payload                   AS "payloadText"
-, R.text_blob                 AS "textBlob"
-, R.keywords                  AS keywords
-FROM resume AS R
-WHERE R.resume_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    const resume = rows[0];
-    resume.person = root.person({ id: resume.personId });
-    resume.uploadUser = root.user({ id: resume.uploadUserId });
-    resume.uploadSource = root.resumeSource({ id: resume.UploadSourceId });
-    resume.payload = decodeBase64(resume.payloadText);
-    return resume;
-  },
-
-  persons: async () => {
-    const queryText = `SELECT
-  P.person_id                   AS id
-, P.fullname                    AS "fullName"
-, P.internal_employee_type_id   AS "internalEmployeeTypeId"
-, P.internal_employee_status_id AS "internalEmployeeStatusId"
-, P.schooling_level_id          AS "schoolingLevelId"
-, P.degree_id                   AS "degreeId"
-, P.position_applied_for        AS "positionAppliedFor"
-, P.security_clearance_id       AS "securityClearanceId"
-, P.email                       AS email
-, P.phone                       AS phone
-, P.mailing_address             AS "mailingAddress"
-, P.physical_address            AS "physicalAddress"
-, P.last_status_of_person_id    AS "lastStatusOfPersonId"
-, P.last_status_of_person_date  AS "lastStatusOfPersonDate"
-FROM person AS P`;
-    const { rows } = await db.query(queryText, undefined);
-    rows.forEach(person => {
-      person.internalEmployeeType = root.internalEmployeeType({
-        id: person.internalEmployeeTypeId
-      });
-      person.internalEmployeeStatus = root.internalEmployeeStatus({
-        id: person.internalEmployeeStatusId
-      });
-      person.schoolingLevel = root.schoolingLevel({
-        id: person.schoolingLevelId
-      });
-      person.degree = root.degree({ id: person.degreeId });
-      person.securityClearance = root.securityClearance({
-        id: person.securityClearanceId
-      });
-      person.lastStatusOfPerson = root.statusOfPerson({
-        id: person.lastStatusOfPersonId
-      });
-    });
-    return rows;
-  },
-  person: async ({ id }: { id: number }) => {
-    const queryText = `SELECT
-  P.person_id                   AS id
-, P.fullname                    AS "fullName"
-, P.internal_employee_type_id   AS "internalEmployeeTypeId"
-, P.internal_employee_status_id AS "internalEmployeeStatusId"
-, P.schooling_level_id          AS "schoolingLevelId"
-, P.degree_id                   AS "degreeId"
-, P.position_applied_for        AS "positionAppliedFor"
-, P.security_clearance_id       AS "securityClearanceId"
-, P.email                       AS email
-, P.phone                       AS phone
-, P.mailing_address             AS "mailingAddress"
-, P.physical_address            AS "physicalAddress"
-, P.last_status_of_person_id    AS "lastStatusOfPersonId"
-, P.last_status_of_person_date  AS "lastStatusOfPersonDate"
-FROM person AS P
-WHERE P.person_id = $1`;
-    const { rows } = await db.query(queryText, [id]);
-    const person = rows[0];
-    person.internalEmployeeType = root.internalEmployeeType({
-      id: person.internalEmployeeTypeId
-    });
-    person.internalEmployeeStatus = root.internalEmployeeStatus({
-      id: person.internalEmployeeStatusId
-    });
-    person.schoolingLevel = root.schoolingLevel({
-      id: person.schoolingLevelId
-    });
-    person.degree = root.degree({ id: person.degreeId });
-    person.securityClearance = root.securityClearance({
-      id: person.securityClearanceId
-    });
-    person.lastStatusOfPerson = root.statusOfPerson({
-      id: person.lastStatusOfPersonId
-    });
-    return person;
+    const newResume = {
+      personId: createdPerson.id,
+      fileName: newPersonResume.fileName,
+      uploadUserId: newPersonResume.uploadUserId,
+      UploadSourceId: newPersonResume.UploadSourceId,
+      payload: newPersonResume.payload,
+      textBlob: newPersonResume.textBlob
+    };
+    const createdResume = await createResume({ newResume });
+    // newResume.personId = createPerson.id;
+    return createdResume;
   }
 };
 
