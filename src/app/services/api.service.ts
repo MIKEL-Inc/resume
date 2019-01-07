@@ -83,6 +83,22 @@ export class ApiService {
     };
   }
 
+  createPerson(givenPerson: Person): boolean {
+    const mutator = `
+      mutation CreatePerson($givenPerson: Person!, $givenResume: Resume) {
+        createPerson(person: $givenPerson, resume: $givenResume) {
+          person{
+            id
+            name
+          }
+        }
+      }
+    `;
+    return this.http.post<Person>(this.apiUrl, mutator, graphqlHttpOptions).pipe(
+      catchError(this.handleError<Person>('createPerson'))
+    ), true;
+  }
+
   // TODO: To be implemented
   // private graphQLCommentsToComments(givenComments: any[]): {
   //   comment: string, id: number, date: string, name: string }[] {
@@ -104,23 +120,6 @@ export class ApiService {
 //     newPerson.degree = givenPerson.degree.long;
 //     return newPerson;
 // }
-
-  // TODO: To be implemented
-  // createPerson(givenPerson: Person): boolean {
-  //   const mutator = `
-  //     mutation CreatePerson($givenPerson: Person!, $givenResume: Resume) {
-  //       createPerson(person: $givenPerson, resume: $givenResume) {
-  //         person{
-  //           id
-  //           name
-  //         }
-  //       }
-  //     }
-  //   `;
-  //   return this.http.post<Person>(this.apiUrl, mutator, graphqlHttpOptions).pipe(
-  //     catchError(this.handleError<Person>('createPerson'))
-  //   ), true;
-  // }
 
   /**
  * Handle Http operation that failed.
