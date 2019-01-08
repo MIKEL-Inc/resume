@@ -1,6 +1,11 @@
 import { buildSchema } from 'graphql';
 
-import { person, persons, createPerson } from './person';
+import {
+  person,
+  persons,
+  createPerson,
+  updatePerson
+} from './person';
 import {
   resume,
   resumeLatestForPerson,
@@ -439,6 +444,35 @@ input PersonInput {
 }
 
 """
+Candidate with a resume
+
+Any fields not filled in will be set the same as before.
+
+Updates lastStatusOfPersonDate.
+"""
+input PersonUpdate {
+  id: Int!
+  fullName: String
+  "Latest hourly/intern type recorded at our company"
+  internalEmployeeTypeId: Int
+
+  "\`None\`, \`Current\`, \`Former\` employment at our company"
+  internalEmployeeStatusId: Int
+
+  schoolingLevelId: Int
+  degreeId: Int
+  securityClearanceId: Int
+
+  "Freeform text for the position the person originally applied for."
+  positionAppliedFor: String
+  email: String
+  phone: String
+  mailingAddress: String
+  physicalAddress: String
+  lastStatusOfPersonId: Int
+}
+
+"""
 Resume
 """
 input ResumeInput {
@@ -483,6 +517,7 @@ input PersonResumeInput {
 
 type Mutation {
   createPerson(newPerson: PersonInput): Person
+  updatePerson(updatedPerson: PersonUpdate): Person
   createResume(newResume: ResumeInput): Resume
   createPersonAndResume(newPersonResume: PersonResumeInput): Resume
 }
@@ -544,6 +579,7 @@ const root = {
   person,
   persons,
   createPerson,
+  updatePerson,
 
   createPersonAndResume: async ({
     newPersonResume
