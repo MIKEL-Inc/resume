@@ -567,7 +567,6 @@ const root = {
       textBlob: newPersonResume.textBlob
     };
     const createdResume = await createResume({ newResume });
-    // newResume.personId = createPerson.id;
     return createdResume;
   }
 };

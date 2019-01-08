@@ -14,10 +14,10 @@ const resumeSql = `SELECT
 FROM resume AS R`;
 
 const attachExternalResolvers = (givenResume: any) => {
-  givenResume.person = schema.root.person({ id: givenResume.personId });
-  givenResume.uploadUser = schema.root.user({ id: givenResume.uploadUserId });
-  givenResume.uploadSource = schema.root.resumeSource({ id: givenResume.UploadSourceId });
-  givenResume.payload = decodeBase64(givenResume.payloadText);
+  givenResume.person = () => schema.root.person({ id: givenResume.personId });
+  givenResume.uploadUser = () => schema.root.user({ id: givenResume.uploadUserId });
+  givenResume.uploadSource = () => schema.root.resumeSource({ id: givenResume.UploadSourceId });
+  givenResume.payload = () => decodeBase64(givenResume.payloadText);
 };
 
 export const decodeBase64 = (b64Encoded: string) =>
@@ -99,7 +99,8 @@ RETURNING
   ]);
 
   const createdResumeId = rows[0].resume_id;
-  const createdResume = resume({ id: createdResumeId });
+  const createdResume = () => resume({ id: createdResumeId });
+  createdResume.id = createdResumeId;
 
   return createdResume;
 };

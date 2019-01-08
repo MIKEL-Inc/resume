@@ -19,20 +19,20 @@ const personSql = `SELECT
 FROM person AS P`;
 
 const attachExternalResolvers = (givenPerson: any) => {
-  givenPerson.internalEmployeeType = schema.root.internalEmployeeType({
+  givenPerson.internalEmployeeType = () => schema.root.internalEmployeeType({
     id: givenPerson.internalEmployeeTypeId
   });
-  givenPerson.internalEmployeeStatus = schema.root.internalEmployeeStatus({
+  givenPerson.internalEmployeeStatus = () => schema.root.internalEmployeeStatus({
     id: givenPerson.internalEmployeeStatusId
   });
-  givenPerson.schoolingLevel = schema.root.schoolingLevel({
+  givenPerson.schoolingLevel = () => schema.root.schoolingLevel({
     id: givenPerson.schoolingLevelId
   });
-  givenPerson.degree = schema.root.degree({ id: givenPerson.degreeId });
-  givenPerson.securityClearance = schema.root.securityClearance({
+  givenPerson.degree = () => schema.root.degree({ id: givenPerson.degreeId });
+  givenPerson.securityClearance = () => schema.root.securityClearance({
     id: givenPerson.securityClearanceId
   });
-  givenPerson.lastStatusOfPerson = schema.root.statusOfPerson({
+  givenPerson.lastStatusOfPerson = () => schema.root.statusOfPerson({
     id: givenPerson.lastStatusOfPersonId
   });
 };
@@ -134,7 +134,8 @@ RETURNING
   ]);
 
   const createdPersonId = rows[0].person_id;
-  const createdPerson = person({ id: createdPersonId });
+  const createdPerson = () => person({ id: createdPersonId });  // Retrieve whole person.
+  createdPerson.id = createdPersonId;  // return id if needed.
 
   return createdPerson;
 };
