@@ -35,6 +35,12 @@ const attachExternalResolvers = (givenPerson: any) => {
   givenPerson.lastStatusOfPerson = () => schema.root.statusOfPerson({
     id: givenPerson.lastStatusOfPersonId
   });
+  givenPerson.resumeLatest = () => schema.root.resumeLatestForPerson({
+    personId: givenPerson.id
+  });
+  givenPerson.resumes = () => schema.root.resumesForPerson({
+    personId: givenPerson.id
+  });
 };
 
 export const persons = async () => {

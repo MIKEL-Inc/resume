@@ -1,7 +1,14 @@
 import { buildSchema } from 'graphql';
 
 import { person, persons, createPerson } from './person';
-import { resume, resumes, createResume, keywordSearchResumes } from './resume';
+import {
+  resume,
+  resumeLatestForPerson,
+  resumesForPerson,
+  resumes,
+  createResume,
+  keywordSearchResumes
+} from './resume';
 import { user, users } from './user';
 import {
   internalEmployeeTypes,
@@ -50,6 +57,22 @@ type Query {
   resume (
     "Id of Resume to retrieve"
     id: Int!
+  ): Resume
+
+  """
+  Return all Resumes for a Person.
+  """
+  resumesForPerson (
+    "Id of Person to retrieve Resume from"
+    personId: Int!
+  ): [Resume]
+
+  """
+  Return the latest Resume for a Person.  Latest based on upload time.
+  """
+  resumeLatestForPerson (
+    "Id of Person to retrieve Resume from"
+    personId: Int!
   ): Resume
 
   """
@@ -226,6 +249,8 @@ Candidate with a resume
 type Person {
   id: Int
   fullName: String
+  resumeLatest: Resume
+  resumes: [Resume]
   "Latest hourly/intern type recorded at our company"
   internalEmployeeType: InternalEmployeeType
 
@@ -510,7 +535,9 @@ const root = {
   users,
 
   resume,
+  resumeLatestForPerson,
   resumes,
+  resumesForPerson,
   createResume,
   keywordSearchResumes,
 

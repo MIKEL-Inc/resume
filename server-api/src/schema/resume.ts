@@ -38,6 +38,26 @@ export const resume = async ({ id }: { id: number }) => {
   return firstRow;
 };
 
+export const resumesForPerson = async ({ personId }: { personId: number }) => {
+  const queryText = resumeSql.concat(' WHERE person_id = $1');
+  const { rows } = await db.query(queryText, [personId]);
+  rows.forEach(row => attachExternalResolvers(row));
+  return rows;
+};
+
+export const resumeLatestForPerson = async ({ personId }: { personId: number }) => {
+  const queryText = resumeSql.concat(`
+  WHERE person_id = $1 AND upload = (
+    SELECT MAX(RTEMP.upload)
+    FROM "resume" AS RTEMP
+    WHERE RTEMP.person_id = $1
+  )`);
+  const { rows } = await db.query(queryText, [personId]);
+  const firstRow = rows[0];
+  attachExternalResolvers(firstRow);
+  return firstRow;
+};
+
 export const keywordSearchResumes = async ({ keywords }: { keywords: string }) => {
   const queryText = resumeSql.concat(' WHERE keywords @@ TO_TSQUERY($1)');
   const { rows } = await db.query(queryText, [keywords]);
