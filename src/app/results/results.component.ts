@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
 import { Person } from '../classes/person';
@@ -6,6 +6,9 @@ import { Person } from '../classes/person';
 import { ResultsDetailComponent } from './results-detail/results-detail.component';
 
 import { PersonService } from '../services/person.service';
+import { SearchComponent } from '../search/search.component';
+
+import { Keyword } from '../interfaces/keyword';
 
 @Component({
   selector: 'app-results',
@@ -14,9 +17,16 @@ import { PersonService } from '../services/person.service';
 })
 export class ResultsComponent implements OnInit {
 
-  results: Person[];
+  @ViewChild('search_input') search: SearchComponent;
 
-  constructor(public dialog: MatDialog, private personService: PersonService) {
+  results: Person[];
+  keyword: Keyword[];
+
+  constructor(
+    public dialog: MatDialog,
+    private personService: PersonService) {
+
+    this.keyword = personService.keywords;
     personService.personData.subscribe(persons => this.results = persons);
   }
 
@@ -31,5 +41,9 @@ export class ResultsComponent implements OnInit {
   }
 
   ngOnInit() { }
+
+  searching() {
+    this.search.keywordSearch();
+  }
 
 }

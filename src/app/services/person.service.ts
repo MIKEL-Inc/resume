@@ -5,10 +5,14 @@ import { Person } from '../classes/person';
 
 import { ApiService } from './api.service';
 
+import { Keyword } from '../interfaces/keyword';
+
 @Injectable({
   providedIn: 'root'
 })
 export class PersonService {
+
+  keywords: Keyword[] = [];
 
   public personData = new BehaviorSubject<Person[]>([]);
 

@@ -20,11 +20,13 @@ export class SearchComponent {
   addOnBlur = true;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
-  constructor(private personService: PersonService) { }
+  constructor(private personService: PersonService) {
+    this.keywords = personService.keywords;
+  }
 
   @Input() appearance = '';
 
-  private keywords: Keyword[] = [];
+  @Input() keywords;
 
   add(event: MatChipInputEvent): void {
     const input = event.input;
@@ -37,6 +39,8 @@ export class SearchComponent {
     if (input) {
       input.value = '';
     }
+
+    this.keywordSearch();
   }
 
   remove(keyword: Keyword): void {
@@ -45,9 +49,11 @@ export class SearchComponent {
     if (index >= 0) {
       this.keywords.splice(index, 1);
     }
+    this.keywordSearch();
   }
 
   keywordSearch(): void {
+    this.personService.keywords = this.keywords;
     this.personService.search(this.keywords.map(word => word.name));
   }
 }
