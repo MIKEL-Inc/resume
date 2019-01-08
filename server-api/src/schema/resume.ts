@@ -14,10 +14,10 @@ const resumeSql = `SELECT
 FROM resume AS R`;
 
 const attachExternalResolvers = (givenResume: any) => {
-  givenResume.person = schema.root.person({ id: givenResume.personId });
-  givenResume.uploadUser = schema.root.user({ id: givenResume.uploadUserId });
-  givenResume.uploadSource = schema.root.resumeSource({ id: givenResume.UploadSourceId });
-  givenResume.payload = decodeBase64(givenResume.payloadText);
+  givenResume.person = () => schema.root.person({ id: givenResume.personId });
+  givenResume.uploadUser = () => schema.root.user({ id: givenResume.uploadUserId });
+  givenResume.uploadSource = () => schema.root.resumeSource({ id: givenResume.UploadSourceId });
+  givenResume.payload = () => decodeBase64(givenResume.payloadText);
 };
 
 export const decodeBase64 = (b64Encoded: string) =>
@@ -33,6 +33,26 @@ export const resumes = async () => {
 export const resume = async ({ id }: { id: number }) => {
   const queryText = resumeSql.concat(' WHERE R.resume_id = $1');
   const { rows } = await db.query(queryText, [id]);
+  const firstRow = rows[0];
+  attachExternalResolvers(firstRow);
+  return firstRow;
+};
+
+export const resumesForPerson = async ({ personId }: { personId: number }) => {
+  const queryText = resumeSql.concat(' WHERE person_id = $1');
+  const { rows } = await db.query(queryText, [personId]);
+  rows.forEach(row => attachExternalResolvers(row));
+  return rows;
+};
+
+export const resumeLatestForPerson = async ({ personId }: { personId: number }) => {
+  const queryText = resumeSql.concat(`
+  WHERE person_id = $1 AND upload = (
+    SELECT MAX(RTEMP.upload)
+    FROM "resume" AS RTEMP
+    WHERE RTEMP.person_id = $1
+  )`);
+  const { rows } = await db.query(queryText, [personId]);
   const firstRow = rows[0];
   attachExternalResolvers(firstRow);
   return firstRow;
@@ -99,7 +119,8 @@ RETURNING
   ]);
 
   const createdResumeId = rows[0].resume_id;
-  const createdResume = resume({ id: createdResumeId });
+  const createdResume = () => resume({ id: createdResumeId });
+  createdResume.id = createdResumeId;
 
   return createdResume;
 };

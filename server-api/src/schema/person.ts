@@ -19,21 +19,27 @@ const personSql = `SELECT
 FROM person AS P`;
 
 const attachExternalResolvers = (givenPerson: any) => {
-  givenPerson.internalEmployeeType = schema.root.internalEmployeeType({
+  givenPerson.internalEmployeeType = () => schema.root.internalEmployeeType({
     id: givenPerson.internalEmployeeTypeId
   });
-  givenPerson.internalEmployeeStatus = schema.root.internalEmployeeStatus({
+  givenPerson.internalEmployeeStatus = () => schema.root.internalEmployeeStatus({
     id: givenPerson.internalEmployeeStatusId
   });
-  givenPerson.schoolingLevel = schema.root.schoolingLevel({
+  givenPerson.schoolingLevel = () => schema.root.schoolingLevel({
     id: givenPerson.schoolingLevelId
   });
-  givenPerson.degree = schema.root.degree({ id: givenPerson.degreeId });
-  givenPerson.securityClearance = schema.root.securityClearance({
+  givenPerson.degree = () => schema.root.degree({ id: givenPerson.degreeId });
+  givenPerson.securityClearance = () => schema.root.securityClearance({
     id: givenPerson.securityClearanceId
   });
-  givenPerson.lastStatusOfPerson = schema.root.statusOfPerson({
+  givenPerson.lastStatusOfPerson = () => schema.root.statusOfPerson({
     id: givenPerson.lastStatusOfPersonId
+  });
+  givenPerson.resumeLatest = () => schema.root.resumeLatestForPerson({
+    personId: givenPerson.id
+  });
+  givenPerson.resumes = () => schema.root.resumesForPerson({
+    personId: givenPerson.id
   });
 };
 
@@ -134,7 +140,88 @@ RETURNING
   ]);
 
   const createdPersonId = rows[0].person_id;
-  const createdPerson = person({ id: createdPersonId });
+  const createdPerson = () => person({ id: createdPersonId });  // Retrieve whole person.
+  createdPerson.id = createdPersonId;  // return id if needed.
 
   return createdPerson;
+};
+
+export const updatePerson = async ({
+  updatedPerson
+}: {
+  updatedPerson: {
+    id: number;
+    fullName?: string;
+    internalEmployeeTypeId?: number;
+    internalEmployeeStatusId?: number;
+    schoolingLevelId?: number;
+    degreeId?: number;
+    securityClearanceId?: number;
+    positionAppliedFor?: string;
+    email?: string;
+    phone?: string;
+    mailingAddress?: string;
+    physicalAddress?: string;
+    lastStatusOfPersonId?: number;
+  };
+}) => {
+  const queryText = `
+UPDATE "person"
+SET
+  fullname = $2
+, internal_employee_type_id = $3
+, internal_employee_status_id = $4
+, schooling_level_id = $5
+, degree_id = $6
+, position_applied_for = $7
+, security_clearance_id = $8
+, email = $9
+, phone = $10
+, mailing_address = $11
+, physical_address = $12
+, last_status_of_person_id = $13
+, last_status_of_person_date = transaction_timestamp()
+WHERE person_id = $1
+RETURNING person_id
+`;
+
+  const currentPerson = await person({ id: updatedPerson.id });
+
+  Object.assign(currentPerson, updatedPerson);
+
+  const {
+    id,
+    fullName,
+    internalEmployeeTypeId,
+    internalEmployeeStatusId,
+    schoolingLevelId,
+    degreeId,
+    securityClearanceId,
+    positionAppliedFor,
+    email,
+    phone,
+    mailingAddress,
+    physicalAddress,
+    lastStatusOfPersonId
+  } = currentPerson;
+
+  const { rows } = await db.query(queryText, [
+    id,
+    fullName,
+    internalEmployeeTypeId,
+    internalEmployeeStatusId,
+    schoolingLevelId,
+    degreeId,
+    positionAppliedFor,
+    securityClearanceId,
+    email,
+    phone,
+    mailingAddress,
+    physicalAddress,
+    lastStatusOfPersonId
+  ]);
+
+  const updatedPersonId = rows[0].person_id;
+
+  return person({ id: updatedPersonId });
 };

@@ -1,7 +1,19 @@
 import { buildSchema } from 'graphql';
 
-import { person, persons, createPerson } from './person';
-import { resume, resumes, createResume, keywordSearchResumes } from './resume';
+import {
+  person,
+  persons,
+  createPerson,
+  updatePerson
+} from './person';
+import {
+  resume,
+  resumeLatestForPerson,
+  resumesForPerson,
+  resumes,
+  createResume,
+  keywordSearchResumes
+} from './resume';
 import { user, users } from './user';
 import {
   internalEmployeeTypes,
@@ -50,6 +62,22 @@ type Query {
   resume (
     "Id of Resume to retrieve"
     id: Int!
+  ): Resume
+
+  """
+  Return all Resumes for a Person.
+  """
+  resumesForPerson (
+    "Id of Person to retrieve Resume from"
+    personId: Int!
+  ): [Resume]
+
+  """
+  Return the latest Resume for a Person.  Latest based on upload time.
+  """
+  resumeLatestForPerson (
+    "Id of Person to retrieve Resume from"
+    personId: Int!
   ): Resume
 
   """
@@ -226,6 +254,8 @@ Candidate with a resume
 type Person {
   id: Int
   fullName: String
+  resumeLatest: Resume
+  resumes: [Resume]
   "Latest hourly/intern type recorded at our company"
   internalEmployeeType: InternalEmployeeType
 
@@ -414,6 +444,35 @@ input PersonInput {
 }
 
 """
+Candidate with a resume
+
+Any fields not filled in will be set the same as before.
+
+Updates lastStatusOfPersonDate.
+"""
+input PersonUpdate {
+  id: Int!
+  fullName: String
+  "Latest hourly/intern type recorded at our company"
+  internalEmployeeTypeId: Int
+
+  "\`None\`, \`Current\`, \`Former\` employment at our company"
+  internalEmployeeStatusId: Int
+
+  schoolingLevelId: Int
+  degreeId: Int
+  securityClearanceId: Int
+
+  "Freeform text for the position the person originally applied for."
+  positionAppliedFor: String
+  email: String
+  phone: String
+  mailingAddress: String
+  physicalAddress: String
+  lastStatusOfPersonId: Int
+}
+
+"""
 Resume
 """
 input ResumeInput {
@@ -458,6 +517,7 @@ input PersonResumeInput {
 
 type Mutation {
   createPerson(newPerson: PersonInput): Person
+  updatePerson(updatedPerson: PersonUpdate): Person
   createResume(newResume: ResumeInput): Resume
   createPersonAndResume(newPersonResume: PersonResumeInput): Resume
 }
@@ -510,13 +570,16 @@ const root = {
   users,
 
   resume,
+  resumeLatestForPerson,
   resumes,
+  resumesForPerson,
   createResume,
   keywordSearchResumes,
 
   person,
   persons,
   createPerson,
+  updatePerson,
 
   createPersonAndResume: async ({
     newPersonResume
@@ -567,7 +630,6 @@ const root = {
       textBlob: newPersonResume.textBlob
     };
     const createdResume = await createResume({ newResume });
-    // newResume.personId = createPerson.id;
     return createdResume;
   }
 };
