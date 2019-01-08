@@ -7,10 +7,6 @@
         <mat-icon>edit</mat-icon>
         <span>Edit</span>
       </button>
-      <button mat-menu-item>
-        <mat-icon>archive</mat-icon>
-        <span>Archive</span>
-      </button>
     </mat-menu>
     
     <button class="panel-menu" mat-icon-button [matMenuTriggerFor]="detailMenu">
@@ -55,27 +51,12 @@
         </mat-grid-tile>
       </mat-grid-list>
     </section>
-
-    <mat-form-field class="input" *ngIf="!editMode">
-      <textarea matInput placeholder="Leave a comment"></textarea>
-    </mat-form-field>
-
-    <div class="comments" *ngIf="!editMode">
-      <div class="comment" *ngFor="let comment of detailData?.comments">
-        <p class="mat-body-strong">{{comment.name}} <span>{{comment.date}}</span></p>
-        <p class="mat-body">{{comment.comment}}</p>    
-      </div>
-    </div>
   </div>
   <div class="panel">
     <mat-menu #resumeMenu="matMenu" xPosition="before">
       <button mat-menu-item >
         <mat-icon>cloud_download</mat-icon>
         <span>Download</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>cloud_upload</mat-icon>
-        <span>Upload</span>
       </button>
     </mat-menu>
     

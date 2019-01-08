@@ -5,8 +5,7 @@ import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-upload',
-  templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.sass']
+  template: ''
 })
 export class UploadComponent implements OnInit {
 
