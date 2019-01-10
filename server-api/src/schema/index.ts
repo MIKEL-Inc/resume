@@ -135,7 +135,7 @@ type Query {
   """
   Return all resume sources.
   """
-  resumeSources: ResumeSource
+  resumeSources: [ResumeSource]
 
   """
   Return resume source.
