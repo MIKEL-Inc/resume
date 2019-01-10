@@ -3,7 +3,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { Person } from '../classes/person';
+import {
+  Person,
+  personFieldsOfQuery,
+  PersonJson,
+  personMapping
+} from '../classes/person';
 import {
   LookupLists,
   lookupListsGraphQLQueryString,
@@ -49,65 +54,40 @@ export class ApiService {
 
   getPersonApi(givenPersonId: number): Observable<Person> {
     const query = `{
-      person(id: ${givenPersonId}) {
-        id
-        fullName
-        internalEmployeeType {
-          short
-        }
-        internalEmployeeStatus {
-          short
-        }
-        degree {
-          long
-        }
-        positionAppliedFor
-        email
-      }
-    }`;
+  person(id: ${givenPersonId}) {`
+        + personFieldsOfQuery +
+`
+    resumeLatest{
+      payloadText
+    }
 
-    return this.http.post<{data: {person}}>(this.apiUrl, query, graphqlHttpOptions).pipe(
-      map(res => this.graphQLPersonToPerson(res.data.person)),
+  }
+}`;
+
+    return this.http.post<PersonJson>(this.apiUrl, query, graphqlHttpOptions).pipe(
+      map(res => {
+        const tempPerson = personMapping(res.data.person);
+        tempPerson.pdfSrc = atob(res.data.person.resumeLatest.payloadText);
+        return tempPerson;
+      }),
       catchError(this.handleError<Person>('getPerson'))
     );
   }
 
   doSearch(givenKeywords: string): Observable<Person[]> {
     const query = `{
-      keywordSearchResumes(keywords: "${givenKeywords}") {
-        person {
-          id
-          fullName
-          internalEmployeeType {
-            short
-          }
-          degree {
-            long
-          }
-          securityClearance {
-            long
-          }
-        }
-      }
-    }`;
+  keywordSearchResumes(keywords: "${givenKeywords}") {
+    person{`
+      + personFieldsOfQuery +
+`
+    }
+  }
+}`;
 
     return this.http.post<{data: {keywordSearchResumes}}>(this.apiUrl, query, graphqlHttpOptions).pipe(
-      map(res => res.data.keywordSearchResumes.map(person => this.graphQLPersonToPerson(person.person))),
+      map(res => res.data.keywordSearchResumes.map(person => personMapping(person.person))),
       catchError(this.handleError('doSearch'))
     );
-  }
-
-  private graphQLPersonToPerson(givenPerson: any): Person {
-    return {
-      id: givenPerson.id,
-      name: givenPerson.fullName,
-      status: givenPerson.internalEmployeeType.short,
-      degree: givenPerson.degree.long,
-      date: givenPerson.date,
-      clearance: givenPerson.securityClearance.long,
-      pdfSrc: givenPerson.pdfSrc,
-      // comments: this.graphQLCommentsToComments(givenPerson.comments)
-    };
   }
 
   createPerson(givenPerson: Person): boolean {
