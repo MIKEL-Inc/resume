@@ -4,6 +4,12 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { Person } from '../classes/person';
+import {
+  LookupLists,
+  lookupListsGraphQLQueryString,
+  LookupListsJson,
+  lookupListsMapping
+} from '../classes/lookup-lists';
 
 import { MessageService } from './message.service';
 
@@ -17,8 +23,29 @@ const graphqlHttpOptions = {
 export class ApiService {
 
   private apiUrl = 'http://localhost:4000/graphql';
+  private rememberedLookupLists: LookupLists;
 
   constructor(private http: HttpClient, private messageService: MessageService) { }
+
+  getLookupLists(): Observable<LookupLists> {
+    // Did we already get this?  Then return saved data as an Observable.
+    if (this.rememberedLookupLists) {
+      return of(this.rememberedLookupLists);
+    }
+
+    // No?  The we have to go get it.
+    return this.http
+      .post<LookupListsJson>(
+        this.apiUrl,
+        lookupListsGraphQLQueryString,
+        graphqlHttpOptions
+      )
+      .pipe(
+        map(res => lookupListsMapping(res)),
+        tap(res => (this.rememberedLookupLists = res)),
+        catchError(this.handleError<LookupLists>('getLookupLists'))
+      );
+  }
 
   getPersonApi(givenPersonId: number): Observable<Person> {
     const query = `{
