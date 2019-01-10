@@ -1,0 +1,11 @@
+layout new
+split
+split -v
+screen -t "Docker for Postgres" bash -c 'docker/up && docker logs resume-db --follow'
+focus
+split
+screen -t "Typescript for GraphQL" bash -c 'cd server-api && npm run watch'
+focus
+screen -t "Express for GraphQL" bash -c 'cd server-api && echo "Waiting 5 seconds..." && sleep 5 && PGUSER=postgres PGHOST=localhost PGPASSWORD=postgres PGDATABASE=postgres PGPORT=5432 npm run serve'
+focus
+screen -t Angular-CLI bash -c 'npm start'
