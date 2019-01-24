@@ -8,9 +8,6 @@ export class PersonDetail {
   degree: string;
   name: string;
   pdfSrc?: string;
-  pdfBlob?: any;
-  pdfFile?: any;
-  pdfUrl?: any;
   status: string;
   // comments: {
   //   comment: string,
@@ -28,31 +25,13 @@ export class PersonDetailJson {
 }
 
 export const personDetailMapping = (givenPerson: PersonDetailFields): PersonDetail => {
-  // const { data } = json;
-  // const givenPerson = data.person;
-
-  let resumeText: string;
-  let resumeUrl: string;
-  let fileBlob: Blob;
-  let file: File;
+  let resumeDataUri: string;
 
   if  (givenPerson.resumeLatest && givenPerson.resumeLatest.payloadText) {
     const pureText = givenPerson.resumeLatest.payloadText.replace(/\\n/g, '').replace(/\n/g, '');
-    resumeText = 'data:application/pdf;base64,' + pureText;
-    // download works in FireFox
-    // document.location = resumeText;
-
-    // console.log({'resumeText': resumeText});
-
-    fileBlob = new Blob([resumeText], {type: 'application/pdf'});
-    // resumeUrl = window.URL.createObjectURL( fileBlob);
-    file = new File([atob(pureText)], 'test.pdf', {type: 'application/pdf'});
-    resumeUrl = window.URL.createObjectURL( file);
-
-    // debugger;
+    resumeDataUri = 'data:application/pdf;base64,' + pureText;
   } else {
-    resumeText = '';
-    resumeUrl = '';
+    resumeDataUri = '';
   }
 
     return {
@@ -65,10 +44,7 @@ export const personDetailMapping = (givenPerson: PersonDetailFields): PersonDeta
       date: getDateFromEpoch(givenPerson.lastStatusOfPersonDate),
       clearance: givenPerson.securityClearance.long,
       clearanceId: givenPerson.securityClearance.id,
-      pdfSrc: '/assets/functionalSample.pdf',
-      pdfBlob: fileBlob,
-      pdfFile: file,
-      pdfUrl: resumeUrl
+      pdfSrc: resumeDataUri,
 
       // comments: this.graphQLCommentsToComments(givenPerson.comments)
     };
