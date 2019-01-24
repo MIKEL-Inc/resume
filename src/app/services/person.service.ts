@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { Person } from '../classes/person';
+import { PersonSummary } from '../classes/person-summary';
 
 import { ApiService } from './api.service';
 
@@ -14,7 +14,7 @@ export class PersonService {
 
   keywords: Keyword[] = [];
 
-  public personData = new BehaviorSubject<Person[]>([]);
+  public personData = new BehaviorSubject<PersonSummary[]>([]);
 
   constructor(private apiService: ApiService) { }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
-import { Person } from '../classes/person';
+import { PersonSummary } from '../classes/person-summary';
 
 import { ResultsDetailComponent } from './results-detail/results-detail.component';
 
@@ -19,7 +19,7 @@ export class ResultsComponent implements OnInit {
 
   @ViewChild('search_input') search: SearchComponent;
 
-  results: Person[];
+  results: PersonSummary[];
   keyword: Keyword[];
 
   constructor(

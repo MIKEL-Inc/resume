@@ -3,15 +3,25 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { Person } from '../classes/person';
+import { MessageService } from './message.service';
+
+import {
+  PersonDetail,
+  personDetailFieldsOfQuery,
+  PersonDetailJson,
+  personDetailMapping
+} from '../classes/person-detail';
+import {
+  PersonSummary,
+  personSummaryFieldsOfQuery,
+  personSummaryMapping
+} from '../classes/person-summary';
 import {
   LookupLists,
   lookupListsGraphQLQueryString,
   LookupListsJson,
   lookupListsMapping
 } from '../classes/lookup-lists';
-
-import { MessageService } from './message.service';
 
 const graphqlHttpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/graphql' })
@@ -47,70 +57,37 @@ export class ApiService {
       );
   }
 
-  getPersonApi(givenPersonId: number): Observable<Person> {
+  getPersonApi(givenPersonId: number): Observable<PersonDetail> {
     const query = `{
-      person(id: ${givenPersonId}) {
-        id
-        fullName
-        internalEmployeeType {
-          short
-        }
-        internalEmployeeStatus {
-          short
-        }
-        degree {
-          long
-        }
-        positionAppliedFor
-        email
-      }
-    }`;
+  person(id: ${givenPersonId}) {`
+        + personDetailFieldsOfQuery +
+`
+  }
+}`;
 
-    return this.http.post<{data: {person}}>(this.apiUrl, query, graphqlHttpOptions).pipe(
-      map(res => this.graphQLPersonToPerson(res.data.person)),
-      catchError(this.handleError<Person>('getPerson'))
+    return this.http.post<PersonDetailJson>(this.apiUrl, query, graphqlHttpOptions).pipe(
+      map(res => personDetailMapping(res.data.person)),
+      catchError(this.handleError<PersonDetail>('getPerson'))
     );
   }
 
-  doSearch(givenKeywords: string): Observable<Person[]> {
+  doSearch(givenKeywords: string): Observable<PersonSummary[]> {
     const query = `{
-      keywordSearchResumes(keywords: "${givenKeywords}") {
-        person {
-          id
-          fullName
-          internalEmployeeType {
-            short
-          }
-          degree {
-            long
-          }
-          securityClearance {
-            long
-          }
-        }
-      }
-    }`;
+  keywordSearchResumes(keywords: "${givenKeywords}") {
+    person{`
+      + personSummaryFieldsOfQuery +
+`
+    }
+  }
+}`;
 
     return this.http.post<{data: {keywordSearchResumes}}>(this.apiUrl, query, graphqlHttpOptions).pipe(
-      map(res => res.data.keywordSearchResumes.map(person => this.graphQLPersonToPerson(person.person))),
+      map(res => res.data.keywordSearchResumes.map(person => personSummaryMapping(person.person))),
       catchError(this.handleError('doSearch'))
     );
   }
 
-  private graphQLPersonToPerson(givenPerson: any): Person {
-    return {
-      id: givenPerson.id,
-      name: givenPerson.fullName,
-      status: givenPerson.internalEmployeeType.short,
-      degree: givenPerson.degree.long,
-      date: givenPerson.date,
-      clearance: givenPerson.securityClearance.long,
-      pdfSrc: givenPerson.pdfSrc,
-      // comments: this.graphQLCommentsToComments(givenPerson.comments)
-    };
-  }
-
-  createPerson(givenPerson: Person): boolean {
+  createPerson(givenPerson: PersonDetail): boolean {
     const mutator = `
       mutation CreatePerson($givenPerson: Person!, $givenResume: Resume) {
         createPerson(person: $givenPerson, resume: $givenResume) {
@@ -121,8 +98,8 @@ export class ApiService {
         }
       }
     `;
-    return this.http.post<Person>(this.apiUrl, mutator, graphqlHttpOptions).pipe(
-      catchError(this.handleError<Person>('createPerson'))
+    return this.http.post<PersonDetail>(this.apiUrl, mutator, graphqlHttpOptions).pipe(
+      catchError(this.handleError<PersonDetail>('createPerson'))
     ), true;
   }
 
