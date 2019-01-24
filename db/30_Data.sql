@@ -6,7 +6,7 @@ INSERT INTO resume_source
     , description_long
     )
   VALUES
-      (1, 'Unknown', 'Unknown Source'),
+      (1, 'Unknown', 'Unknown Source')
     , (2, 'Emp Ref', 'Employee Referral')
     , (3, 'Cust Ref', 'Customer Referred')
     , (4, 'Other Ref', 'Outside Referral')
