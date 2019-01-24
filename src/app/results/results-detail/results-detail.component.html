@@ -3,7 +3,7 @@
   <div class="panel">
     {{detailData?.pdfSrc | json}}
     <mat-menu #detailMenu="matMenu" xPosition="before">
-      <button mat-menu-item (click)="editMode=!editMode">
+      <button mat-menu-item (click)="toggleEditMode()">
         <mat-icon>edit</mat-icon>
         <span>Edit</span>
       </button>
@@ -16,10 +16,10 @@
     <section class="details mat-typography" *ngIf="!editMode">
       <mat-card>
         <mat-grid-list cols="2" rowHeight="2:1">
-          <mat-grid-tile><h2 (click)="editMode=!editMode">{{detailData?.name}}</h2></mat-grid-tile>
-          <mat-grid-tile><h4 (click)="editMode=!editMode">{{detailData?.date}}</h4></mat-grid-tile>
-          <mat-grid-tile><mat-chip (click)="editMode=!editMode">{{detailData?.status}}</mat-chip></mat-grid-tile>
-          <mat-grid-tile><mat-chip (click)="editMode=!editMode">{{detailData?.clearance}}</mat-chip></mat-grid-tile>
+          <mat-grid-tile><h2 (click)="toggleEditMode()">{{detailData?.name}}</h2></mat-grid-tile>
+          <mat-grid-tile><h4 (click)="toggleEditMode()">{{detailData?.date}}</h4></mat-grid-tile>
+          <mat-grid-tile><mat-chip (click)="toggleEditMode()">{{detailData?.status}}</mat-chip></mat-grid-tile>
+          <mat-grid-tile><mat-chip (click)="toggleEditMode()">{{detailData?.clearance}}</mat-chip></mat-grid-tile>
         </mat-grid-list>
       </mat-card>
     </section>
@@ -34,18 +34,18 @@
         <mat-grid-tile>
           <mat-form-field>
             <mat-select placeholder="{{detailData?.status}}">
-              <mat-option value="Candidate">Candidate</mat-option>
-              <mat-option value="Employee">Employee</mat-option>
-              <mat-option value="Former">Former</mat-option>
+              <mat-option *ngFor="let EmpType of lookupLists?.InternalEmployeeType" value="EmpType.id" selected="EmpType.id === person.employeeTypeId">
+                {{ EmpType.long }}
+              </mat-option>
             </mat-select>
           </mat-form-field>
         </mat-grid-tile>
         <mat-grid-tile>
           <mat-form-field>
             <mat-select placeholder="{{detailData?.clearance}}">
-              <mat-option value="none">None</mat-option>
-              <mat-option value="secret">Secret</mat-option>
-              <mat-option value="topsecret">Top Secret</mat-option>
+              <mat-option *ngFor="let clearance of lookupLists?.SecurityClearance" value="clearance.id" selected="clearance.id === person.clearanceId">
+                {{ clearance.long }}
+              </mat-option>
             </mat-select>
           </mat-form-field>
         </mat-grid-tile>
@@ -78,5 +78,5 @@
 </div>
 <div mat-dialog-actions *ngIf="editMode">
   <button mat-button>Save</button>
-  <button mat-button cdkFocusInitial (click)="editMode=!editMode">Cancel</button>
+  <button mat-button cdkFocusInitial (click)="toggleEditMode()">Cancel</button>
 </div>

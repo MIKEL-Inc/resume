@@ -1,7 +1,10 @@
 import { Component, Inject } from '@angular/core';
-import { Person } from 'src/app/classes/person';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+
 import { ApiService } from 'src/app/services/api.service';
+
+import { LookupLists } from 'src/app/classes/lookup-lists';
+import { PersonDetail } from 'src/app/classes/person-detail';
 
 @Component({
   selector: 'app-results-modal',
@@ -12,9 +15,10 @@ export class ResultsDetailComponent {
 
   loaded;
   file: File;
-  person: Person;
+  person: PersonDetail;
   editMode = false;
   detailData;
+  lookupLists: LookupLists;
   dataExists = false;
 
   constructor(
@@ -38,6 +42,20 @@ export class ResultsDetailComponent {
       date: '',
       clearance: 'Clearance',
     };
+  }
+
+  toggleEditMode(setEditMode?: boolean): void {
+    if (typeof setEditMode === 'undefined') {
+      this.editMode = !this.editMode;
+    } else {
+      this.editMode = setEditMode;
+    }
+
+    if (this.editMode && typeof this.lookupLists === 'undefined') {
+      this.apiService
+        .getLookupLists()
+        .subscribe(lookupLists => (this.lookupLists = lookupLists));
+    }
   }
 
   onFileChange(event) {

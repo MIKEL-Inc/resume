@@ -3,20 +3,25 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
+import { MessageService } from './message.service';
+
 import {
-  Person,
-  personFieldsOfQuery,
-  PersonJson,
-  personMapping
-} from '../classes/person';
+  PersonDetail,
+  personDetailFieldsOfQuery,
+  PersonDetailJson,
+  personDetailMapping
+} from '../classes/person-detail';
+import {
+  PersonSummary,
+  personSummaryFieldsOfQuery,
+  personSummaryMapping
+} from '../classes/person-summary';
 import {
   LookupLists,
   lookupListsGraphQLQueryString,
   LookupListsJson,
   lookupListsMapping
 } from '../classes/lookup-lists';
-
-import { MessageService } from './message.service';
 
 const graphqlHttpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/graphql' })
@@ -52,45 +57,37 @@ export class ApiService {
       );
   }
 
-  getPersonApi(givenPersonId: number): Observable<Person> {
+  getPersonApi(givenPersonId: number): Observable<PersonDetail> {
     const query = `{
   person(id: ${givenPersonId}) {`
-        + personFieldsOfQuery +
+        + personDetailFieldsOfQuery +
 `
-    resumeLatest{
-      payloadText
-    }
-
   }
 }`;
 
-    return this.http.post<PersonJson>(this.apiUrl, query, graphqlHttpOptions).pipe(
-      map(res => {
-        const tempPerson = personMapping(res.data.person);
-        tempPerson.pdfSrc = atob(res.data.person.resumeLatest.payloadText);
-        return tempPerson;
-      }),
-      catchError(this.handleError<Person>('getPerson'))
+    return this.http.post<PersonDetailJson>(this.apiUrl, query, graphqlHttpOptions).pipe(
+      map(res => personDetailMapping(res.data.person)),
+      catchError(this.handleError<PersonDetail>('getPerson'))
     );
   }
 
-  doSearch(givenKeywords: string): Observable<Person[]> {
+  doSearch(givenKeywords: string): Observable<PersonSummary[]> {
     const query = `{
   keywordSearchResumes(keywords: "${givenKeywords}") {
     person{`
-      + personFieldsOfQuery +
+      + personSummaryFieldsOfQuery +
 `
     }
   }
 }`;
 
     return this.http.post<{data: {keywordSearchResumes}}>(this.apiUrl, query, graphqlHttpOptions).pipe(
-      map(res => res.data.keywordSearchResumes.map(person => personMapping(person.person))),
+      map(res => res.data.keywordSearchResumes.map(person => personSummaryMapping(person.person))),
       catchError(this.handleError('doSearch'))
     );
   }
 
-  createPerson(givenPerson: Person): boolean {
+  createPerson(givenPerson: PersonDetail): boolean {
     const mutator = `
       mutation CreatePerson($givenPerson: Person!, $givenResume: Resume) {
         createPerson(person: $givenPerson, resume: $givenResume) {
@@ -101,8 +98,8 @@ export class ApiService {
         }
       }
     `;
-    return this.http.post<Person>(this.apiUrl, mutator, graphqlHttpOptions).pipe(
-      catchError(this.handleError<Person>('createPerson'))
+    return this.http.post<PersonDetail>(this.apiUrl, mutator, graphqlHttpOptions).pipe(
+      catchError(this.handleError<PersonDetail>('createPerson'))
     ), true;
   }
 
