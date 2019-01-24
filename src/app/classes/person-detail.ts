@@ -7,6 +7,10 @@ export class PersonDetail {
   clearanceId: number;
   degree: string;
   name: string;
+  phone: string; // phone "number" may include spaces, dashes, parenthesis, pluses, extensions, etc.
+  mailingAddress: string;
+  physicalAddress: string;
+  email: string;
   pdfSrc?: string;
   status: string;
   // comments: {
@@ -37,6 +41,10 @@ export const personDetailMapping = (givenPerson: PersonDetailFields): PersonDeta
     return {
       id: givenPerson.id,
       name: givenPerson.fullName,
+      phone: givenPerson.phone,
+      mailingAddress: givenPerson.mailingAddress,
+      physicalAddress: givenPerson.physicalAddress,
+      email: givenPerson.email,
       employeeType: givenPerson.internalEmployeeType.long,
       employeeTypeId: givenPerson.internalEmployeeType.id,
       status: givenPerson.internalEmployeeType.short,
@@ -91,6 +99,9 @@ interface PersonDetailFields {
     long: string;
   };
   positionAppliedFor: string;
+  phone: string;
+  mailingAddress: string;
+  physicalAddress: string;
   email: string;
   lastStatusOfPersonDate: string;
   resumeLatest?: {
@@ -117,6 +128,9 @@ export const personDetailFieldsOfQuery = `
       long
     }
     positionAppliedFor
+    phone
+    mailingAddress
+    physicalAddress
     email
     lastStatusOfPersonDate
     resumeLatest{

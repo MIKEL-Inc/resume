@@ -11,13 +11,13 @@
   <mat-grid-list cols="3"  rowHeight="170px">
 
     <mat-grid-tile *ngFor="let result of results">
-      <mat-card (click)="openDialog(result.id)" class="card mat-typography" 
+      <mat-card (click)="openDialog(result.id)" class="card mat-typography"
                 [class.card__status--candidate]="result.status === 'Candidate'"
                 [class.card__status--former]="result.status === 'Former'"
                 [class.card__status--hired]="result.status === 'Employee'">
         <mat-card-header>
           <mat-card-title>{{result.name}}</mat-card-title>
-          <mat-card-subtitle>{{result.date}}</mat-card-subtitle>
+          <mat-card-subtitle>{{result.date | date : 'shortDate' }}</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
             <mat-chip-list>
