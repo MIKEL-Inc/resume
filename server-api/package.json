@@ -4,9 +4,11 @@
   "description": "GraphQL API endpoint and static Angular app server",
   "main": "server.js",
   "scripts": {
+    "prestart": "npm run build",
+    "start": "concurrently -p \"[{name}]\" -n \"TypeScript,ExpressWeb\" -c \"bgBlue.dim.italic,bgGreen.dim.italic\" \"npm run watch\" \"npm run serve\" ",
     "build": "rm -rf dist && tsc",
-    "watch": "rm -rf dist && tsc && tsc -w",
-    "serve": "NODE_ENV=dev nodemon dist/server.js",
+    "watch": "tsc -w",
+    "serve": "PGUSER=postgres PGHOST=localhost PGPASSWORD=postgres PGDATABASE=postgres PGPORT=5432 NODE_ENV=dev nodemon dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -34,6 +36,7 @@
     "@types/express-promise-router": "^2.0.0",
     "@types/graphql": "^14.0.3",
     "@types/pg": "^7.4.11",
+    "concurrently": "^4.1.0",
     "nodemon": "^1.18.8",
     "typescript": "^3.2.2"
   }
