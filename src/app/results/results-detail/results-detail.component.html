@@ -29,33 +29,49 @@
     </section>
 
     <section *ngIf="editMode">
-      <mat-grid-list cols="1" rowHeight="4:1">
-        <mat-grid-tile>
-          <mat-form-field>
-            <input matInput placeholder="{{detailData?.name}}">
-          </mat-form-field>
-        </mat-grid-tile>
-        <mat-grid-tile>
-          <mat-form-field>
-            <input matInput type="tel" placeholder="{{detailData?.phone}}">
-          </mat-form-field>
-        </mat-grid-tile>
-        <mat-grid-tile>
-          <mat-form-field>
-            <input matInput type="email" placeholder="{{detailData?.email}}">
-          </mat-form-field>
-        </mat-grid-tile>
-        <mat-grid-tile>
-          <mat-form-field>
-            <input matInput type="text" placeholder="{{detailData?.mailingAddress}}">
-          </mat-form-field>
-        </mat-grid-tile>
-        <mat-grid-tile>
-          <mat-form-field>
-            <input matInput type="text" placeholder="{{detailData?.physicalAddress}}">
-          </mat-form-field>
-        </mat-grid-tile>
-        <mat-grid-tile>
+      <form class="form-container">
+
+        <h3 class="mat-h3">Applicant</h3>
+        <mat-divider></mat-divider>
+
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input matInput  placeholder="Applicant's Name" value="{{detailData?.name}}">
+        </mat-form-field>
+
+        <h3 class="mat-h3">Contact Information</h3>
+        <mat-divider></mat-divider>
+
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input matInput type="email" placeholder="Applicant's Email" value="{{detailData?.email}}">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Phone</mat-label>
+          <input matInput type="tel" placeholder="Applicant's Phone Number" value="{{detailData?.phone}}">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Mailing Address</mat-label>
+          <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="4" placeholder="Applicant's Mailing Address">{{detailData?.mailingAddress}}</textarea>
+        </mat-form-field>
+        <mat-checkbox #sameAsMailing [checked]="true">Physical Address same as Mailing Address</mat-checkbox>
+        <mat-form-field *ngIf="!sameAsMailing.checked">
+          <mat-label>Physical Address</mat-label>
+          <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="4" placeholder="Applicant's Physical Address">{{detailData?.physicalAddress}}</textarea>
+        </mat-form-field>
+
+        <h3 class="mat-h3">Job Applied For</h3>
+        <mat-divider></mat-divider>
+
+
+        <h3 class="mat-h3">Security Clearance</h3>
+        <mat-divider></mat-divider>
+
+
+        <h3 class="mat-h3">Education</h3>
+        <mat-divider></mat-divider>
+
+        <mat-form-field>
           <mat-form-field>
             <mat-select placeholder="{{detailData?.degree}}">
               <mat-option *ngFor="let degree of lookupLists?.Degree" value="EmpType.id" selected="EmpType.id === person.employeeTypeId">
@@ -63,8 +79,8 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-        </mat-grid-tile>
-        <mat-grid-tile>
+        </mat-form-field>
+        <mat-form-field>
           <mat-form-field>
             <mat-select placeholder="{{detailData?.status}}">
               <mat-option *ngFor="let EmpType of lookupLists?.InternalEmployeeType" value="EmpType.id" selected="EmpType.id === person.employeeTypeId">
@@ -72,8 +88,8 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-        </mat-grid-tile>
-        <mat-grid-tile>
+        </mat-form-field>
+        <mat-form-field>
           <mat-form-field>
             <mat-select placeholder="{{detailData?.clearance}}">
               <mat-option *ngFor="let clearance of lookupLists?.SecurityClearance" value="clearance.id" selected="clearance.id === person.clearanceId">
@@ -81,8 +97,8 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-        </mat-grid-tile>
-      </mat-grid-list>
+        </mat-form-field>
+      </form>
     </section>
   </div>
   <div class="panel">
