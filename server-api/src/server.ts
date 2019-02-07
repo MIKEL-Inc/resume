@@ -7,7 +7,10 @@ const server = express();
 
 mountRoutes(server);
 
-server.use(cors()); // FIXME: Not needed in Production when all is on same server.
+if (process.env.NODE_ENV === 'dev') {
+  // Not needed in Production when all is on same server.
+  server.use(cors());
+}
 
 server.listen(4000);
 

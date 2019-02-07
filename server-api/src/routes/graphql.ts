@@ -5,7 +5,7 @@ import ourSchema from '../schema';
 const router = graphqlHTTP({
   schema: ourSchema.schema,
   rootValue: ourSchema.root,
-  graphiql: true,      // FIXME: Don't run graphiql in Production
+  graphiql: process.env.NODE_ENV === 'dev'
 });
 
 export default router;
