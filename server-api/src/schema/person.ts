@@ -140,7 +140,7 @@ RETURNING
   ]);
 
   const createdPersonId = rows[0].person_id;
-  const createdPerson = () => person({ id: createdPersonId });  // Retrieve whole person.
+  const createdPerson = await person({ id: createdPersonId });  // Retrieve whole person.
   createdPerson.id = createdPersonId;  // return id if needed.
 
   return createdPerson;
