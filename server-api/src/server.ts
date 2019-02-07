@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import graphqlHTTP from 'express-graphql';
-import ourSchema from './schema';
+
 import mountRoutes from './routes';
 
 const server = express();
@@ -9,11 +8,7 @@ const server = express();
 mountRoutes(server);
 server
   .use(cors())  // FIXME: Not needed in Production when all is on same server.
-  .use('/graphql', graphqlHTTP({
-    schema: ourSchema.schema,
-    rootValue: ourSchema.root,
-    graphiql: true,
-  }));
+  ;
 server.listen(4000);
 /* legitimate use of console.log */ console.log('Running a GraphQL API server at http://localhost:4000/graphql');
 // console.log({'process.env': process.env});

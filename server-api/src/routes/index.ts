@@ -1,10 +1,9 @@
-import person from './person';
-// const users = require('./user')
-// const photos = require('./photos')
+import { Express } from 'express';
 
-export default (app: any) => {
-  app.use('/person', person);
-  // app.use('/users', users)
-  // app.use('/photos', photos)
-  // etc..
-};
+import graphql from './graphql';
+import person from './person';
+
+export default (app: Express) =>
+  app
+    .use('/graphql', graphql)
+    .use('/person', person);
