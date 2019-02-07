@@ -26,7 +26,7 @@ export class ResultsDetailComponent {
     @Inject(MAT_DIALOG_DATA) public data: { id: number },
     private apiService: ApiService) {
 
-    this.dataExists = data !== null;
+    this.dataExists = data && typeof data.id !== 'undefined' ;
     if (this.dataExists) {
       this.getPerson(data);
     } else {
@@ -40,6 +40,7 @@ export class ResultsDetailComponent {
       status: 'Status',
       degree: 'Degree',
       date: '',
+      employeeTypeId: 1,
       clearance: 'Clearance',
     };
   }

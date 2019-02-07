@@ -38,6 +38,11 @@
           <mat-label>Name</mat-label>
           <input matInput  placeholder="Applicant's Name" value="{{detailData?.name}}">
         </mat-form-field>
+        <mat-button-toggle-group #group="matButtonToggleGroup">
+          <mat-button-toggle *ngFor="let EmpType of lookupLists?.InternalEmployeeType" value="EmpType.id" [checked]="EmpType.id === detailData?.employeeTypeId">
+            {{ EmpType.short }}
+          </mat-button-toggle>
+        </mat-button-toggle-group>
 
         <h3 class="mat-h3">Contact Information</h3>
         <mat-divider></mat-divider>
