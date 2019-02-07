@@ -5,12 +5,12 @@ import mountRoutes from './routes';
 
 const server = express();
 
-mountRoutes(server);
-
 if (process.env.NODE_ENV === 'dev') {
   // Not needed in Production when all is on same server.
   server.use(cors());
 }
+
+mountRoutes(server);
 
 server.listen(4000);
 
