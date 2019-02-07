@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "postinstall": "cd server-api/ && npm ci",
-    "backend": "cd server-api/ && npm start"
+    "backend": "cd server-api/ && npm run dev"
   },
   "private": true,
   "dependencies": {

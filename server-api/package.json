@@ -4,8 +4,8 @@
   "description": "GraphQL API endpoint and static Angular app server",
   "main": "server.js",
   "scripts": {
-    "prestart": "npm run build",
-    "start": "concurrently -p \"[{name}]\" -n \"TypeScript,ExpressWeb\" -c \"bgBlue.dim.italic,bgGreen.dim.italic\" \"npm run watch\" \"npm run serve\" ",
+    "predev": "npm run build",
+    "dev": "concurrently -p \"[{name}]\" -n \"TypeScript,ExpressWeb\" -c \"bgBlue.dim.italic,bgGreen.dim.italic\" \"npm run watch\" \"npm run serve\" ",
     "build": "rm -rf dist && tsc",
     "watch": "tsc -w",
     "serve": "PGUSER=postgres PGHOST=localhost PGPASSWORD=postgres PGDATABASE=postgres PGPORT=5432 NODE_ENV=dev nodemon dist/server.js",
