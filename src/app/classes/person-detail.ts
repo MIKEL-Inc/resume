@@ -13,6 +13,7 @@ export class PersonDetail {
   email: string;
   pdfSrc?: string;
   status: string;
+  positionAppliedFor: string;
   // comments: {
   //   comment: string,
   //   id: number,
@@ -53,6 +54,7 @@ export const personDetailMapping = (givenPerson: PersonDetailFields): PersonDeta
       clearance: givenPerson.securityClearance.long,
       clearanceId: givenPerson.securityClearance.id,
       pdfSrc: resumeDataUri,
+      positionAppliedFor: givenPerson.positionAppliedFor
 
       // comments: this.graphQLCommentsToComments(givenPerson.comments)
     };

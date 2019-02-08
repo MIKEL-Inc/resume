@@ -29,7 +29,7 @@
     </section>
 
     <section *ngIf="editMode">
-      <form class="form-container">
+      <form class="form-container details">
 
         <h3 class="mat-h3">Applicant</h3>
         <mat-divider></mat-divider>
@@ -38,9 +38,23 @@
           <mat-label>Name</mat-label>
           <input matInput  placeholder="Applicant's Name" value="{{detailData?.name}}">
         </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="Application Status">
+            <mat-option *ngFor="let applicationStatus of lookupLists?.StatusOfPerson" [matTooltip]="applicationStatus.long" [value]="applicationStatus.id">
+              {{ applicationStatus.short }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
         <section>
           <mat-button-toggle-group #group="matButtonToggleGroup">
-            <mat-button-toggle *ngFor="let EmpType of lookupLists?.InternalEmployeeType" value="EmpType.id" [checked]="EmpType.id === detailData?.employeeTypeId">
+            <mat-button-toggle *ngFor="let EmpStatus of lookupLists?.InternalEmployeeStatus" [matTooltip]="EmpStatus.long" value="EmpStatus.id" [checked]="EmpStatus.id === detailData?.employeeTypeId">
+              {{ EmpStatus.short }}
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </section>
+        <section>
+          <mat-button-toggle-group #group="matButtonToggleGroup">
+            <mat-button-toggle *ngFor="let EmpType of lookupLists?.InternalEmployeeType" [matTooltip]="EmpType.long" value="EmpType.id" [checked]="EmpType.id === detailData?.employeeTypeId">
               {{ EmpType.short }}
             </mat-button-toggle>
           </mat-button-toggle-group>
@@ -67,43 +81,42 @@
           <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="4" placeholder="Applicant's Physical Address" [value]="detailData?.physicalAddress"></textarea>
         </mat-form-field>
 
-        <h3 class="mat-h3">Job Applied For</h3>
+        <h3 class="mat-h3">Job Application</h3>
         <mat-divider></mat-divider>
 
+        <mat-form-field>
+          <mat-label>Position Applied For</mat-label>
+          <input matInput placeholder="Job Description" value="{{detailData?.positionAppliedFor}}">
+        </mat-form-field>
 
         <h3 class="mat-h3">Security Clearance</h3>
         <mat-divider></mat-divider>
+
+        <section>
+          <mat-button-toggle-group #group="matButtonToggleGroup">
+            <mat-button-toggle *ngFor="let EmpType of lookupLists?.SecurityClearance" [matTooltip]="EmpType.long" value="EmpType.id" [checked]="EmpType.id === detailData?.employeeTypeId">
+              {{ EmpType.short }}
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </section>
 
 
         <h3 class="mat-h3">Education</h3>
         <mat-divider></mat-divider>
 
+        <section>
+          <mat-button-toggle-group #group="matButtonToggleGroup">
+            <mat-button-toggle *ngFor="let eduLevel of lookupLists?.SchoolingLevel" [matTooltip]="eduLevel.long" value="eduLevel.id" [checked]="eduLevel.id === detailData?.employeeTypeId">
+              {{ eduLevel.short }}
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </section>
         <mat-form-field>
-          <mat-form-field>
-            <mat-select placeholder="{{detailData?.degree}}">
-              <mat-option *ngFor="let degree of lookupLists?.Degree" value="EmpType.id" selected="EmpType.id === person.employeeTypeId">
-                {{ degree.long }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-form-field>
-            <mat-select placeholder="{{detailData?.status}}">
-              <mat-option *ngFor="let EmpType of lookupLists?.InternalEmployeeType" value="EmpType.id" selected="EmpType.id === person.employeeTypeId">
-                {{ EmpType.long }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-form-field>
-            <mat-select placeholder="{{detailData?.clearance}}">
-              <mat-option *ngFor="let clearance of lookupLists?.SecurityClearance" value="clearance.id" selected="clearance.id === person.clearanceId">
-                {{ clearance.long }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <mat-select placeholder="Degree">
+            <mat-option *ngFor="let eduDegree of lookupLists?.Degree" [matTooltip]="eduDegree.short" [value]="eduDegree.id">
+              {{ eduDegree.long }}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
       </form>
     </section>
