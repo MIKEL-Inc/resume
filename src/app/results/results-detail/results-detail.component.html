@@ -1,5 +1,4 @@
 <div class="container">
-
   <div class="panel">
     <mat-menu #detailMenu="matMenu" xPosition="before">
       <button mat-menu-item (click)="toggleEditMode()">
@@ -15,46 +14,99 @@
     <section class="details mat-typography" *ngIf="!editMode">
       <mat-card>
         <mat-grid-list cols="2" rowHeight="2:1">
-          <mat-grid-tile><h2 (click)="toggleEditMode()">{{detailData?.name}}</h2></mat-grid-tile>
-          <mat-grid-tile><h4 (click)="toggleEditMode()">{{detailData?.date | date : 'shortDate' }}</h4></mat-grid-tile>
-          <mat-grid-tile colspan="2"><h4 (click)="toggleEditMode()">{{detailData?.phone }}</h4></mat-grid-tile>
-          <mat-grid-tile colspan="2"><h4 (click)="toggleEditMode()">{{detailData?.email }}</h4></mat-grid-tile>
-          <mat-grid-tile colspan="2"><h4 (click)="toggleEditMode()">{{detailData?.mailingAddress }}</h4></mat-grid-tile>
-          <mat-grid-tile colspan="2"><h4 (click)="toggleEditMode()">{{detailData?.physicalAddress }}</h4></mat-grid-tile>
-          <mat-grid-tile colspan="2"><h4 (click)="toggleEditMode()">{{detailData?.degree }}</h4></mat-grid-tile>
-          <mat-grid-tile><mat-chip (click)="toggleEditMode()">{{detailData?.status}}</mat-chip></mat-grid-tile>
-          <mat-grid-tile><mat-chip (click)="toggleEditMode()">{{detailData?.clearance}}</mat-chip></mat-grid-tile>
+          <mat-grid-tile>
+            <h2 (click)="toggleEditMode()">
+              {{ detailData?.name }}
+            </h2>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <h4 (click)="toggleEditMode()">
+              {{ detailData?.date | date: 'shortDate' }}
+            </h4>
+          </mat-grid-tile>
+          <mat-grid-tile colspan="2">
+            <h4 (click)="toggleEditMode()">
+              {{ detailData?.phone }}
+            </h4>
+          </mat-grid-tile>
+          <mat-grid-tile colspan="2">
+            <h4 (click)="toggleEditMode()">
+              {{ detailData?.email }}
+            </h4>
+          </mat-grid-tile>
+          <mat-grid-tile colspan="2">
+            <h4 (click)="toggleEditMode()">
+              {{ detailData?.mailingAddress }}
+            </h4>
+          </mat-grid-tile>
+          <mat-grid-tile colspan="2">
+            <h4 (click)="toggleEditMode()">
+              {{ detailData?.physicalAddress }}
+            </h4>
+          </mat-grid-tile>
+          <mat-grid-tile colspan="2">
+            <h4 (click)="toggleEditMode()">
+              {{ detailData?.degree }}
+            </h4>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <mat-chip (click)="toggleEditMode()">
+              {{ detailData?.status }}
+            </mat-chip>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <mat-chip (click)="toggleEditMode()">
+              {{ detailData?.clearance }}
+            </mat-chip>
+          </mat-grid-tile>
         </mat-grid-list>
       </mat-card>
     </section>
 
     <section *ngIf="editMode">
       <form class="form-container details">
-
         <h3 class="mat-h3">Applicant</h3>
         <mat-divider></mat-divider>
 
         <mat-form-field>
           <mat-label>Name</mat-label>
-          <input matInput  placeholder="Applicant's Name" value="{{detailData?.name}}">
+          <input
+            matInput
+            placeholder="Applicant's Name"
+            value="{{ detailData?.name }}"
+          />
         </mat-form-field>
         <mat-form-field>
           <mat-select placeholder="Application Status">
-            <mat-option *ngFor="let applicationStatus of lookupLists?.StatusOfPerson" [matTooltip]="applicationStatus.long" [value]="applicationStatus.id">
+            <mat-option
+              *ngFor="let applicationStatus of lookupLists?.StatusOfPerson"
+              [matTooltip]="applicationStatus.long"
+              [value]="applicationStatus.id"
+            >
               {{ applicationStatus.short }}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <section>
           <mat-button-toggle-group #group="matButtonToggleGroup">
-            <mat-button-toggle *ngFor="let EmpStatus of lookupLists?.InternalEmployeeStatus" [matTooltip]="EmpStatus.long" value="EmpStatus.id" [checked]="EmpStatus.id === detailData?.employeeTypeId">
+            <mat-button-toggle
+              *ngFor="let EmpStatus of lookupLists?.InternalEmployeeStatus"
+              [matTooltip]="EmpStatus.long"
+              value="EmpStatus.id"
+              [checked]="EmpStatus.id === detailData?.employeeTypeId"
+            >
               {{ EmpStatus.short }}
             </mat-button-toggle>
           </mat-button-toggle-group>
         </section>
         <section>
           <mat-button-toggle-group #group="matButtonToggleGroup">
-            <mat-button-toggle *ngFor="let EmpType of lookupLists?.InternalEmployeeType" [matTooltip]="EmpType.long" value="EmpType.id" [checked]="EmpType.id === detailData?.employeeTypeId">
+            <mat-button-toggle
+              *ngFor="let EmpType of lookupLists?.InternalEmployeeType"
+              [matTooltip]="EmpType.long"
+              value="EmpType.id"
+              [checked]="EmpType.id === detailData?.employeeTypeId"
+            >
               {{ EmpType.short }}
             </mat-button-toggle>
           </mat-button-toggle-group>
@@ -65,20 +117,49 @@
 
         <mat-form-field>
           <mat-label>Email</mat-label>
-          <input matInput type="email" placeholder="Applicant's Email" value="{{detailData?.email}}">
+          <input
+            matInput
+            type="email"
+            placeholder="Applicant's Email"
+            value="{{ detailData?.email }}"
+          />
         </mat-form-field>
         <mat-form-field>
           <mat-label>Phone</mat-label>
-          <input matInput type="tel" placeholder="Applicant's Phone Number" value="{{detailData?.phone}}">
+          <input
+            matInput
+            type="tel"
+            placeholder="Applicant's Phone Number"
+            value="{{ detailData?.phone }}"
+          />
         </mat-form-field>
         <mat-form-field>
           <mat-label>Mailing Address</mat-label>
-          <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="4" placeholder="Applicant's Mailing Address" [value]="detailData?.mailingAddress"></textarea>
+          <textarea
+            matInput
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="1"
+            cdkAutosizeMaxRows="4"
+            placeholder="Applicant's Mailing Address"
+            [value]="detailData?.mailingAddress"
+          ></textarea>
         </mat-form-field>
-        <mat-checkbox class="mat-form-field-wrapper" #sameAsMailing [checked]="detailData?.mailingAddress === detailData?.physicalAddress">Physical Address same as Mailing Address</mat-checkbox>
+        <mat-checkbox
+          class="mat-form-field-wrapper"
+          #sameAsMailing
+          [checked]="detailData?.mailingAddress === detailData?.physicalAddress"
+          >Physical Address same as Mailing Address</mat-checkbox
+        >
         <mat-form-field *ngIf="!sameAsMailing.checked">
           <mat-label>Physical Address</mat-label>
-          <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="4" placeholder="Applicant's Physical Address" [value]="detailData?.physicalAddress"></textarea>
+          <textarea
+            matInput
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="1"
+            cdkAutosizeMaxRows="4"
+            placeholder="Applicant's Physical Address"
+            [value]="detailData?.physicalAddress"
+          ></textarea>
         </mat-form-field>
 
         <h3 class="mat-h3">Job Application</h3>
@@ -86,7 +167,11 @@
 
         <mat-form-field>
           <mat-label>Position Applied For</mat-label>
-          <input matInput placeholder="Job Description" value="{{detailData?.positionAppliedFor}}">
+          <input
+            matInput
+            placeholder="Job Description"
+            value="{{ detailData?.positionAppliedFor }}"
+          />
         </mat-form-field>
 
         <h3 class="mat-h3">Security Clearance</h3>
@@ -94,26 +179,39 @@
 
         <section>
           <mat-button-toggle-group #group="matButtonToggleGroup">
-            <mat-button-toggle *ngFor="let EmpType of lookupLists?.SecurityClearance" [matTooltip]="EmpType.long" value="EmpType.id" [checked]="EmpType.id === detailData?.employeeTypeId">
+            <mat-button-toggle
+              *ngFor="let EmpType of lookupLists?.SecurityClearance"
+              [matTooltip]="EmpType.long"
+              value="EmpType.id"
+              [checked]="EmpType.id === detailData?.employeeTypeId"
+            >
               {{ EmpType.short }}
             </mat-button-toggle>
           </mat-button-toggle-group>
         </section>
-
 
         <h3 class="mat-h3">Education</h3>
         <mat-divider></mat-divider>
 
         <section>
           <mat-button-toggle-group #group="matButtonToggleGroup">
-            <mat-button-toggle *ngFor="let eduLevel of lookupLists?.SchoolingLevel" [matTooltip]="eduLevel.long" value="eduLevel.id" [checked]="eduLevel.id === detailData?.employeeTypeId">
+            <mat-button-toggle
+              *ngFor="let eduLevel of lookupLists?.SchoolingLevel"
+              [matTooltip]="eduLevel.long"
+              value="eduLevel.id"
+              [checked]="eduLevel.id === detailData?.employeeTypeId"
+            >
               {{ eduLevel.short }}
             </mat-button-toggle>
           </mat-button-toggle-group>
         </section>
         <mat-form-field>
           <mat-select placeholder="Degree">
-            <mat-option *ngFor="let eduDegree of lookupLists?.Degree" [matTooltip]="eduDegree.short" [value]="eduDegree.id">
+            <mat-option
+              *ngFor="let eduDegree of lookupLists?.Degree"
+              [matTooltip]="eduDegree.short"
+              [value]="eduDegree.id"
+            >
               {{ eduDegree.long }}
             </mat-option>
           </mat-select>
@@ -123,7 +221,7 @@
   </div>
   <div class="panel">
     <mat-menu #resumeMenu="matMenu" xPosition="before">
-      <button mat-menu-item >
+      <button mat-menu-item>
         <mat-icon>cloud_download</mat-icon>
         <span>Download</span>
       </button>
@@ -134,14 +232,20 @@
     </button>
     <div class="resume-upload" *ngIf="!dataExists">
       <div>
-        <input type="file" accept=".pdf, .doc, .docx, .txt" (change)="onFileChange($event)">
+        <input
+          type="file"
+          accept=".pdf, .doc, .docx, .txt"
+          (change)="onFileChange($event)"
+        />
       </div>
     </div>
 
-    <pdf-viewer [src]="detailData?.pdfSrc"
-                [render-text]="true"
-                [original-size]="false"
-                [autoresize]="true">
+    <pdf-viewer
+      [src]="detailData?.pdfSrc"
+      [render-text]="true"
+      [original-size]="false"
+      [autoresize]="true"
+    >
     </pdf-viewer>
   </div>
 </div>
