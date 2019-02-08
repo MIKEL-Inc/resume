@@ -59,7 +59,7 @@
           <mat-label>Mailing Address</mat-label>
           <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="4" placeholder="Applicant's Mailing Address" [value]="detailData?.mailingAddress"></textarea>
         </mat-form-field>
-        <mat-checkbox #sameAsMailing [checked]="true">Physical Address same as Mailing Address</mat-checkbox>
+        <mat-checkbox class="mat-form-field-wrapper" #sameAsMailing [checked]="detailData?.mailingAddress === detailData?.physicalAddress">Physical Address same as Mailing Address</mat-checkbox>
         <mat-form-field *ngIf="!sameAsMailing.checked">
           <mat-label>Physical Address</mat-label>
           <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="4" placeholder="Applicant's Physical Address" [value]="detailData?.physicalAddress"></textarea>
