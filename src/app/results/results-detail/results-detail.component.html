@@ -261,8 +261,21 @@
         </mat-form-field>
       </form>
       <div mat-dialog-actions *ngIf="editMode">
-        <button mat-button mat-flat-button color="primary" (click)="onSubmit(sameAsMailing)">Save</button>
-        <button mat-button cdkFocusInitial (click)="toggleEditMode()">Cancel</button>
+        <button
+          mat-flat-button
+          color="primary"
+          [disabled]="personData.invalid"
+          (click)="onSubmit(sameAsMailing)"
+        >
+          Save
+        </button>
+        <button
+          mat-button
+          cdkFocusInitial
+          (click)="toggleEditMode(false)"
+        >
+          Cancel
+        </button>
       </div>
     </section>
   </div>
