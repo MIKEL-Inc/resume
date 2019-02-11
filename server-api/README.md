@@ -2,27 +2,29 @@
 
 Work in progress.
 
-TypeScript compiles to JS.  Node runs JS.
+TypeScript compiles to JS.
+Node runs JS to launch Express.JS and serve GraphQL.
+Connects to existing Postgres database instance.
 
-Express.JS and GraphQL.
-
-This assumes top level project is setup.
+The following assumes top level project is setup.
 
 From inside this `server-api/` folder, run:
 
-(One time, run `npm install` or `npm i` or `npm ci`.)
-
-`../docker/up` to start Postgres Docker.  (Assumes top level project is setup.)
-
-`npm run watch` to continuously compile the TypeScript.
-
-Then the following to run Express server and Graph*i*QL on <http://localhost:4000>.
-
 ```bash
-PGUSER=postgres \
-PGHOST=localhost \
-PGPASSWORD=postgres \
-PGDATABASE=postgres \
-PGPORT=5432 \
-npm run serve
+# (One time to setup `npm` packages.)
+npm install
+#or# npm i
+#or# npm ci
+
+# (Once per login to start Postgres Docker database.)
+../docker/up -s
+# -s skips compiling top level project for Docker webserver.
+
+
+# to cross-compile TS to JS and
+# launch Express server.
+
+npm start
 ```
+
+ Graph*i*QL on <http://localhost:4000/graphql>

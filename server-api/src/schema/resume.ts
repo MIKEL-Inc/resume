@@ -119,7 +119,7 @@ RETURNING
   ]);
 
   const createdResumeId = rows[0].resume_id;
-  const createdResume = () => resume({ id: createdResumeId });
+  const createdResume = await resume({ id: createdResumeId });
   createdResume.id = createdResumeId;
 
   return createdResume;

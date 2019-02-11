@@ -2,9 +2,41 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.1.1 with Node.js 10.14.1, Docker CE 18.09.0, and Docker-Compose 1.11.2 running on a Debian variant of Linux (Ubuntu 16.04 LTS or Elementary OS)
 
+## TL;DR
+
+To run development version in Linux
+
+```bash
+# When started, docker containers stay running in the background
+docker/up
+
+npm start
+```
+
+Navigate to application at <http://localhost:4200>.
+
+Graph*i*QL interactive server at <http://localhost:4000>.
+
+### Initial Setup for Linux
+
+Install and configure `docker`, `docker-compose`, `node` (includes `npm`), and `git`.  (We recommend using `nvm` script to install and manage `node` versions.)
+
+```bash
+git clone git@github.com:MIKEL-Inc/resume.git
+cd resume
+npm install
+cp docker/template.env docker/.env
+```
+
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `npm start` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+This also start the backend GraphQL server running in Express.
+
+Note: `ng serve` will start the Angular project, but not the GraphQL server.
+
+Note: The GraphQL server expects the Postgres database to be running with default configuration.
 
 ## Code scaffolding
 
