@@ -15,6 +15,8 @@ export class PersonDetail {
   physicalAddress: string;
   email: string;
   pdfSrc?: string;
+  pdfFileName?: string;
+  textBlob: string;
   status: string;
   statusId: number;
   positionAppliedFor: string;
@@ -62,6 +64,8 @@ export const personDetailMapping = (givenPerson: PersonDetailFields): PersonDeta
       clearance: givenPerson.securityClearance.long,
       clearanceId: givenPerson.securityClearance.id,
       pdfSrc: resumeDataUri,
+      pdfFileName: givenPerson.resumeLatest.fileName,
+      textBlob: givenPerson.resumeLatest.textBlob,
       positionAppliedFor: givenPerson.positionAppliedFor
 
       // comments: this.graphQLCommentsToComments(givenPerson.comments)
@@ -123,7 +127,9 @@ interface PersonDetailFields {
   };
   lastStatusOfPersonDate: string;
   resumeLatest?: {
+    fileName?: string;
     payloadText?: string;
+    textBlob?: string;
   };
 }
 
@@ -161,6 +167,8 @@ export const personDetailFieldsOfQuery = `
     }
     lastStatusOfPersonDate
     resumeLatest{
+      fileName
       payloadText
+      textBlob
     }
 `;

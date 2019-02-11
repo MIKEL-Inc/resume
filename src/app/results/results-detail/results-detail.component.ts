@@ -78,7 +78,33 @@ export class ResultsDetailComponent {
     if (sameAsMailingCheckBox.checked) {
       this.personData.patchValue({physicalAddress: this.personData.value.mailingAddress});
     }
+    // FIXME: Remove this Alert!!!  Testing only.
     alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.personData.value));
+    this.apiService.savePersonAndResume(this.personData.value).subscribe(results => {
+      this.personData.setValue({
+        id: results.id,
+        pdfSrc: results.pdfSrc,
+
+        name: results.name,
+        appStatusId: results.statusId,
+        employeeStatusId: results.employeeTypeId,
+        employeeTypeId: results.employeeTypeId,
+
+        email: results.email,
+        phone: results.phone,
+        mailingAddress: results.mailingAddress,
+        physicalAddress: results.physicalAddress,
+
+        positionAppliedFor: results.positionAppliedFor,
+
+        clearanceId: results.clearanceId,
+
+        eduLevelId: results.eduLevelId,
+        degreeId: results.degreeId
+      });
+      this.detailData = results;
+    });
+
   }
 
   onFileChange(event) {
