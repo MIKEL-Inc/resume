@@ -3,9 +3,12 @@ export class PersonDetail {
   date: Date;
   employeeType: string;
   employeeTypeId: number;
+  employeeStatusId: number;
   clearance: string;
   clearanceId: number;
   degree: string;
+  degreeId: number;
+  eduLevelId: number;
   name: string;
   phone: string; // phone "number" may include spaces, dashes, parenthesis, pluses, extensions, etc.
   mailingAddress: string;
@@ -13,6 +16,7 @@ export class PersonDetail {
   email: string;
   pdfSrc?: string;
   status: string;
+  statusId: number;
   positionAppliedFor: string;
   // comments: {
   //   comment: string,
@@ -48,8 +52,12 @@ export const personDetailMapping = (givenPerson: PersonDetailFields): PersonDeta
       email: givenPerson.email,
       employeeType: givenPerson.internalEmployeeType.long,
       employeeTypeId: givenPerson.internalEmployeeType.id,
+      employeeStatusId: givenPerson.internalEmployeeStatus.id,
       status: givenPerson.internalEmployeeType.short,
+      statusId: givenPerson.lastStatusOfPerson.id,
       degree: givenPerson.degree.long,
+      degreeId: givenPerson.degree.id,
+      eduLevelId: givenPerson.schoolingLevel.id,
       date: getDateFromEpoch(givenPerson.lastStatusOfPersonDate),
       clearance: givenPerson.securityClearance.long,
       clearanceId: givenPerson.securityClearance.id,
@@ -91,10 +99,15 @@ interface PersonDetailFields {
     long: string;
   };
   internalEmployeeStatus: {
+    id: number;
     short: string;
   };
   degree: {
+    id: number;
     long: string;
+  };
+  schoolingLevel: {
+    id: number;
   };
   securityClearance: {
     id: number;
@@ -105,6 +118,9 @@ interface PersonDetailFields {
   mailingAddress: string;
   physicalAddress: string;
   email: string;
+  lastStatusOfPerson: {
+    id: number;
+  };
   lastStatusOfPersonDate: string;
   resumeLatest?: {
     payloadText?: string;
@@ -121,12 +137,18 @@ export const personDetailFieldsOfQuery = `
       short
     }
     internalEmployeeStatus {
+      id
       short
     }
     degree {
+      id
       long
     }
+    schoolingLevel {
+      id
+    }
     securityClearance {
+      id
       long
     }
     positionAppliedFor
@@ -134,6 +156,9 @@ export const personDetailFieldsOfQuery = `
     mailingAddress
     physicalAddress
     email
+    lastStatusOfPerson {
+      id
+    }
     lastStatusOfPersonDate
     resumeLatest{
       payloadText

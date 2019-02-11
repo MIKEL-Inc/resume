@@ -93,7 +93,7 @@
     </section>
 
     <section *ngIf="editMode">
-      <form class="form-container details">
+      <form class="form-container details" [formGroup]="personData" (ngSubmit)="onSubmit()">
         <h3 class="mat-h3">Applicant</h3>
         <mat-divider></mat-divider>
 
@@ -102,11 +102,14 @@
           <input
             matInput
             placeholder="Applicant's Name"
-            value="{{ detailData?.name }}"
+            formControlName="name"
           />
         </mat-form-field>
         <mat-form-field>
-          <mat-select placeholder="Application Status">
+          <mat-select
+            placeholder="Application Status"
+            formControlName="appStatusId"
+          >
             <mat-option
               *ngFor="let applicationStatus of lookupLists?.StatusOfPerson"
               [matTooltip]="applicationStatus.long"
@@ -117,24 +120,28 @@
           </mat-select>
         </mat-form-field>
         <section>
-          <mat-button-toggle-group #group="matButtonToggleGroup">
+          <mat-button-toggle-group
+            #group="matButtonToggleGroup"
+            formControlName="employeeStatusId"
+          >
             <mat-button-toggle
               *ngFor="let EmpStatus of lookupLists?.InternalEmployeeStatus"
               [matTooltip]="EmpStatus.long"
-              value="EmpStatus.id"
-              [checked]="EmpStatus.id === detailData?.employeeTypeId"
+              [value]="EmpStatus.id"
             >
               {{ EmpStatus.short }}
             </mat-button-toggle>
           </mat-button-toggle-group>
         </section>
         <section>
-          <mat-button-toggle-group #group="matButtonToggleGroup">
+          <mat-button-toggle-group
+            #group="matButtonToggleGroup"
+            formControlName="employeeTypeId"
+          >
             <mat-button-toggle
               *ngFor="let EmpType of lookupLists?.InternalEmployeeType"
               [matTooltip]="EmpType.long"
-              value="EmpType.id"
-              [checked]="EmpType.id === detailData?.employeeTypeId"
+              [value]="EmpType.id"
             >
               {{ EmpType.short }}
             </mat-button-toggle>
@@ -150,7 +157,7 @@
             matInput
             type="email"
             placeholder="Applicant's Email"
-            value="{{ detailData?.email }}"
+            formControlName="email"
           />
         </mat-form-field>
         <mat-form-field>
@@ -159,7 +166,7 @@
             matInput
             type="tel"
             placeholder="Applicant's Phone Number"
-            value="{{ detailData?.phone }}"
+            formControlName="phone"
           />
         </mat-form-field>
         <mat-form-field>
@@ -170,13 +177,13 @@
             cdkAutosizeMinRows="1"
             cdkAutosizeMaxRows="4"
             placeholder="Applicant's Mailing Address"
-            [value]="detailData?.mailingAddress"
+            formControlName="mailingAddress"
           ></textarea>
         </mat-form-field>
         <mat-checkbox
           class="mat-form-field-wrapper"
           #sameAsMailing
-          [checked]="detailData?.mailingAddress === detailData?.physicalAddress"
+          [checked]="personData.value.mailingAddress === personData.value.physicalAddress"
           >Physical Address same as Mailing Address</mat-checkbox
         >
         <mat-form-field *ngIf="!sameAsMailing.checked">
@@ -187,7 +194,7 @@
             cdkAutosizeMinRows="1"
             cdkAutosizeMaxRows="4"
             placeholder="Applicant's Physical Address"
-            [value]="detailData?.physicalAddress"
+            formControlName="physicalAddress"
           ></textarea>
         </mat-form-field>
 
@@ -199,7 +206,7 @@
           <input
             matInput
             placeholder="Job Description"
-            value="{{ detailData?.positionAppliedFor }}"
+            formControlName="positionAppliedFor"
           />
         </mat-form-field>
 
@@ -207,12 +214,14 @@
         <mat-divider></mat-divider>
 
         <section>
-          <mat-button-toggle-group #group="matButtonToggleGroup">
+          <mat-button-toggle-group
+            #group="matButtonToggleGroup"
+            formControlName="clearanceId"
+          >
             <mat-button-toggle
               *ngFor="let clearance of lookupLists?.SecurityClearance"
               [matTooltip]="clearance.long"
-              value="clearance.id"
-              [checked]="clearance.id === detailData?.employeeTypeId"
+              [value]="clearance.id"
             >
               {{ clearance.short }}
             </mat-button-toggle>
@@ -223,19 +232,24 @@
         <mat-divider></mat-divider>
 
         <section>
-          <mat-button-toggle-group #group="matButtonToggleGroup">
+          <mat-button-toggle-group
+            #group="matButtonToggleGroup"
+            formControlName="eduLevelId"
+          >
             <mat-button-toggle
               *ngFor="let eduLevel of lookupLists?.SchoolingLevel"
               [matTooltip]="eduLevel.long"
-              value="eduLevel.id"
-              [checked]="eduLevel.id === detailData?.employeeTypeId"
+              [value]="eduLevel.id"
             >
               {{ eduLevel.short }}
             </mat-button-toggle>
           </mat-button-toggle-group>
         </section>
         <mat-form-field>
-          <mat-select placeholder="Degree">
+          <mat-select
+            placeholder="Degree"
+            formControlName="degreeId"
+          >
             <mat-option
               *ngFor="let eduDegree of lookupLists?.Degree"
               [matTooltip]="eduDegree.short"
@@ -247,7 +261,7 @@
         </mat-form-field>
       </form>
       <div mat-dialog-actions *ngIf="editMode">
-        <button mat-button mat-flat-button color="primary">Save</button>
+        <button mat-button mat-flat-button color="primary" (click)="onSubmit(sameAsMailing)">Save</button>
         <button mat-button cdkFocusInitial (click)="toggleEditMode()">Cancel</button>
       </div>
     </section>

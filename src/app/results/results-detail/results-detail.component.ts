@@ -1,4 +1,5 @@
 import { Component, Inject } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { ApiService } from 'src/app/services/api.service';
@@ -13,6 +14,27 @@ import { PersonDetail } from 'src/app/classes/person-detail';
 })
 export class ResultsDetailComponent {
 
+  personData = this.formBuilder.group({
+    id: [0],
+    pdfSrc: [''],
+
+    name: ['', Validators.required],
+    appStatusId: [1, Validators.required],
+    employeeStatusId: [1],
+    employeeTypeId: [1],
+
+    email: ['', [Validators.required, Validators.email]],
+    phone: [''],
+    mailingAddress: [''],
+    physicalAddress: [''],
+
+    positionAppliedFor: [''],
+
+    clearanceId: [1],
+
+    eduLevelId: [1],
+    degreeId: [1]
+  });
   loaded;
   file: File;
   person: PersonDetail;
@@ -24,39 +46,39 @@ export class ResultsDetailComponent {
   constructor(
     public dialogRef: MatDialogRef<ResultsDetailComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { id: number },
-    private apiService: ApiService) {
-
+    private apiService: ApiService,
+    private formBuilder: FormBuilder
+  ) {
     this.dataExists = data && typeof data.id !== 'undefined' ;
     if (this.dataExists) {
       this.getPerson(data);
-    } else {
-      this.personTemplate();
     }
   }
 
-  private personTemplate() {
-    this.detailData = {
-      name: 'Name',
-      status: 'Status',
-      degree: 'Degree',
-      date: '',
-      employeeTypeId: 1,
-      clearance: 'Clearance',
-    };
-  }
-
   toggleEditMode(setEditMode?: boolean): void {
-    if (typeof setEditMode === 'undefined') {
+    const isJustToggle = typeof setEditMode === 'undefined';
+    if (isJustToggle) {
       this.editMode = !this.editMode;
     } else {
       this.editMode = setEditMode;
     }
 
-    if (this.editMode && typeof this.lookupLists === 'undefined') {
+    const isLookupListsNeedToBeLoaded = typeof this.lookupLists === 'undefined';
+    if (this.editMode && isLookupListsNeedToBeLoaded) {
       this.apiService
         .getLookupLists()
         .subscribe(lookupLists => (this.lookupLists = lookupLists));
     }
+  }
+
+  onSubmit(sameAsMailingCheckBox: {checked: boolean}) {
+    if (this.personData.invalid) {
+      return;
+    }
+    if (sameAsMailingCheckBox.checked) {
+      this.personData.patchValue({physicalAddress: this.personData.value.mailingAddress});
+    }
+    alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.personData.value));
   }
 
   onFileChange(event) {
@@ -79,18 +101,36 @@ export class ResultsDetailComponent {
   }
 
   private handleReaderLoaded(reader) {
-    this.detailData.pdfSrc = reader.result;
+    this.personData.patchValue({pdfSrc: reader.result});
     this.loaded = true;
     this.dataExists = true;
   }
 
-  private createPerson() {
-    this.apiService.createPerson(this.person);
-  }
+  private getPerson(data: { id: number }) {
+    this.apiService.getPersonApi(data.id).subscribe(results => {
+      this.personData.setValue({
+        id: results.id,
+        pdfSrc: results.pdfSrc,
 
-  private getPerson(data: { id: number; }) {
-    this.apiService.getPersonApi(data.id)
-      .subscribe(results => this.detailData = results);
+        name: results.name,
+        appStatusId: results.statusId,
+        employeeStatusId: results.employeeTypeId,
+        employeeTypeId: results.employeeTypeId,
+
+        email: results.email,
+        phone: results.phone,
+        mailingAddress: results.mailingAddress,
+        physicalAddress: results.physicalAddress,
+
+        positionAppliedFor: results.positionAppliedFor,
+
+        clearanceId: results.clearanceId,
+
+        eduLevelId: results.eduLevelId,
+        degreeId: results.degreeId
+      });
+      this.detailData = results;
+    });
   }
 
   onNoClick(): void {
