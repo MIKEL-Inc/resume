@@ -209,12 +209,12 @@
         <section>
           <mat-button-toggle-group #group="matButtonToggleGroup">
             <mat-button-toggle
-              *ngFor="let EmpType of lookupLists?.SecurityClearance"
-              [matTooltip]="EmpType.long"
-              value="EmpType.id"
-              [checked]="EmpType.id === detailData?.employeeTypeId"
+              *ngFor="let clearance of lookupLists?.SecurityClearance"
+              [matTooltip]="clearance.long"
+              value="clearance.id"
+              [checked]="clearance.id === detailData?.employeeTypeId"
             >
-              {{ EmpType.short }}
+              {{ clearance.short }}
             </mat-button-toggle>
           </mat-button-toggle-group>
         </section>
