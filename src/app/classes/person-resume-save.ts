@@ -1,4 +1,17 @@
-import { PersonDetail, personDetailFieldsOfQuery } from './person-detail';
+import {
+  PersonDetail,
+  PersonDetailFields,
+  personDetailFieldsOfQuery
+} from './person-detail';
+
+// These key names must match GraphQL response
+export class CreatePersonAndResumeJson {
+  data: {
+    createPersonAndResume: {
+      person: PersonDetailFields;
+    };
+  };
+}
 
 export function savePersonAndResumeMutator (givenPerson: PersonDetail) {
   // FIXME: Forcing values for early testing.

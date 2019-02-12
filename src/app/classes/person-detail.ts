@@ -89,7 +89,7 @@ export const getStuff = (blob: Blob) => {
   return thingy;
 };
 
-interface PersonDetailFields {
+export interface PersonDetailFields {
   id: number;
   fullName: string;
   internalEmployeeType: {

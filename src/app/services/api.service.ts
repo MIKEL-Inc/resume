@@ -16,7 +16,10 @@ import {
   personSummaryFieldsOfQuery,
   personSummaryMapping
 } from '../classes/person-summary';
-import { savePersonAndResumeMutator } from '../classes/person-resume-save';
+import {
+  CreatePersonAndResumeJson,
+  savePersonAndResumeMutator
+} from '../classes/person-resume-save';
 import {
   LookupLists,
   lookupListsGraphQLQueryString,
@@ -91,9 +94,9 @@ export class ApiService {
   savePersonAndResume(givenPerson: PersonDetail): Observable<PersonDetail> {
     const mutator = savePersonAndResumeMutator(givenPerson);
 
-    return this.http.post<PersonDetailJson>(this.apiUrl, mutator, graphqlHttpOptions).pipe(
-      map(res => personDetailMapping(res.data.person)),
-      catchError(this.handleError<PersonDetail>('getPerson'))
+    return this.http.post<CreatePersonAndResumeJson>(this.apiUrl, mutator, graphqlHttpOptions).pipe(
+      map(res => personDetailMapping(res.data.createPersonAndResume.person)),
+      catchError(this.handleError<PersonDetail>('savePersonAndResume'))
     );
   }
 
