@@ -1,3 +1,5 @@
+import { getDateFromEpoch } from './utility';
+
 export class PersonSummary {
   id: number;
   date: Date;
@@ -36,13 +38,6 @@ export const personSummaryMapping = (givenPerson: PersonSummaryFields): PersonSu
       clearanceId: givenPerson.securityClearance.id,
       // comments: this.graphQLCommentsToComments(givenPerson.comments)
     };
-};
-
-export const getDateFromEpoch = (secondsSinceUTCEpoch: string): Date => {
-  const seconds = parseInt(secondsSinceUTCEpoch, 10);
-  const date = new Date(0); // Epoch time
-  date.setUTCSeconds(seconds);
-  return date;
 };
 
 interface PersonSummaryFields {

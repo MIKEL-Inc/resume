@@ -1,3 +1,5 @@
+import { getDateFromEpoch } from './utility';
+
 export class PersonDetail {
   id: number;
   date: Date;
@@ -85,13 +87,6 @@ export const getStuff = (blob: Blob) => {
     reader.readAsArrayBuffer(blob);
   }
   return thingy;
-};
-
-export const getDateFromEpoch = (secondsSinceUTCEpoch: string): Date => {
-  const seconds = parseInt(secondsSinceUTCEpoch, 10);
-  const date = new Date(0); // Epoch time
-  date.setUTCSeconds(seconds);
-  return date;
 };
 
 interface PersonDetailFields {
