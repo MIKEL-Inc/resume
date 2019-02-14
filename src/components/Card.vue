@@ -1,22 +1,17 @@
 <template>
   <v-layout>
     <v-flex>
-      <v-card>
-        <v-img
-          src="https://cdn.vuetifyjs.com/images/cards/desert.jpg"
-          aspect-ratio="2.75"
-        ></v-img>
-
+      <v-card color="primary lighten-4">
         <v-card-title primary-title>
           <div>
-            <h3 class="headline mb-0">Kangaroo Valley Safari</h3>
-            <div>Located two hours south of Sydney in the <br>Southern Highlands of New South Wales, ...</div>
+            <h3 class="headline mb-0">First Last Name</h3>
+            <p class="subheading font-weight-light">03/13/18</p>
           </div>
         </v-card-title>
-
         <v-card-actions>
-          <v-btn flat color="orange">Share</v-btn>
-          <v-btn flat color="orange">Explore</v-btn>
+          <v-chip color="gray">Clearance</v-chip>
+          <v-spacer></v-spacer>
+          <p class="caption font-weight-thin">Candidate</p>
         </v-card-actions>
       </v-card>
     </v-flex>
