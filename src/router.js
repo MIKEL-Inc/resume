@@ -11,6 +11,7 @@ export default new Router({
     {
       path: '/',
       name: 'grid',
+      props: true,
       component: CardGrid
     }
     // {
