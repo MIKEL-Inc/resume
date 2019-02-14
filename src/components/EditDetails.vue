@@ -12,6 +12,8 @@
       <v-layout row wrap>
         <v-flex xs12 align-center justify-space-between>
           <v-layout align-center>
+            <h1>ID: {{person.id}}</h1>
+            <h1>Name: {{person.name}}</h1>
             <v-avatar size="40px" class="mr-3">
               <img src="//ssl.gstatic.com/s2/oz/images/sge/grey_silhouette.png" alt>
             </v-avatar>
@@ -42,6 +44,13 @@
 export default {
   data: () => ({
     //
-  })
-};
+  }),
+  props: {
+    // TODO: Add validation
+    person: {
+      id: Number,
+      name: String
+    }
+  }
+}
 </script>

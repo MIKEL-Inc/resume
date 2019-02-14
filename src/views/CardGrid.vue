@@ -6,7 +6,7 @@
         :key="n"
         xs4
       >
-        <Card />
+        <Card @edit="$emit('edit', $event)"/>
       </v-flex>
     </v-layout>
   </v-container>

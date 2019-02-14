@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <v-flex>
-      <v-card color="primary lighten-4">
+      <v-card color="primary lighten-4" @click="$emit('edit', {id: 1})">
         <v-card-title primary-title>
           <div>
             <h3 class="headline mb-0">First Last Name</h3>
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+
 export default {
   data () {
     return {
