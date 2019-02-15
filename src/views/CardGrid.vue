@@ -14,6 +14,7 @@
 
 <script>
 import Card from '../components/Card'
+import db from '@/firebase/init'
 
 export default {
   data: () => ({
@@ -21,6 +22,15 @@ export default {
   }),
   components: {
     Card
+  },
+  created() {
+    // Fetch data from the firestore
+    db.collection('hireStatus').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        console.log(doc.data())
+      })
+    })
   }
 }
 </script>
