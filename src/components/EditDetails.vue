@@ -115,43 +115,43 @@ export default {
       name: String
     }
   },
-  created() {
+  created () {
     this.applicationStatus = [
-      { short: "status", long: "long status name" },
-      { short: "status2", long: "long status2 name" }
+      { short: 'status', long: 'long status name' },
+      { short: 'status2', long: 'long status2 name' }
     ]
     this.hireStatuses = [
-      { short: "None", long: "None" },
-      { short: "FT", long: "Full Time" },
-      { short: "PT", long: "Part Time" },
-      { short: "Past", long: "Former employment at our company" }
+      { short: 'None', long: 'None' },
+      { short: 'FT', long: 'Full Time' },
+      { short: 'PT', long: 'Part Time' },
+      { short: 'Past', long: 'Former employment at our company' }
     ]
     this.employeeTypes = [
-      { short: "Cand", long: "Candidate" },
-      { short: "Intrn", long: "Intern" },
-      { short: "Empl", long: "Employee" }
+      { short: 'Cand', long: 'Candidate' },
+      { short: 'Intrn', long: 'Intern' },
+      { short: 'Empl', long: 'Employee' }
     ]
     this.clearanceList = [
-      { short: "unk", long: "Unknown" },
-      { short: "n/a", long: "Not Applicable" },
-      { short: "S", long: "Secret" },
-      { short: "TS", long: "Top Secret" },
-      { short: "S-Exp", long: "Secret - Expired" },
-      { short: "TS-Exp", long: "Top Secret - Expired" },
+      { short: 'unk', long: 'Unknown' },
+      { short: 'n/a', long: 'Not Applicable' },
+      { short: 'S', long: 'Secret' },
+      { short: 'TS', long: 'Top Secret' },
+      { short: 'S-Exp', long: 'Secret - Expired' },
+      { short: 'TS-Exp', long: 'Top Secret - Expired' }
     ]
     this.educationList = [
-      { short: "unk", long: "Unknown" },
-      { short: "n/a", long: "Not Applicable" },
-      { short: "hs", long: "High School" },
-      { short: "aa", long: "Associates of Arts" },
-      { short: "as", long: "Associates of Science" },
-      { short: "ba", long: "Bachelors of Arts" },
-      { short: "bs", long: "Bachelors of Science" }
+      { short: 'unk', long: 'Unknown' },
+      { short: 'n/a', long: 'Not Applicable' },
+      { short: 'hs', long: 'High School' },
+      { short: 'aa', long: 'Associates of Arts' },
+      { short: 'as', long: 'Associates of Science' },
+      { short: 'ba', long: 'Bachelors of Arts' },
+      { short: 'bs', long: 'Bachelors of Science' }
     ]
-     this.degreeList = [
-      { short: "unk", long: "Unknown" },
-      { short: "COE", long: "Computer Engineering" },
-      { short: "CS", long: "Computer Science" },
+    this.degreeList = [
+      { short: 'unk', long: 'Unknown' },
+      { short: 'COE', long: 'Computer Engineering' },
+      { short: 'CS', long: 'Computer Science' }
     ]
   }
 }
