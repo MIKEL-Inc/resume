@@ -23,14 +23,14 @@ export default {
   components: {
     Card
   },
-  created() {
+  created () {
     // Fetch data from the firestore
     db.collection('hireStatus').get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        console.log(doc.data())
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          console.log(doc.data())
+        })
       })
-    })
   }
 }
 </script>
