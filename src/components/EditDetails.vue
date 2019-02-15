@@ -12,75 +12,86 @@
     <v-container fluid>
       <v-layout>
         <v-flex xs12 md8>
-          <object width="100%" height="100%" data="https://writing.colostate.edu/guides/documents/resume/functionalSample.pdf"></object>
+          <object
+            width="100%"
+            height="100%"
+            data="https://writing.colostate.edu/guides/documents/resume/functionalSample.pdf"
+          ></object>
         </v-flex>
         <v-flex xs12 md4>
           <form grid-list-sm class="pa-4" @submit.prevent="AddPerson">
             <v-layout row wrap>
+              <v-text-field label="Applicant Name" v-model="name"></v-text-field>
 
-                <v-text-field label="Applicant Name" v-model="name"></v-text-field>
+              <v-combobox
+                v-model="lastStatus"
+                :items="applicationStatus"
+                label="Application Status"
+              ></v-combobox>
 
-                <v-combobox
-                  v-model="lastStatus"
-                  :items="applicationStatus.map(a => a.short)"
-                  label="Application Status"
-                ></v-combobox>
+              <v-flex xs12 md6>
+                <p>Hire Status</p>
+                <v-btn-toggle v-model="lastStatus">
+                  <v-btn
+                    v-for="(status, index) in hireStatuses.map(s => s.short)"
+                    :key="index"
+                  >{{ status }}</v-btn>
+                </v-btn-toggle>
+              </v-flex>
+              <v-flex xs12 md6>
+                <p>Employee Type</p>
+                <v-btn-toggle v-model="lastEmployeeType">
+                  <v-btn
+                    v-for="(type, index) in employeeTypes.map(t => t.short)"
+                    :key="index"
+                  >{{ type }}</v-btn>
+                </v-btn-toggle>
+              </v-flex>
 
-                <v-flex xs12 md6>
-                  <p>Hire Status</p>
-                  <v-btn-toggle v-model="lastStatus">
-                    <v-btn v-for="(status, index) in hireStatuses.map(s => s.short)" :key="index">
-                      {{ status }}
-                    </v-btn>
-                  </v-btn-toggle>
-                </v-flex>
-                <v-flex xs12 md6>
-                  <p>Employee Type</p>
-                  <v-btn-toggle v-model="lastEmployeeType">
-                    <v-btn v-for="(type, index) in employeeTypes.map(t => t.short)" :key="index">
-                      {{ type }}
-                    </v-btn>
-                  </v-btn-toggle>
-                </v-flex>
+              <v-text-field type="email" label="Email" v-model="email"></v-text-field>
 
-                <v-text-field type="email" label="Email" v-model="email"></v-text-field>
+              <v-text-field
+                type="tel"
+                label="Phone"
+                placeholder="(000) 000 - 0000"
+                mask="phone"
+                v-model="phone"
+              ></v-text-field>
 
-                <v-text-field
-                  type="tel"
-                  label="Phone"
-                  placeholder="(000) 000 - 0000"
-                  mask="phone"
-                  v-model="phone"
-                ></v-text-field>
+              <v-text-field label="Mailing Address" v-model="mailingAddress"></v-text-field>
 
-                <v-text-field label="Mailing Address" v-model="mailingAddress"></v-text-field>
+              <v-checkbox
+                v-model="mailingCheckbox"
+                label="Physical Address same as Mailing Address"
+              ></v-checkbox>
 
-                <v-checkbox
-                  v-model="mailingCheckbox"
-                  label="Physical Address same as Mailing Address"
-                ></v-checkbox>
+              <v-text-field
+                v-if="!mailingCheckbox"
+                label="Physical Address"
+                v-model="physicalAddress"
+              ></v-text-field>
 
-                <v-text-field v-if="!mailingCheckbox" label="Physical Address" v-model="physicalAddress"></v-text-field>
+              <v-text-field label="Position Applied For" v-model="positionApplied"></v-text-field>
 
-                <v-text-field label="Position Applied For" v-model="positionApplied"></v-text-field>
+              <v-flex xs12>
+                <p>Security Clearance</p>
+                <v-btn-toggle v-model="clearance">
+                  <v-btn
+                    v-for="(clearance, index) in clearanceList.map(c => c.short)"
+                    :key="index"
+                  >{{ clearance }}</v-btn>
+                </v-btn-toggle>
+              </v-flex>
 
-                <v-flex xs12>
-                  <p>Security Clearance</p>
-                  <v-btn-toggle v-model="clearance">
-                    <v-btn v-for="(clearance, index) in clearanceList.map(c => c.short)" :key="index">
-                      {{ clearance }}
-                    </v-btn>
-                  </v-btn-toggle>
-                </v-flex>
-
-                <v-flex xs12>
-                  <p>Education</p>
-                  <v-btn-toggle v-model="education">
-                    <v-btn v-for="(edu, index) in educationList.map(e => e.short)" :key="index">
-                      {{ edu }}
-                    </v-btn>
-                  </v-btn-toggle>
-                </v-flex>
+              <v-flex xs12>
+                <p>Education</p>
+                <v-btn-toggle v-model="education">
+                  <v-btn
+                    v-for="(edu, index) in educationList.map(e => e.short)"
+                    :key="index"
+                  >{{ edu }}</v-btn>
+                </v-btn-toggle>
+              </v-flex>
             </v-layout>
           </form>
         </v-flex>
@@ -90,9 +101,12 @@
 </template>
 
 <script>
+import db from '@/firebase/init'
+
 export default {
   data: () => ({
     name: null,
+    applicationStatus: [],
     lastStatus: null,
     hireStatuses: [],
     lastEmployeeType: null,
@@ -116,16 +130,28 @@ export default {
     }
   },
   created () {
-    this.applicationStatus = [
-      { short: 'status', long: 'long status name' },
-      { short: 'status2', long: 'long status2 name' }
-    ]
-    this.hireStatuses = [
-      { short: 'None', long: 'None' },
-      { short: 'FT', long: 'Full Time' },
-      { short: 'PT', long: 'Part Time' },
-      { short: 'Past', long: 'Former employment at our company' }
-    ]
+    // // Fetch data from the firestore
+    // db.collection('applicationStatus').get()
+    // .then(snapshot => {
+    //   snapshot.forEach(doc => {
+    //     console.log('Application Statu',doc.data())
+    //     let statusText = doc.data().long
+    //     this.applicationStatus.push(statusText)
+    //   })
+    // })
+
+    // Get application statuses
+    this.listFromDB('applicationStatus', this.applicationStatus, ['long'])
+
+    // Get hire statuses
+    this.listFromDB('hireStatus', this.hireStatuses, ['short', 'long'])
+
+    // this.hireStatuses = [
+    //   { short: "None", long: "None" },
+    //   { short: "FT", long: "Full Time" },
+    //   { short: "PT", long: "Part Time" },
+    //   { short: "Past", long: "Former employment at our company" }
+    // ];
     this.employeeTypes = [
       { short: 'Cand', long: 'Candidate' },
       { short: 'Intrn', long: 'Intern' },
@@ -153,6 +179,23 @@ export default {
       { short: 'COE', long: 'Computer Engineering' },
       { short: 'CS', long: 'Computer Science' }
     ]
+  },
+  methods: {
+    // Fetch data from the firestore
+    // WARNING: This requires property name to be identical on collection and dropdown.
+    listFromDB (collectionName, dropdownList, propertyList) {
+      db.collection(collectionName)
+        .get()
+        .then(snapshot =>
+          snapshot.forEach(doc => {
+            let dropdownItem = {}
+            propertyList.forEach(property => {
+              dropdownItem[property] = doc.data()[property]
+            })
+            dropdownList.push(dropdownItem)
+          })
+        )
+    }
   }
 }
 </script>
