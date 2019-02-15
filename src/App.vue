@@ -181,6 +181,7 @@ export default {
         id: 3,
         name: 'Bob Dole'
       }
+      this.dialog = true
     }
   }
 }
