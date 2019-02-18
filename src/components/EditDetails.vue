@@ -72,20 +72,31 @@
                 v-model="phone"
               ></v-text-field>
 
-              <v-text-field label="Mailing Address" v-model="mailingAddress"></v-text-field>
+              <v-flex xs12>
+                <v-checkbox
+                  v-model="mailingCheckbox"
+                  label="Physical Address same as Mailing Address"
+                ></v-checkbox>
+              </v-flex>
 
-              <v-checkbox
-                v-model="mailingCheckbox"
-                label="Physical Address same as Mailing Address"
-              ></v-checkbox>
+              <v-textarea
+                label="Mailing Address"
+                autoGrow
+                rows="2"
+                v-model="mailingAddress"
+              ></v-textarea>
 
-              <v-text-field
+              <v-textarea
                 v-if="!mailingCheckbox"
                 label="Physical Address"
+                autoGrow
+                rows="2"
                 v-model="physicalAddress"
-              ></v-text-field>
+              ></v-textarea>
 
-              <v-text-field label="Position Applied For" v-model="positionApplied"></v-text-field>
+              <v-flex xs12>
+                <v-text-field label="Position Applied For" v-model="positionApplied"></v-text-field>
+              </v-flex>
 
               <v-flex xs12>
                 <p>Security Clearance</p>
