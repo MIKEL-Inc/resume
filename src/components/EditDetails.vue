@@ -21,7 +21,13 @@
         <v-flex xs12 md4>
           <form grid-list-sm class="pa-4" @submit.prevent="AddPerson">
             <v-layout row wrap>
-              <v-text-field label="Applicant Name" v-model="name"></v-text-field>
+              <v-text-field
+                label="Applicant Name"
+                v-model="name"
+                :rules="[
+                  () => !!name || 'Name is required',
+                ]"
+              ></v-text-field>
 
               <v-combobox
                 v-model="lastStatus"
@@ -48,7 +54,15 @@
                 </v-btn-toggle>
               </v-flex>
 
-              <v-text-field type="email" label="Email" v-model="email"></v-text-field>
+              <v-text-field
+                type="email"
+                label="Email"
+                v-model="email"
+                :rules="[
+                  v => !!v || 'Email is required',
+                  v => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Invalid valid email'
+                ]"
+              ></v-text-field>
 
               <v-text-field
                 type="tel"
