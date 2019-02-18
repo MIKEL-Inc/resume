@@ -25,7 +25,7 @@
 
               <v-combobox
                 v-model="lastStatus"
-                :items="applicationStatus"
+                :items="applicationStatus.map(a => a.long)"
                 label="Application Status"
               ></v-combobox>
 
