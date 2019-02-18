@@ -141,10 +141,10 @@ export default {
     // })
 
     // Get application statuses
-    this.applicationStatus = this.listLongsFromDB('applicationStatus')
+    this.listLongsFromDB('applicationStatus', this.applicationStatus)
 
     // Get hire statuses
-    this.hireStatuses = this.listShortsFromDB('hireStatus')
+    this.listShortsFromDB('hireStatus', this.hireStatuses)
 
     // this.hireStatuses = [
     //   { short: "None", long: "None" },
@@ -183,32 +183,26 @@ export default {
   methods: {
     // Fetch data from the firestore
     // WARNING: This requires property name to be identical on collection and dropdown.
-    listFromDB (collectionName) {
-      const newList = []
+    listFromDB (collectionName, dropdownList) {
       db.collection(collectionName)
         .get()
         .then(snapshot =>
-          snapshot.forEach(doc => newList.push(doc.data()))
+          snapshot.forEach(doc => dropdownList.push(doc.data()))
         )
-      return newList
     },
-    listShortsFromDB (collectionName) {
-      const newList = []
+    listShortsFromDB (collectionName, dropdownList) {
       db.collection(collectionName)
         .get()
         .then(snapshot =>
-          snapshot.forEach(doc => newList.push(doc.data().short))
+          snapshot.forEach(doc => dropdownList.push(doc.data().short))
         )
-      return newList
     },
-    listLongsFromDB (collectionName) {
-      const newList = []
+    listLongsFromDB (collectionName, dropdownList) {
       db.collection(collectionName)
         .get()
         .then(snapshot =>
-          snapshot.forEach(doc => newList.push(doc.data().long))
+          snapshot.forEach(doc => dropdownList.push(doc.data().long))
         )
-      return newList
     }
   }
 }
