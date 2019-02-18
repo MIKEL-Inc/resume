@@ -133,10 +133,10 @@ export default {
   created () {
     // Fetch data from the firestore
     this.listFromDB('applicationStatus', this.applicationStatus, ['long'])
-    this.listFromDB('hireStatus', this.hireStatuses, ['short', 'long'])
+    this.listFromDB('hireStatus', this.hireStatuses, ['short', 'long'], true)
     this.listFromDB('employeeTypes', this.employeeTypes, ['short'])
-    this.listFromDB('clearanceList', this.clearanceList, ['short'])
-    this.listFromDB('educationLevel', this.educationList, ['short'])
+    this.listFromDB('clearanceList', this.clearanceList, ['short'], true)
+    this.listFromDB('educationLevel', this.educationList, ['short'], true)
 
     this.degreeList = [
       { short: 'unk', long: 'Unknown' },
@@ -145,10 +145,32 @@ export default {
     ]
   },
   methods: {
-    // Fetch data from the firestore
-    // WARNING: This requires property name to be identical on collection and dropdown.
-    listFromDB (collectionName, dropdownList, propertyList) {
-      db.collection(collectionName)
+    /**
+     * Return array from Firestore collection.
+     * 
+     * Sorting is an optional parameter and defaults to false.
+     * 
+     * - Assumes `db` already initialized.
+     * - Does not check for property existence.
+     * - Assigns same property name to return.
+     * 
+     * @example listFromDB('actors', this.actorDropDownList, ['name'])
+     * @example listFromDB('actors', this.actorDropDownList, ['name', 'debutFilm'])
+     * @example listFromDB('actors', this.actorDropDownList, ['name'], true)
+     * @example listFromDB('actors', this.actorDropDownList, ['name'], { sort: true })
+     * @param {string} collectionName String name of collection in database to retrieve
+     * @param {array} dropdownList Array to populate with items from collection
+     * @param {string[]} propertyList Array of strings naming properties to include
+     * @param {boolean} [sort = false] Optional (default `false`) boolean for ordering collection items by their `sort` property (Assuming all items have a `sort` property)
+     */
+    listFromDB (collectionName, dropdownList, propertyList, sort = false) {
+      let collectionRef
+      if (sort) {
+        collectionRef = db.collection(collectionName).orderBy('sort')
+      } else {
+        collectionRef = db.collection(collectionName)
+      }
+      collectionRef
         .get()
         .then(snapshot =>
           snapshot.forEach(doc => {
