@@ -33,7 +33,7 @@
                 <p>Hire Status</p>
                 <v-btn-toggle v-model="lastStatus">
                   <v-btn
-                    v-for="(status, index) in hireStatuses"
+                    v-for="(status, index) in hireStatuses.map(s => s.short)"
                     :key="index"
                   >{{ status }}</v-btn>
                 </v-btn-toggle>
@@ -141,10 +141,10 @@ export default {
     // })
 
     // Get application statuses
-    this.listLongsFromDB('applicationStatus', this.applicationStatus)
+    this.listFromDB('applicationStatus', this.applicationStatus, ['long'])
 
     // Get hire statuses
-    this.listShortsFromDB('hireStatus', this.hireStatuses)
+    this.listFromDB('hireStatus', this.hireStatuses, ['short', 'long'])
 
     // this.hireStatuses = [
     //   { short: "None", long: "None" },
@@ -183,25 +183,17 @@ export default {
   methods: {
     // Fetch data from the firestore
     // WARNING: This requires property name to be identical on collection and dropdown.
-    listFromDB (collectionName, dropdownList) {
+    listFromDB (collectionName, dropdownList, propertyList) {
       db.collection(collectionName)
         .get()
         .then(snapshot =>
-          snapshot.forEach(doc => dropdownList.push(doc.data()))
-        )
-    },
-    listShortsFromDB (collectionName, dropdownList) {
-      db.collection(collectionName)
-        .get()
-        .then(snapshot =>
-          snapshot.forEach(doc => dropdownList.push(doc.data().short))
-        )
-    },
-    listLongsFromDB (collectionName, dropdownList) {
-      db.collection(collectionName)
-        .get()
-        .then(snapshot =>
-          snapshot.forEach(doc => dropdownList.push(doc.data().long))
+          snapshot.forEach(doc => {
+            let dropdownItem = {}
+            propertyList.forEach(property => {
+              dropdownItem[property] = doc.data()[property]
+            })
+            dropdownList.push(dropdownItem)
+          })
         )
     }
   }
