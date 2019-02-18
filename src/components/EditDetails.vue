@@ -120,6 +120,7 @@ export default {
     clearance: null,
     clearanceList: [],
     education: null,
+    educationList: [],
     degreeList: []
   }),
   props: {
@@ -130,50 +131,13 @@ export default {
     }
   },
   created () {
-    // // Fetch data from the firestore
-    // db.collection('applicationStatus').get()
-    // .then(snapshot => {
-    //   snapshot.forEach(doc => {
-    //     console.log('Application Statu',doc.data())
-    //     let statusText = doc.data().long
-    //     this.applicationStatus.push(statusText)
-    //   })
-    // })
-
-    // Get application statuses
+    // Fetch data from the firestore
     this.listFromDB('applicationStatus', this.applicationStatus, ['long'])
-
-    // Get hire statuses
     this.listFromDB('hireStatus', this.hireStatuses, ['short', 'long'])
+    this.listFromDB('employeeTypes', this.employeeTypes, ['short'])
+    this.listFromDB('clearanceList', this.clearanceList, ['short'])
+    this.listFromDB('educationLevel', this.educationList, ['short'])
 
-    // this.hireStatuses = [
-    //   { short: "None", long: "None" },
-    //   { short: "FT", long: "Full Time" },
-    //   { short: "PT", long: "Part Time" },
-    //   { short: "Past", long: "Former employment at our company" }
-    // ];
-    this.employeeTypes = [
-      { short: 'Cand', long: 'Candidate' },
-      { short: 'Intrn', long: 'Intern' },
-      { short: 'Empl', long: 'Employee' }
-    ]
-    this.clearanceList = [
-      { short: 'unk', long: 'Unknown' },
-      { short: 'n/a', long: 'Not Applicable' },
-      { short: 'S', long: 'Secret' },
-      { short: 'TS', long: 'Top Secret' },
-      { short: 'S-Exp', long: 'Secret - Expired' },
-      { short: 'TS-Exp', long: 'Top Secret - Expired' }
-    ]
-    this.educationList = [
-      { short: 'unk', long: 'Unknown' },
-      { short: 'n/a', long: 'Not Applicable' },
-      { short: 'hs', long: 'High School' },
-      { short: 'aa', long: 'Associates of Arts' },
-      { short: 'as', long: 'Associates of Science' },
-      { short: 'ba', long: 'Bachelors of Arts' },
-      { short: 'bs', long: 'Bachelors of Science' }
-    ]
     this.degreeList = [
       { short: 'unk', long: 'Unknown' },
       { short: 'COE', long: 'Computer Engineering' },
