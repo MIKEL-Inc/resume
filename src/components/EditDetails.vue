@@ -197,26 +197,50 @@ export default {
   },
   methods: {
     save () {
-      db.collection('deleteMePerson').add({
-        name: this.name,
-        date: (new Date()).toISOString(), // FIXME: This is dependant on the client machine's time and timezone.
-        lastStatus: this.applicationStatus[this.lastStatus],
-        hireStatus: this.hireStatuses[this.hireStatus],
-        lastEmployeeType: this.employeeTypes[this.lastEmployeeType],
-        email: this.email,
-        phone: this.phone,
-        mailingAddress: this.mailingAddress,
-        physicalAddress: this.mailingCheckbox
-          ? this.mailingAddress
-          : this.physicalAddress,
-        positionApplied: this.positionApplied,
-        clearance: this.clearanceList[this.clearance],
-        education: this.educationList[this.education]
-      }).then(() => {
-        this.$emit('save', false)
-      }).catch(err => {
+      if (this.id) {
+        const docRef = db.collection('deleteMePerson').doc(this.id)
+        docRef.update({
+          name: this.name,
+          date: (new Date()).toISOString(), // FIXME: This is dependant on the client machine's time and timezone.
+          lastStatus: this.lastStatus,
+          hireStatus: this.hireStatuses[this.hireStatus],
+          lastEmployeeType: this.employeeTypes[this.lastEmployeeType],
+          email: this.email,
+          phone: this.phone,
+          mailingAddress: this.mailingAddress,
+          physicalAddress: this.mailingCheckbox
+            ? this.mailingAddress
+            : this.physicalAddress,
+          positionApplied: this.positionApplied,
+          clearance: this.clearanceList[this.clearance],
+          education: this.educationList[this.education]
+        }).then(() => {
+          this.$emit('save', true)
+        }).catch(err => {
         /* legit use */ console.log(err)
-      })
+        })
+      } else {
+        db.collection('deleteMePerson').add({
+          name: this.name,
+          date: (new Date()).toISOString(), // FIXME: This is dependant on the client machine's time and timezone.
+          lastStatus: this.lastStatus,
+          hireStatus: this.hireStatuses[this.hireStatus],
+          lastEmployeeType: this.employeeTypes[this.lastEmployeeType],
+          email: this.email,
+          phone: this.phone,
+          mailingAddress: this.mailingAddress,
+          physicalAddress: this.mailingCheckbox
+            ? this.mailingAddress
+            : this.physicalAddress,
+          positionApplied: this.positionApplied,
+          clearance: this.clearanceList[this.clearance],
+          education: this.educationList[this.education]
+        }).then(() => {
+          this.$emit('save', true)
+        }).catch(err => {
+        /* legit use */ console.log(err)
+        })
+      }
     },
     /**
      * Return array from Firestore collection.
