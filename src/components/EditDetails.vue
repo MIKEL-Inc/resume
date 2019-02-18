@@ -21,7 +21,6 @@
         <v-flex xs12 md4>
           <form grid-list-sm class="pa-4" @submit.prevent="AddPerson">
             <v-layout row wrap>
-              hireStatus: C-{{ hireStatus }}-C
               <v-text-field
                 label="Applicant Name"
                 v-model="name"
