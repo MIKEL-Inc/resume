@@ -172,13 +172,13 @@ export default {
   methods: {
     /**
      * Return array from Firestore collection.
-     * 
+     *
      * Sorting is an optional parameter and defaults to false.
-     * 
+     *
      * - Assumes `db` already initialized.
      * - Does not check for property existence.
      * - Assigns same property name to return.
-     * 
+     *
      * @example listFromDB('actors', this.actorDropDownList, ['name'])
      * @example listFromDB('actors', this.actorDropDownList, ['name', 'debutFilm'])
      * @example listFromDB('actors', this.actorDropDownList, ['name'], true)
