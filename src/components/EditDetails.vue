@@ -4,7 +4,7 @@
       <v-toolbar-title>Add/Edit User</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn dark flat @click="$emit('save', false)">Save</v-btn>
+        <v-btn dark flat @click="save">Save</v-btn>
         <v-btn dark flat @click="$emit('cancel', false)">Cancel</v-btn>
       </v-toolbar-items>
     </v-toolbar>
@@ -21,6 +21,7 @@
         <v-flex xs12 md4>
           <form grid-list-sm class="pa-4" @submit.prevent="AddPerson">
             <v-layout row wrap>
+              hireStatus: C-{{ hireStatus }}-C
               <v-text-field
                 label="Applicant Name"
                 v-model="name"
@@ -37,7 +38,7 @@
 
               <v-flex xs12 md6>
                 <p>Hire Status</p>
-                <v-btn-toggle v-model="lastStatus">
+                <v-btn-toggle v-model="hireStatus">
                   <v-btn
                     v-for="(status, index) in hireStatuses.map(s => s.short)"
                     :key="index"
@@ -131,8 +132,9 @@ import db from '@/firebase/init'
 export default {
   data: () => ({
     name: null,
-    applicationStatus: [],
     lastStatus: null,
+    applicationStatus: [],
+    hireStatus: null,
     hireStatuses: [],
     lastEmployeeType: null,
     employeeTypes: [],
@@ -148,20 +150,45 @@ export default {
     educationList: [],
     degreeList: []
   }),
-  props: {
-    // TODO: Add validation
-    person: {
-      id: Number,
-      name: String
+  watch: {
+    id: function watchId (val, oldVal) {
+      if (val) {
+        // if (val !== oldVal) { // Skip this test for now, fire every non-null
+        const docRef = db.collection('deleteMePerson').doc(val)
+        docRef.get().then(
+          doc => {
+            this.name = doc.data().name
+            this.date = doc.data().date
+            this.lastStatus = doc.data().lastStatus.long
+
+            this.hireStatus = this.hireStatuses.findIndex(hs => hs.short === doc.data().hireStatus.short)
+            this.lastEmployeeType = this.employeeTypes.findIndex(et => et.short === doc.data().lastEmployeeType.short)
+
+            this.email = doc.data().email
+            this.phone = doc.data().phone
+
+            this.mailingAddress = doc.data().mailingAddress
+            this.physicalAddress = doc.data().physicalAddress
+            this.mailingCheckbox = this.mailingAddress === this.physicalAddress
+
+            this.positionApplied = doc.data().positionApplied
+
+            this.clearance = this.clearanceList.findIndex(c => c.short === doc.data().clearance.short)
+            this.education = this.educationList.findIndex(e => e.short === doc.data().education.short)
+          }
+        )
+      }
+      // }
     }
   },
+  props: ['id'],
   created () {
     // Fetch data from the firestore
     this.listFromDB('applicationStatus', this.applicationStatus, ['long'])
     this.listFromDB('hireStatus', this.hireStatuses, ['short', 'long'], true)
-    this.listFromDB('employeeTypes', this.employeeTypes, ['short'])
-    this.listFromDB('clearanceList', this.clearanceList, ['short'], true)
-    this.listFromDB('educationLevel', this.educationList, ['short'], true)
+    this.listFromDB('employeeTypes', this.employeeTypes, ['short', 'long'])
+    this.listFromDB('clearanceList', this.clearanceList, ['short', 'long'], true)
+    this.listFromDB('educationLevel', this.educationList, ['short', 'long'], true)
 
     this.degreeList = [
       { short: 'unk', long: 'Unknown' },
@@ -170,6 +197,28 @@ export default {
     ]
   },
   methods: {
+    save () {
+      db.collection('deleteMePerson').add({
+        name: this.name,
+        date: (new Date()).toISOString(), // FIXME: This is dependant on the client machine's time and timezone.
+        lastStatus: this.applicationStatus[this.lastStatus],
+        hireStatus: this.hireStatuses[this.hireStatus],
+        lastEmployeeType: this.employeeTypes[this.lastEmployeeType],
+        email: this.email,
+        phone: this.phone,
+        mailingAddress: this.mailingAddress,
+        physicalAddress: this.mailingCheckbox
+          ? this.mailingAddress
+          : this.physicalAddress,
+        positionApplied: this.positionApplied,
+        clearance: this.clearanceList[this.clearance],
+        education: this.educationList[this.education]
+      }).then(() => {
+        this.$emit('save', false)
+      }).catch(err => {
+        /* legit use */ console.log(err)
+      })
+    },
     /**
      * Return array from Firestore collection.
      *

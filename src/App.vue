@@ -102,7 +102,7 @@
     </v-toolbar>
     <v-content>
       <!-- Display all the tiles here -->
-      <CardGrid @edit="userFromDB($event)"/>
+      <CardGrid @edit="personId = $event; isDialogDisplayed = true"/>
     </v-content>
     <v-btn
       fab
@@ -111,12 +111,12 @@
       color="pink"
       dark
       fixed
-      @click="dialog = !dialog"
+      @click="personId = null; isDialogDisplayed = true"
     >
       <v-icon>add</v-icon>
     </v-btn>
-    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
-      <EditDetails @cancel="dialog = !dialog" @save="dialog = !dialog" :person="personEdit"/>
+    <v-dialog v-model="isDialogDisplayed" fullscreen hide-overlay transition="dialog-bottom-transition">
+      <EditDetails @cancel="isDialogDisplayed = false" @save="isDialogDisplayed = false" :id="personId"/>
     </v-dialog>
 
   </v-app>
@@ -133,9 +133,9 @@ export default {
     EditDetails
   },
   data: () => ({
-    dialog: false,
+    isDialogDisplayed: false,
     drawer: null,
-    personEdit: {},
+    personId: null,
     items: [
       { icon: 'contacts', text: 'Contacts' },
       { icon: 'history', text: 'Frequently contacted' },
@@ -171,18 +171,6 @@ export default {
   }),
   props: {
     source: String
-  },
-  methods: {
-    userFromDB (evt) {
-      // TODO: call db with evt.id
-
-      // TODO: populate details with return
-      this.personEdit = {
-        id: 3,
-        name: 'Bob Dole'
-      }
-      this.dialog = true
-    }
   }
 }
 </script>
