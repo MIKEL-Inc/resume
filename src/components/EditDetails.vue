@@ -158,7 +158,7 @@ export default {
           doc => {
             this.name = doc.data().name
             this.date = doc.data().date
-            this.lastStatus = doc.data().lastStatus.long
+            this.lastStatus = doc.data().lastStatus
 
             this.hireStatus = this.hireStatuses.findIndex(hs => hs.short === doc.data().hireStatus.short)
             this.lastEmployeeType = this.employeeTypes.findIndex(et => et.short === doc.data().lastEmployeeType.short)
