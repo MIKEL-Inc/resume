@@ -15,12 +15,15 @@
           <object
             width="100%"
             height="100%"
-            data="https://writing.colostate.edu/guides/documents/resume/functionalSample.pdf"
+            :data="resumeUrl"
           ></object>
         </v-flex>
         <v-flex xs12 md4>
           <form grid-list-sm class="pa-4" @submit.prevent="AddPerson">
             <v-layout row wrap>
+              <v-flex>
+                <input type="file" @change.prevent="fileList = $event.target.files">
+              </v-flex>
               <v-text-field
                 label="Applicant Name"
                 v-model="name"
@@ -126,10 +129,12 @@
 </template>
 
 <script>
-import db from '@/firebase/init'
+import db, { resumeStorage } from '@/firebase/init'
 
 export default {
   data: () => ({
+    fileList: [],
+    resumeUrl: null,
     name: null,
     lastStatus: null,
     applicationStatus: [],
@@ -174,6 +179,7 @@ export default {
 
             this.clearance = this.clearanceList.findIndex(c => c.short === doc.data().clearance.short)
             this.education = this.educationList.findIndex(e => e.short === doc.data().education.short)
+            this.resumeUrl = doc.data().resume
           }
         )
       }
@@ -196,6 +202,54 @@ export default {
     ]
   },
   methods: {
+    saveFile (id) {
+      const rootRef = resumeStorage.ref()
+      const file = this.fileList[0]
+      const fileName = this.id + '/' + file.name + (new Date()).toISOString()
+      const fileRef = rootRef.child(fileName)
+      const uploadTask = fileRef.put(file)
+      uploadTask.on(
+        'state_changed',
+        snapshot => {
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          // const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          // console.log('Upload is ' + progress + '% done')
+          switch (snapshot.state) {
+            case 'paused': // firebase.storage.TaskState.PAUSED: // or 'paused'
+              // console.log('Upload is paused')
+              break
+            case 'running': // firebase.storage.TaskState.RUNNING: // or 'running'
+              // console.log('Upload is running')
+              break
+          }
+        },
+        error => {
+          // A full list of error codes is available at
+          // https://firebase.google.com/docs/storage/web/handle-errors
+          switch (error.code) {
+            case 'storage/unauthorized':
+              // User doesn't have permission to access the object
+              break
+            case 'storage/canceled':
+              // User canceled the upload
+              break
+            case 'storage/unknown':
+              // Unknown error occurred, inspect error.serverResponse
+              break
+          }
+        },
+        () => {
+          // Handle successful uploads on complete
+          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+            const docRef = db.collection('deleteMePerson').doc(this.id)
+            docRef.update({
+              resume: downloadURL
+            })
+          })
+        }
+      )
+    },
+
     save () {
       if (this.id) {
         const docRef = db.collection('deleteMePerson').doc(this.id)
@@ -215,6 +269,7 @@ export default {
           clearance: this.clearanceList[this.clearance],
           education: this.educationList[this.education]
         }).then(() => {
+          this.saveFile(this.id)
           this.$emit('save', true)
         }).catch(err => {
         /* legit use */ console.log(err)
@@ -235,7 +290,8 @@ export default {
           positionApplied: this.positionApplied,
           clearance: this.clearanceList[this.clearance],
           education: this.educationList[this.education]
-        }).then(() => {
+        }).then(thingy => {
+          this.saveFile(thingy.id)
           this.$emit('save', true)
         }).catch(err => {
         /* legit use */ console.log(err)

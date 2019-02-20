@@ -1,6 +1,8 @@
 import firebase from 'firebase/app'
 // eslint-disable-next-line no-unused-vars
 import firestore from 'firebase/firestore'
+// eslint-disable-next-line no-unused-vars
+import storage from 'firebase/firebase-storage'
 
 // Initialize Firebase
 var config = {
@@ -13,6 +15,7 @@ var config = {
 }
 
 const firebaseApp = firebase.initializeApp(config)
-
+const db = firebaseApp.firestore()
 // Export firestore database
-export default firebaseApp.firestore()
+export default db
+export const resumeStorage = firebaseApp.storage()
