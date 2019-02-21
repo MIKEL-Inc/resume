@@ -21,7 +21,8 @@
         solo-inverted
         hide-details
         prepend-inner-icon="search"
-        label="Search"
+        label="Search Coming Soon"
+        disabled
       ></v-text-field>
       <v-spacer></v-spacer>
       <v-btn flat small @click="logout">Logout</v-btn>
