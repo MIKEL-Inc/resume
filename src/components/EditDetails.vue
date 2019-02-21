@@ -6,6 +6,19 @@
       <v-toolbar-items>
         <v-btn dark flat @click="save">Save</v-btn>
         <v-btn dark flat @click="$emit('cancel', false)">Cancel</v-btn>
+        <v-dialog v-if="id" width="500">
+          <v-btn small flat icon dark slot="activator">
+            <v-icon>delete</v-icon>
+          </v-btn>
+          <v-card>
+            <v-card-text>Warning, this is permanant! Are you sure you want to delete {{ name }}?</v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="warning" flat @click="deleteUser()">Delete</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-toolbar-items>
     </v-toolbar>
 
@@ -206,6 +219,13 @@ export default {
   methods: {
     selectFile () {
       this.$refs.uploadInput.click()
+    },
+    deleteUser () {
+      // Delete doc from firestore
+      db.collection('deleteMePerson').doc(this.id).delete()
+        .then(() => {
+          this.$emit('cancel', false)
+        })
     },
     saveFile (id) {
       const rootRef = storage.ref()
