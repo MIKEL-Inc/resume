@@ -19,6 +19,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <v-btn dark flat @click="resetFileList(); $emit('cancel', false)">Cancel</v-btn>
       </v-toolbar-items>
     </v-toolbar>
 
@@ -197,6 +198,9 @@ export default {
             this.resumeUrl = doc.data().resume
           }
         )
+      } else {
+        // Id is nulll erase old person data
+        this.resetPerson()
       }
       // }
     }
@@ -215,8 +219,29 @@ export default {
       { short: 'COE', long: 'Computer Engineering' },
       { short: 'CS', long: 'Computer Science' }
     ]
+    this.resetPerson()
   },
   methods: {
+    resetPerson () {
+      this.resumeUrl = null
+      this.name = 'John Doe'
+      this.email = 'test@test.com'
+      this.phone = '1234567890'
+      this.mailingAddress = '123 Main st.\nAnytown, USA'
+      this.physicalAddress = '123 Main st.\nAnytown, USA'
+      this.mailingCheckbox = this.mailingAddress === this.physicalAddress
+      this.positionApplied = 'Tester'
+      this.clearance = 0
+      this.education = 0
+      this.hireStatus = 0
+      this.lastEmployeeType = 0
+      // Must exactly match lists
+      this.lastStatus = 'Received Resume'
+      this.resetFileList()
+    },
+    resetFileList () {
+      this.fileList = []
+    },
     selectFile () {
       this.$refs.uploadInput.click()
     },
@@ -228,51 +253,53 @@ export default {
         })
     },
     saveFile (id) {
-      const rootRef = storage.ref()
-      const file = this.fileList[0]
-      const fileName = this.id + '/' + file.name + (new Date()).toISOString()
-      const fileRef = rootRef.child(fileName)
-      const uploadTask = fileRef.put(file)
-      uploadTask.on(
-        'state_changed',
-        snapshot => {
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          // const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          // console.log('Upload is ' + progress + '% done')
-          switch (snapshot.state) {
-            case 'paused': // firebase.storage.TaskState.PAUSED: // or 'paused'
-              // console.log('Upload is paused')
-              break
-            case 'running': // firebase.storage.TaskState.RUNNING: // or 'running'
-              // console.log('Upload is running')
-              break
-          }
-        },
-        error => {
-          // A full list of error codes is available at
-          // https://firebase.google.com/docs/storage/web/handle-errors
-          switch (error.code) {
-            case 'storage/unauthorized':
-              // User doesn't have permission to access the object
-              break
-            case 'storage/canceled':
-              // User canceled the upload
-              break
-            case 'storage/unknown':
-              // Unknown error occurred, inspect error.serverResponse
-              break
-          }
-        },
-        () => {
-          // Handle successful uploads on complete
-          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-            const docRef = db.collection('deleteMePerson').doc(this.id)
-            docRef.update({
-              resume: downloadURL
+      if (this.fileList.length >= 1) {
+        const rootRef = storage.ref()
+        const file = this.fileList[0]
+        const fileName = this.id + '/' + file.name + (new Date()).toISOString()
+        const fileRef = rootRef.child(fileName)
+        const uploadTask = fileRef.put(file)
+        uploadTask.on(
+          'state_changed',
+          snapshot => {
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            // const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            // console.log('Upload is ' + progress + '% done')
+            switch (snapshot.state) {
+              case 'paused': // firebase.storage.TaskState.PAUSED: // or 'paused'
+                // console.log('Upload is paused')
+                break
+              case 'running': // firebase.storage.TaskState.RUNNING: // or 'running'
+                // console.log('Upload is running')
+                break
+            }
+          },
+          error => {
+            // A full list of error codes is available at
+            // https://firebase.google.com/docs/storage/web/handle-errors
+            switch (error.code) {
+              case 'storage/unauthorized':
+                // User doesn't have permission to access the object
+                break
+              case 'storage/canceled':
+                // User canceled the upload
+                break
+              case 'storage/unknown':
+                // Unknown error occurred, inspect error.serverResponse
+                break
+            }
+          },
+          () => {
+            // Handle successful uploads on complete
+            uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+              const docRef = db.collection('deleteMePerson').doc(this.id)
+              docRef.update({
+                resume: downloadURL
+              })
             })
-          })
-        }
-      )
+          }
+        )
+      }
     },
 
     save () {
@@ -295,6 +322,7 @@ export default {
           education: this.educationList[this.education]
         }).then(() => {
           this.saveFile(this.id)
+          this.resetFileList()
           this.$emit('save', true)
         }).catch(err => {
         /* legit use */ console.log(err)
@@ -317,6 +345,7 @@ export default {
           education: this.educationList[this.education]
         }).then(thingy => {
           this.saveFile(thingy.id)
+          this.resetFileList()
           this.$emit('save', true)
         }).catch(err => {
         /* legit use */ console.log(err)
