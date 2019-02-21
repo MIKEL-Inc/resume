@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn dark flat @click="save">Save</v-btn>
-        <v-btn dark flat @click="$emit('cancel', false)">Cancel</v-btn>
+        <v-btn dark flat @click="resetFileList(); $emit('cancel', false)">Cancel</v-btn>
       </v-toolbar-items>
     </v-toolbar>
 
@@ -184,6 +184,9 @@ export default {
             this.resumeUrl = doc.data().resume
           }
         )
+      } else {
+        // Id is nulll erase old person data
+        this.resetPerson()
       }
       // }
     }
@@ -202,8 +205,29 @@ export default {
       { short: 'COE', long: 'Computer Engineering' },
       { short: 'CS', long: 'Computer Science' }
     ]
+    this.resetPerson()
   },
   methods: {
+    resetPerson () {
+      this.resumeUrl = null
+      this.name = 'John Doe'
+      this.email = 'test@test.com'
+      this.phone = '1234567890'
+      this.mailingAddress = '123 Main st.\nAnytown, USA'
+      this.physicalAddress = '123 Main st.\nAnytown, USA'
+      this.mailingCheckbox = this.mailingAddress === this.physicalAddress
+      this.positionApplied = 'Tester'
+      this.clearance = 0
+      this.education = 0
+      this.hireStatus = 0
+      this.lastEmployeeType = 0
+      // Must exactly match lists
+      this.lastStatus = 'Received Resume'
+      this.resetFileList()
+    },
+    resetFileList () {
+      this.fileList = []
+    },
     selectFile () {
       this.$refs.uploadInput.click()
     },
@@ -277,6 +301,7 @@ export default {
           education: this.educationList[this.education]
         }).then(() => {
           this.saveFile(this.id)
+          this.resetFileList()
           this.$emit('save', true)
         }).catch(err => {
         /* legit use */ console.log(err)
@@ -299,6 +324,7 @@ export default {
           education: this.educationList[this.education]
         }).then(thingy => {
           this.saveFile(thingy.id)
+          this.resetFileList()
           this.$emit('save', true)
         }).catch(err => {
         /* legit use */ console.log(err)
