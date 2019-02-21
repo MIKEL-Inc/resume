@@ -6,21 +6,20 @@
       <v-toolbar-items>
         <v-btn dark flat @click="save">Save</v-btn>
         <v-btn dark flat @click="resetFileList(); $emit('cancel', false)">Cancel</v-btn>
-        <v-dialog v-if="id" width="500">
-          <v-btn small flat icon dark slot="activator">
-            <v-icon>delete</v-icon>
-          </v-btn>
-          <v-card>
-            <v-card-text>Warning, this is permanant! Are you sure you want to delete {{ name }}?</v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="warning" flat @click="deleteUser()">Delete</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <v-btn v-if="id" dark small flat icon @click="deleteDialog = !deleteDialog"><v-icon>delete</v-icon></v-btn>
       </v-toolbar-items>
     </v-toolbar>
+
+    <v-dialog v-model="deleteDialog" width="500">
+      <v-card>
+        <v-card-text>Warning, this is permanant! Are you sure you want to delete {{ name }}?</v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="warning" flat @click="deleteDialog = !deleteDialog, deleteUser()">Delete</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-container fluid>
       <v-layout>
@@ -167,7 +166,8 @@ export default {
     clearanceList: [],
     education: null,
     educationList: [],
-    degreeList: []
+    degreeList: [],
+    deleteDialog: false
   }),
   watch: {
     id: function watchId (val, oldVal) {
