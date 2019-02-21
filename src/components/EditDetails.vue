@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn dark flat @click="save">Save</v-btn>
-        <v-btn dark flat @click="$emit('cancel', false)">Cancel</v-btn>
+        <v-btn dark flat @click="resetFileList(); $emit('cancel', false)">Cancel</v-btn>
         <v-dialog v-if="id" width="500">
           <v-btn small flat icon dark slot="activator">
             <v-icon>delete</v-icon>
@@ -19,7 +19,6 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-btn dark flat @click="resetFileList(); $emit('cancel', false)">Cancel</v-btn>
       </v-toolbar-items>
     </v-toolbar>
 
