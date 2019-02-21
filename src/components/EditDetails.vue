@@ -21,8 +21,10 @@
         <v-flex xs12 md4>
           <form grid-list-sm class="pa-4" @submit.prevent="AddPerson">
             <v-layout row wrap>
-              <v-flex>
-                <input type="file" @change.prevent="fileList = $event.target.files">
+              <v-flex >
+                <v-btn block color="secondary lighten-3" @click.native="selectFile">Select Resume <v-icon right>cloud_upload</v-icon></v-btn>
+                <input type="file" ref="uploadInput" @change.prevent="fileList = $event.target.files">
+                <p class="caption">{{ fileList[0] ? fileList[0].name : '' }}</p>
               </v-flex>
               <v-text-field
                 label="Applicant Name"
@@ -202,6 +204,9 @@ export default {
     ]
   },
   methods: {
+    selectFile () {
+      this.$refs.uploadInput.click()
+    },
     saveFile (id) {
       const rootRef = storage.ref()
       const file = this.fileList[0]
@@ -338,3 +343,9 @@ export default {
   }
 }
 </script>
+
+<style lang="sass">
+input[type="file"]
+  position: absolute
+  clip: rect(0,0,0,0)
+</style>
