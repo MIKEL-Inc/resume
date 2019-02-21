@@ -209,7 +209,7 @@ export default {
     },
     saveFile (id) {
       if (this.fileList.length >= 1) {
-        const rootRef = storage.ref()      
+        const rootRef = storage.ref()
         const file = this.fileList[0]
         const fileName = this.id + '/' + file.name + (new Date()).toISOString()
         const fileRef = rootRef.child(fileName)
