@@ -24,9 +24,8 @@ export default {
     Card
   },
   created () {
-    // Fetch data from the firestore
-    db.collection('deleteMePerson').get()
-      .then(snapshot => {
+    db.collection('deleteMePerson').onSnapshot(
+      snapshot => {
         this.cards = []
         snapshot.forEach(doc => {
           this.cards.push({
