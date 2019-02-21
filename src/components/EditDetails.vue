@@ -208,51 +208,53 @@ export default {
       this.$refs.uploadInput.click()
     },
     saveFile (id) {
-      const rootRef = storage.ref()
-      const file = this.fileList[0]
-      const fileName = this.id + '/' + file.name + (new Date()).toISOString()
-      const fileRef = rootRef.child(fileName)
-      const uploadTask = fileRef.put(file)
-      uploadTask.on(
-        'state_changed',
-        snapshot => {
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          // const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          // console.log('Upload is ' + progress + '% done')
-          switch (snapshot.state) {
-            case 'paused': // firebase.storage.TaskState.PAUSED: // or 'paused'
-              // console.log('Upload is paused')
-              break
-            case 'running': // firebase.storage.TaskState.RUNNING: // or 'running'
-              // console.log('Upload is running')
-              break
-          }
-        },
-        error => {
-          // A full list of error codes is available at
-          // https://firebase.google.com/docs/storage/web/handle-errors
-          switch (error.code) {
-            case 'storage/unauthorized':
-              // User doesn't have permission to access the object
-              break
-            case 'storage/canceled':
-              // User canceled the upload
-              break
-            case 'storage/unknown':
-              // Unknown error occurred, inspect error.serverResponse
-              break
-          }
-        },
-        () => {
-          // Handle successful uploads on complete
-          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-            const docRef = db.collection('deleteMePerson').doc(this.id)
-            docRef.update({
-              resume: downloadURL
+      if (this.fileList.length >= 1) {
+        const rootRef = storage.ref()      
+        const file = this.fileList[0]
+        const fileName = this.id + '/' + file.name + (new Date()).toISOString()
+        const fileRef = rootRef.child(fileName)
+        const uploadTask = fileRef.put(file)
+        uploadTask.on(
+          'state_changed',
+          snapshot => {
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            // const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            // console.log('Upload is ' + progress + '% done')
+            switch (snapshot.state) {
+              case 'paused': // firebase.storage.TaskState.PAUSED: // or 'paused'
+                // console.log('Upload is paused')
+                break
+              case 'running': // firebase.storage.TaskState.RUNNING: // or 'running'
+                // console.log('Upload is running')
+                break
+            }
+          },
+          error => {
+            // A full list of error codes is available at
+            // https://firebase.google.com/docs/storage/web/handle-errors
+            switch (error.code) {
+              case 'storage/unauthorized':
+                // User doesn't have permission to access the object
+                break
+              case 'storage/canceled':
+                // User canceled the upload
+                break
+              case 'storage/unknown':
+                // Unknown error occurred, inspect error.serverResponse
+                break
+            }
+          },
+          () => {
+            // Handle successful uploads on complete
+            uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+              const docRef = db.collection('deleteMePerson').doc(this.id)
+              docRef.update({
+                resume: downloadURL
+              })
             })
-          })
-        }
-      )
+          }
+        )
+      }
     },
 
     save () {
