@@ -99,6 +99,7 @@
           >
         </v-avatar>
       </v-btn>
+      <v-btn flat small @click="logout">Logout</v-btn>
     </v-toolbar>
     <v-content>
       <!-- Display all the tiles here -->
@@ -125,6 +126,7 @@
 <script>
 import CardGrid from './CardGrid'
 import EditDetails from '../components/EditDetails'
+import { auth } from '@/firebase/init'
 
 export default {
   name: 'Home',
@@ -171,6 +173,13 @@ export default {
   }),
   props: {
     source: String
+  },
+  methods: {
+    logout () {
+      auth.signOut().then(() => {
+        this.$router.replace('login')
+      })
+    }
   }
 }
 </script>

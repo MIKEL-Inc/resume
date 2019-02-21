@@ -14,7 +14,7 @@
 
 <script>
 import Card from '../components/Card'
-import db from '@/firebase/init'
+import { db } from '@/firebase/init'
 
 export default {
   data: () => ({

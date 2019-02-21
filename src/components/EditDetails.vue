@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import db, { resumeStorage } from '@/firebase/init'
+import { db, storage } from '@/firebase/init'
 
 export default {
   data: () => ({
@@ -203,7 +203,7 @@ export default {
   },
   methods: {
     saveFile (id) {
-      const rootRef = resumeStorage.ref()
+      const rootRef = storage.ref()
       const file = this.fileList[0]
       const fileName = this.id + '/' + file.name + (new Date()).toISOString()
       const fileRef = rootRef.child(fileName)
