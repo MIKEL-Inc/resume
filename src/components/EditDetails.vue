@@ -363,7 +363,6 @@ export default {
           clearance: this.clearanceList[this.clearance],
           education: this.educationList[this.education]
         }).then(thingy => {
-          console.log({ 'thingy.id': thingy.id })
           this.saveFile(thingy.id)
           this.resetFileList()
           this.$emit('save', true)
