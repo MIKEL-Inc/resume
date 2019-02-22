@@ -223,20 +223,39 @@ export default {
   methods: {
     resetPerson () {
       this.resumeUrl = null
-      this.name = 'John Doe'
-      this.email = 'test@test.com'
-      this.phone = '1234567890'
-      this.mailingAddress = '123 Main st.\nAnytown, USA'
-      this.physicalAddress = '123 Main st.\nAnytown, USA'
+      this.name = ''
+      this.email = ''
+      this.phone = ''
+      this.mailingAddress = ''
+      this.physicalAddress = ''
       this.mailingCheckbox = this.mailingAddress === this.physicalAddress
-      this.positionApplied = 'Tester'
+      this.positionApplied = ''
       this.clearance = 0
       this.education = 0
       this.hireStatus = 0
       this.lastEmployeeType = 0
       // Must exactly match lists
       this.lastStatus = 'Received Resume'
+      this.devOnlyHelperPersonFill()
       this.resetFileList()
+    },
+    devOnlyHelperPersonFill () {
+      if (process.env.NODE_ENV === 'developemnet') {
+        this.resumeUrl = null
+        this.name = 'John Doe'
+        this.email = 'test@test.com'
+        this.phone = '1234567890'
+        this.mailingAddress = '123 Main st.\nAnytown, USA'
+        this.physicalAddress = '123 Main st.\nAnytown, USA'
+        this.mailingCheckbox = this.mailingAddress === this.physicalAddress
+        this.positionApplied = 'Tester'
+        this.clearance = 0
+        this.education = 0
+        this.hireStatus = 0
+        this.lastEmployeeType = 0
+        // Must exactly match lists
+        this.lastStatus = 'Received Resume'
+      }
     },
     resetFileList () {
       this.fileList = []
