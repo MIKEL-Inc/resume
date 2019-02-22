@@ -35,7 +35,7 @@
             <v-layout row wrap>
               <v-flex >
                 <v-btn block color="secondary lighten-3" @click.native="selectFile">Select Resume <v-icon right>cloud_upload</v-icon></v-btn>
-                <input type="file" ref="uploadInput" @change.prevent="fileList = $event.target.files">
+                <input type="file" ref="uploadInput" @change.prevent="fileList = $event.target.files"  accept="application/pdf">
                 <p class="caption">{{ fileList[0] ? fileList[0].name : '' }}</p>
               </v-flex>
               <v-text-field
