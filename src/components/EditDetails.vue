@@ -1,7 +1,6 @@
 <template>
   <v-card>
-    <v-toolbar dark color="primary">
-      <v-toolbar-title>Add/Edit User</v-toolbar-title>
+    <v-toolbar dark color="accent darken-1">
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn dark flat @click="save">Save</v-btn>
@@ -35,7 +34,7 @@
           <form grid-list-sm class="pa-4" @submit.prevent="AddPerson">
             <v-layout row wrap>
               <v-flex >
-                <v-btn block color="secondary lighten-3" @click.native="selectFile">Select Resume <v-icon right>cloud_upload</v-icon></v-btn>
+                <v-btn block color="secondary lighten-2" @click.native="selectFile">Upload Resume <v-icon right>cloud_upload</v-icon></v-btn>
                 <input type="file" ref="uploadInput" @change.prevent="fileList = $event.target.files" accept="application/pdf">
                 <p class="caption">{{ fileList[0] ? fileList[0].name : '' }}</p>
               </v-flex>
