@@ -26,3 +26,6 @@ yarn-error.log*
 
 # Docs
 BUILDPLAN.md
+
+# Firebase
+/.firebase
