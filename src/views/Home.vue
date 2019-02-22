@@ -9,12 +9,13 @@
       fixed
     >
 
-      <v-avatar size="32px" tile>
+      <v-avatar tile>
         <img
-          src="https://cdn.vuetifyjs.com/images/logos/logo.svg"
-          alt="Vuetify"
+          src="@/assets/logo-white.svg"
+          alt="inMIKEL Logo"
         >
       </v-avatar>
+      <v-title class="subheading px-1">inMIKEL</v-title>
       <v-spacer></v-spacer>
       <v-text-field
         flat
