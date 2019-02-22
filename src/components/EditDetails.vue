@@ -310,7 +310,7 @@ export default {
           () => {
             // Handle successful uploads on complete
             uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-              const docRef = db.collection('deleteMePerson').doc(this.id)
+              const docRef = db.collection('deleteMePerson').doc(id)
               docRef.update({
                 resume: downloadURL
               })
