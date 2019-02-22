@@ -324,7 +324,8 @@ export default {
           this.resetFileList()
           this.$emit('save', true)
         }).catch(err => {
-        /* legit use */ console.log(err)
+          // eslint-disable-next-line no-console
+          /* legit use */ console.log(err)
         })
       } else {
         db.collection('deleteMePerson').add({
@@ -347,7 +348,8 @@ export default {
           this.resetFileList()
           this.$emit('save', true)
         }).catch(err => {
-        /* legit use */ console.log(err)
+          // eslint-disable-next-line no-console
+          /* legit use */ console.log(err)
         })
       }
     },
