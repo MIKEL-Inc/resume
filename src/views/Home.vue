@@ -15,7 +15,7 @@
           alt="inMIKEL Logo"
         >
       </v-avatar>
-      <v-title class="subheading px-1">inMIKEL</v-title>
+      <v-toolbar-title class="subheading px-1">inMIKEL</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-text-field
         flat
