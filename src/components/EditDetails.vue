@@ -274,7 +274,7 @@ export default {
       if (this.fileList.length >= 1) {
         const rootRef = storage.ref()
         const file = this.fileList[0]
-        const fileName = this.id + '/' + file.name + (new Date()).toISOString()
+        const fileName = id + '/' + file.name + (new Date()).toISOString()
         const fileRef = rootRef.child(fileName)
         const uploadTask = fileRef.put(file)
         uploadTask.on(
@@ -363,6 +363,7 @@ export default {
           clearance: this.clearanceList[this.clearance],
           education: this.educationList[this.education]
         }).then(thingy => {
+          console.log({ 'thingy.id': thingy.id })
           this.saveFile(thingy.id)
           this.resetFileList()
           this.$emit('save', true)
