@@ -11,11 +11,15 @@
 
     <v-dialog v-model="deleteDialog" width="500">
       <v-card>
-        <v-card-text>Warning, this is permanant! Are you sure you want to delete {{ name }}?</v-card-text>
+        <v-card-text>
+          <p>Warning, this is permanant!</p>
+          <p>Are you sure you want to delete {{ name }}?</p>
+        </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="warning" flat @click="deleteDialog = !deleteDialog, deleteUser()">Delete</v-btn>
+          <v-btn color="secondary" flat @click="deleteDialog = !deleteDialog">Cancel</v-btn>
+          <v-btn color="primary" flat @click="deleteDialog = !deleteDialog, deleteUser()">Delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
